@@ -4,7 +4,6 @@ SwiftServe aims to bring the joy of dining back to hawker centres. By eliminatin
 
 Our platform is designed to cater to a diverse spread of Customers. These include working adults and tech-savvy youth who wish to utilise innovative solutions for efficient meal breaks. SwiftServe allows Customers to sign up and locate the Hawker centre of choice, place meal orders and reserve seats. Customers will also be informed of seat availability through the website application.
 
-<<<<<<< Updated upstream
 We aim to work closely with hawker centres and Merchants for platform buy-in, so as to work towards the collective goal of a joyful hawker centre experience for Customers. Our first target hawker centre, Yuhua Village Market and Food Centre has little digitalisation, which makes it suitable to test the effectiveness and adaptability of our platform. The successful creation of the SwiftServe platform demonstrates our dedication to transform the future of hawker culture as one centred around continuous innovation and efficiency. 
 
 SwiftServe believes that there will be a day where we can associate hawker centres with convenience, efficiency and an exceptional dining experience. We invite Customers and Merchants who want to reignite and enjoy the hawker culture that we all know and love. Together, we can keep this tradition going forward and showcase the definitive hawker experience.
@@ -14,10 +13,4 @@ SwiftServe believes that there will be a day where we can associate hawker centr
 
 
 
-=======
-We aim to work closely with hawker centres and Merchants for platform buy-in, so as to work towards the collective goal of a joyful hawker centre experience for Customers. Our first target hawker centre, Yuhua Village Market and Food Centre has little digitalisation, which makes it suitable to test the effectiveness and adaptability of our platform. The successful creation of the SwiftServe platform demonstrates our dedication to transform the future of hawker culture as one centred around continuous innovation and efficiency.
-
-SwiftServe believes that there will be a day where we can associate hawker centres with convenience, efficiency and an exceptional dining experience. We invite Customers and Merchants who want to reignite and enjoy the hawker culture that we all know and love. Together, we can keep this tradition going forward and showcase the definitive hawker experience.
-
->>>>>>> Stashed changes
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/9tV5jjUL)
