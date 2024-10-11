@@ -26,7 +26,7 @@
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from 'firebase/firestore';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, addDoc, serverTimestamp, collection } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
 export default {
@@ -40,11 +40,25 @@ export default {
 
             try{
               if (password === cPassword) {
-                await setDoc(doc(db, "UserProfile", email), {
+                const userRef = await addDoc(collection(db, "UserProfile"), {
+                    DateCreated: serverTimestamp(),
                     Email: email,
                     Username: username,
-                    password: password
+                    password: password,
+                    ProfileType: "Customer"
+                });
+                const userId = userRef.id;
+
+                await setDoc(doc(db, "UserProfile", userId), {
+                    UserId: userId,
+                    DateCreated: serverTimestamp(),
+                    Email: email,
+                    Username: username,
+                    password: password,
+                    ProfileType: "Customer"
                 })
+
+
                 document.getElementById('userForm').reset()
                 alert("Account Created Successfully!")
               }

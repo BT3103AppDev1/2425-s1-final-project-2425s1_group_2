@@ -1,8 +1,7 @@
 <template>
     <div class="headerContainer">
-        <div id="logo">
-            <img src="/SwiftServeLogo.png" alt="SwiftServeLogo" class="SSLogo" />
-            <h1> SwiftServe </h1>
+        <div id="logo" @click="goHome">
+            <img src="/SwiftServeLogoHoriz.png" alt="SwiftServeLogoHoriz" class="SSLogo" />
         </div>
 
         <div id="signUpButton">
@@ -17,6 +16,9 @@ export default {
   methods: {
     goLoginClick() {
       this.$router.push('/login');
+    },
+    goHome() {
+      this.$router.push('/');
     }
   }
 }
@@ -34,7 +36,7 @@ export default {
 }
 
 img {
-    width: 7vw;
+    width: 20vw;
 }
 
 h1 {
@@ -46,7 +48,7 @@ h1 {
 
 #signUpButton {
     position: absolute;
-    left: 88vw;
+    left: 85vw;
 }
 
 button {
