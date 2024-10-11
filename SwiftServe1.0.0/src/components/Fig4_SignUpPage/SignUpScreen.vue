@@ -24,6 +24,41 @@
 </template>
 
 <script>
+import firebaseApp from '../../firebase.js';
+import { getFirestore } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
+
+export default {
+    methods: {
+        async savetoFirestore() {
+        
+            let email = document.getElementById("email1").value
+            let username = document.getElementById("username1").value
+            let password = document.getElementById("password1").value
+            let cPassword = document.getElementById("cPassword1").value
+
+            try{
+              if (password === cPassword) {
+                await setDoc(doc(db, "UserProfile", email), {
+                    Email: email,
+                    Username: username,
+                    password: password
+                })
+                document.getElementById('userForm').reset()
+                alert("Account Created Successfully!")
+              }
+              else {
+                throw new Error("Passwords do not match!")
+              }
+            }
+            catch(error) {
+                console.error("Error adding document: ", error);
+                alert("No Account Created." + error)
+            }
+        }
+    }
+}
 </script>
 
 <style scoped>
