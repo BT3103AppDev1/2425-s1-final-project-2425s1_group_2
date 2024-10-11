@@ -6,7 +6,7 @@
         <span>${{ addOn.price }}</span>
         <div class="quantity-controls">
           <button @click="decreaseQuantity(addOn)">-</button>
-          <span>{{ addOn.quantity }}</span>
+          <span class="quantity">{{ addOn.quantity }}</span>
           <button @click="increaseQuantity(addOn)">+</button>
         </div>
       </div>
@@ -47,12 +47,19 @@
     display: flex;
     align-items: center;
   }
+
+  .quantity-controls .quantity {
+    font-size: 1.2rem;
+    margin: 0 15px; 
+    font-weight: bold;
+  }
   
   .quantity-controls button {
-    background-color: #00aaff;
+    background-color: white;
     border: none;
-    color: white;
+    color: black;
     padding: 5px;
     cursor: pointer;
+    font-weight: bold;
   }
   </style>

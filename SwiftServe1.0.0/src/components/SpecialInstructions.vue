@@ -31,7 +31,7 @@
     padding: 10px;
     font-size: 1rem;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #00A985;
   }
   </style>
   

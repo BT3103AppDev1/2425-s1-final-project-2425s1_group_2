@@ -7,11 +7,11 @@
         </div>
         <div class="food-info">
           <h1>{{ foodItem.name }}</h1>
-          <p class="price">${{ foodItem.price }}</p>
+          <p class="price">${{ totalPrice.toFixed(2) }}</p>
   
           <div class="quantity-controls">
             <button @click="decreaseQuantity">-</button>
-            <span>{{ quantity }}</span>
+            <span class="quantity">{{ quantity }}</span>
             <button @click="increaseQuantity">+</button>
           </div>
         </div>
@@ -24,7 +24,7 @@
       />
   
       <div class="action-buttons">
-        <button class="add-to-cart" @click="addToCart">Add to Cart</button>
+        <button class="add-to-cart" @click="addToCartHandler">Add to Cart</button>
         <button class="cancel-order" @click="cancelOrder">Cancel Order</button>
       </div>
     </div>
@@ -34,25 +34,50 @@
   import Header from '../components/Header.vue';
   import AddOn from '../components/AddOn.vue';
   import SpecialInstructions from '../components/SpecialInstructions.vue';
+  // import { EventBus } from '../eventBus.js';
   
   export default {
+    components: {
+      Header,
+      AddOn,
+      SpecialInstructions
+    },
     data() {
       return {
         foodItem: {
-          id: 1,
-          name: "Chicken Rice Set",
-          image: "/path-to-image/chicken-rice.jpg",
-          price: 6.99,
+          id: null,
+          name: '',
+          image: '',
+          price: null
         },
         quantity: 1,
-        addOns: [
-          { id: 1, name: "Rice", price: 0.6, quantity: 0 },
-          { id: 2, name: "Chicken", price: 1.5, quantity: 1 },
-          { id: 3, name: "Curry", price: 1.5, quantity: 1 },
-          { id: 4, name: "Vegetable", price: 1.5, quantity: 1 },
-        ],
-        specialInstructions: ""
+        addOns: [],
+        specialInstructions: "",
+        addToCart: null
       };
+    },
+    created() {
+      // Fetch food item details from route params when the component is created
+      const { id, name, price, addToCart, addOns } = this.$route.params;
+      this.foodItem.id = id;
+      this.foodItem.name = name;
+      this.foodItem.price = price;
+      this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
+      this.addToCart = addToCart;
+      this.addOns = addOns ? JSON.parse(addOns) : [];
+    },
+    computed: {
+      totalPrice() {
+        // Base price of the food item multiplied by the quantity
+        let basePrice = this.foodItem.price * this.quantity;
+
+        // Add the price of any selected add-ons
+        const addOnTotal = this.addOns.reduce((total, addOn) => {
+          return total + addOn.price * addOn.quantity;
+        }, 0);
+
+        return basePrice + addOnTotal;
+      }
     },
     methods: {
       increaseQuantity() {
@@ -67,7 +92,7 @@
           this.addOns[addOnIndex] = updatedAddOn;
         }
       },
-      addToCart() {
+      addToCartHandler() {
         // Handle adding to cart
         // Create a cart item object
         const cartItem = {
@@ -77,14 +102,9 @@
             specialInstructions: this.specialInstructions
         };
 
-        // Emit the item to be added to the cart
-        this.$emit('add-item', cartItem);
-
-        // Show pop-up notification (use a toast library or alert for now)
+        // EventBus.$emit('add-to-cart', cartItem);
         alert('Item added to cart');
-
-        // Navigate back to the HawkerCentrePage
-        this.$router.push('/hawker')
+        this.$router.push('/hawker');
       },
       cancelOrder() {
         // Handle cancel order
@@ -123,11 +143,17 @@
   }
   
   .quantity-controls button {
-    background-color: #00aaff;
-    border: none;
+    background-color: #00A895;
+    border-radius: 100%;
     color: white;
-    padding: 5px;
     cursor: pointer;
+    border-color: #00A895;
+  }
+
+  .quantity-controls .quantity {
+    font-size: 1.2rem;
+    margin: 0 15px; 
+    font-weight: bold;
   }
   
   .price {
@@ -141,21 +167,23 @@
   }
   
   .add-to-cart, .cancel-order {
+    margin-top: 20px;
     padding: 10px 20px;
     font-size: 1rem;
-    border: none;
+    /* border-radius: 10%; */
     cursor: pointer;
   }
   
   .add-to-cart {
-    background-color: #00aaff;
+    background-color: #00A895;
     color: white;
   }
   
   .cancel-order {
-    background-color: #ff5555;
+    background-color: #00A895;
     color: white;
   }
+
   </style>
 
   
