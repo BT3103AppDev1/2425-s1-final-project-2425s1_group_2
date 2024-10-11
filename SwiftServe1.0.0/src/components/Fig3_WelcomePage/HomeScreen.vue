@@ -60,7 +60,6 @@ button {
   background-color: #00ADB5;
   font-weight: bold;
   font-size: 3vh;
-  font-family: 'Inria Sans';
   color: white;
   border-radius: 5px;
   border: none;
@@ -71,7 +70,6 @@ button {
 h1 {
   color: #00ADB5;
   font-weight: bold;
-  font-family: 'Mada';
   font-size: 9vh;
 }
 
@@ -79,7 +77,6 @@ h3 {
   height: 5vh;
   width: 50vw;
   font-size: 3vh;
-  font-family: 'Inria Sans';
   color: #00ADB5;
   margin-left: 25%;
 }

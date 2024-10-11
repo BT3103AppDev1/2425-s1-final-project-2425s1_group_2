@@ -17,6 +17,7 @@
 </template>
 
 <script>
+//Welcome Spencer TBC not done yet
 export default {
   methods: {
     CDashClick() {
@@ -25,12 +26,47 @@ export default {
     },
 
     //SettingsClick. NOT DONE YET.
-    
+
     LogoutClick() {
       this.$router.push('/');
     }
   }
 }
+
+
+/*import firebaseApp from '../firebase.js';
+import { getFirestore } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+const db = getFirestore(firebaseApp);
+
+export default {
+    methods: {
+        async savetoFirestore() {
+        
+            let coin = document.getElementById("coin1").value
+            let ticker = document.getElementById("ticker1").value
+            let buyPrice = document.getElementById("buy1").value
+            let buyQuantity = document.getElementById("quant1").value
+
+
+            alert("Saving your data for Coin: " + coin)
+
+            try{
+                const docRef = await setDoc(doc(db, "Portfolio", coin), {
+                    Coin: coin,
+                    Ticker: ticker,
+                    Buy_Price: buyPrice,
+                    Buy_Quantity: buyQuantity
+                })
+                document.getElementById('userForm').reset()
+                this.$emit("added")
+            }
+            catch(error) {
+                console.error("Error adding document: ", error);
+            }
+        }
+    }
+}*/
 </script>
 
 <style scoped>
