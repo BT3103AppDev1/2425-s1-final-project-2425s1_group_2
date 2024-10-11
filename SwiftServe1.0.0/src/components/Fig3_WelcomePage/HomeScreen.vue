@@ -11,12 +11,12 @@
       <br><br><br>
 
       <h3> Already a Member? 
-        <router-link to="/login" class="LoginLink">Log in</router-link>
+        <router-link to="/login" class="Link">Log in</router-link>
       </h3>
 
       <br>
       <h3> 
-        <router-link to="/login" class="LoginLink">Continue as Guest</router-link> 
+        <router-link to="/custD" class="Link">Continue as Guest</router-link> 
       </h3>
 
     </div>
@@ -60,7 +60,6 @@ button {
   background-color: #00ADB5;
   font-weight: bold;
   font-size: 3vh;
-  font-family: 'Inria Sans';
   color: white;
   border-radius: 5px;
   border: none;
@@ -71,7 +70,6 @@ button {
 h1 {
   color: #00ADB5;
   font-weight: bold;
-  font-family: 'Mada';
   font-size: 9vh;
 }
 
@@ -79,12 +77,11 @@ h3 {
   height: 5vh;
   width: 50vw;
   font-size: 3vh;
-  font-family: 'Inria Sans';
   color: #00ADB5;
   margin-left: 25%;
 }
 
-.LoginLink {
+.Link {
   color: #00ADB5;
   font-weight: bold;
 }
