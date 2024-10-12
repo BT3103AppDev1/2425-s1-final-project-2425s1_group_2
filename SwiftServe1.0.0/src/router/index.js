@@ -1,6 +1,8 @@
-<<<<<<< HEAD
+
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Fig3_HomeView.vue'
+import HawkerCentrePage from '../views/HawkerCentrePage.vue';
+import FoodItemPage from '../views/FoodItemPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,17 +67,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig6_ProfileView.vue')
-    }
-  ]
-})
-
-export default router
-=======
-import { createRouter, createWebHistory } from 'vue-router';
-import HawkerCentrePage from '../views/HawkerCentrePage.vue';
-import FoodItemPage from '../views/FoodItemPage.vue';
-
-const routes = [
+    },
     {
         path: '/hawker',
         name: 'hawker',
@@ -87,12 +79,8 @@ const routes = [
         component: FoodItemPage,
         props: true,
     }
-];
+  ]
+})
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
+export default router
 
-export default router;
->>>>>>> cedric-09/10-HawkerCentrePage
