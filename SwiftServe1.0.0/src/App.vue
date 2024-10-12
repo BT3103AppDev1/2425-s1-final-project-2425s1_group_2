@@ -6,9 +6,9 @@
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
-      <nav>
-        <RouterLink to="/hawker">Hawker</RouterLink>
-      </nav>
+      <!--<nav>
+        <RouterLink to="/">Home</RouterLink>
+      </nav>-->
 
     </div>
     
