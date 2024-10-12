@@ -29,6 +29,14 @@ const router = createRouter({
       component: () => import('../views/Fig5_LoginView.vue')
     },
     {
+      path: '/profile',
+      name: 'profilePage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig6_ProfileView.vue')
+    },
+    {
       path: '/custD',
       name: 'customerDashboard',
       // route level code-splitting
@@ -45,12 +53,46 @@ const router = createRouter({
       component: () => import('../views/Fig8_DiningOptionsView.vue')
     },
     {
+      //change to Fig 9
+      path: '/food-item/:id/:name/:price/:stallId',
+      name: 'foodItemPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/FoodItemPage.vue')
+    },
+    {
+      //change to Fig 10
+      path: '/hawkerCentre',
+      name: 'hawkerCentrePage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/HawkerCentrePage.vue')
+    },
+    {
       path: '/checkout',
       name: 'checkoutPage',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig11_CheckoutView.vue')
+    },
+    {
+      path: '/paymentSuccess',
+      name: 'paymentSuccessPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig12_PaymentSuccessView.vue')
+    },
+    {
+      path: '/seatBooking',
+      name: 'seatBookingPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig13_SeatBookingView.vue')
     },
     {
       path: '/livereceipt',
@@ -60,41 +102,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig14_LiveReceiptView.vue')
     },
-    {
-      path: '/profile',
-      name: 'profilePage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Fig6_ProfileView.vue')
-    },
-    {
-        path: '/hawker',
-        name: 'hawker',
-        component: HawkerCentrePage
-    },
-    {
-        path: '/food-item/:id/:name/:price/:stallId',
-        name: 'FoodItemPage',
-        component: FoodItemPage,
-        props: true,
-    },
-    {
-      path: '/payment',
-      name: 'payment',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Fig12_PaymentSuccessView.vue')
-    },
-    {
-      path: '/seatBooking',
-      name: 'seatBooking',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Fig13_SeatBookingView.vue')
-    }
+
   ]
 })
 
