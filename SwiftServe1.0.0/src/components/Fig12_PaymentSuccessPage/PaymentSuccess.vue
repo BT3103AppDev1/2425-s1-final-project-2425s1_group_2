@@ -42,7 +42,7 @@
 export default {
   methods: {
     SelectSeat() {
-      this.$router.push('/seatbooking');
+      this.$router.push('/seatBooking');
     }
   }
 }
