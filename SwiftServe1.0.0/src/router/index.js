@@ -78,6 +78,22 @@ const router = createRouter({
         name: 'FoodItemPage',
         component: FoodItemPage,
         props: true,
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig12_PaymentSuccessView.vue')
+    },
+    {
+      path: '/seatBooking',
+      name: 'seatBooking',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig13_SeatBookingView.vue')
     }
   ]
 })
