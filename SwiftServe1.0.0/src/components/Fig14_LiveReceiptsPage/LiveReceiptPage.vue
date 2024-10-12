@@ -1,19 +1,24 @@
 <template>
     <div class="profile-container">
-      <div class="avatar">
-        <img src="/placeholder.svg?height=100&width=100" alt="User Avatar" />
+      <div class="profile-info">
+        <div class="avatar">
+          <img src="/ProfilePicture.png" alt="User Avatar" />
+        </div>
+        <h2>{{ name }}</h2>
+        <p>{{ email }}</p>
       </div>
-      <h2>{{ name }}</h2>
-      <p>{{ email }}</p>
       <div class="actions">
         <button @click="updateSettings">
-          <i class="icon-settings"></i> Update Settings
+          <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
+          <span>Update Settings</span>
         </button>
         <button @click="showRecentOrder">
-          <i class="icon-clock"></i> Most Recent Order Receipt
+          <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
+          <span>Most Recent Order Receipt</span>
         </button>
         <button @click="deleteAccount">
-          <i class="icon-trash"></i> Delete Account
+          <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
+          <span>Delete Account</span>
         </button>
       </div>
     </div>
@@ -30,15 +35,12 @@
     },
     methods: {
       updateSettings() {
-        // Implement update settings logic
         console.log('Update settings clicked')
       },
       showRecentOrder() {
-        // Implement show recent order logic
         console.log('Show recent order clicked')
       },
       deleteAccount() {
-        // Implement delete account logic
         console.log('Delete account clicked')
       }
     }
@@ -47,25 +49,36 @@
   
   <style scoped>
   .profile-container {
-    background-color: #00b8d4;
+    background-color: #00adb5;
     color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     height: 100vh;
+    font-family: 'Inria Sans', sans-serif;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns content to the left */
+    text-align: left; /* Left-align text */
+    margin-left: 20px; /* Add left margin to move the section from the page edge */
+    margin-top: 80px;
   }
   
   .avatar img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background-color: #ffffff;
+    margin-bottom: 10px;
   }
   
   .actions {
     display: flex;
     flex-direction: column;
+    align-items: flex-start; /* Keep actions aligned to the left */
     width: 100%;
     margin-top: 20px;
   }
@@ -79,9 +92,13 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    width: 100%;
   }
   
-  button i {
+  button .icon {
     margin-right: 10px;
+    width: 20px;
+    height: 20px;
   }
   </style>
+  
