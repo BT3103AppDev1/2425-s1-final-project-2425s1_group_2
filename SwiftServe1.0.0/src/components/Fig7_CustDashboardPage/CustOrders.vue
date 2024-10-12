@@ -2,23 +2,23 @@
     <div class="topContainer">
         <div class="Placed Orders">
           <h3 class="poTitle">Current Placed Orders</h3>
-
-          <table id = "table">
-            <tbody>
-              <tr>
-                  <th>Order Number</th>
-                  <th>Hawker Centre</th>
-                  <th>Hawker Store</th>
-                  <th>Quantity</th>
-                  <th>Dine in / Takeaway</th>
-                  <th>Dining Time</th>
-                  <th>Seats</th>
-                  <th>Order Status</th>
-                  <th>Collected</th>
-              </tr>
-            </tbody>
-          </table>
-
+          <div class="tableContainer">
+            <table id = "table">
+              <tbody>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Hawker Centre</th>
+                    <th>Hawker Store</th>
+                    <th>Quantity</th>
+                    <th>Dine in / Takeaway</th>
+                    <th>Dining Time</th>
+                    <th>Seats</th>
+                    <th>Order Status</th>
+                    <th>Collected</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div>
@@ -109,34 +109,45 @@ h3 {
 }
 
 img {
-    width: 18vw;
+    width: 14vw;
     margin-right: 5vw;
     margin-top: 10vh;
 }
 
-table {
-    border: 2px solid #00ADB5;
-    border-collapse: collapse;
-    width:90%;
-    margin-left: 1vw;
-    font-size: 2vh;
+.tableContainer {
+  border: 2px solid #00ADB5;
+  width: 90%;
+  height: 40vh;
+  overflow: auto;
+  margin-left: 1vw; 
+}
+
+#table {
+  border-collapse: collapse;
+  table-layout: fixed; 
+  margin: 0; 
+  font-size: 2vh;
+  overflow: auto;
+  table-layout: fixed;
 }
 
 th {
   font-weight: bold;
   background-color: rgb(230, 227, 227);
+  height: 2vh;
 }
 
 tbody, th {
-    border: 1px solid black;
+    border: 2px solid grey;
     text-align: center;
     padding: 7px;
 }
 
 :deep(td) {
-    border: 1px solid black;
+    border: 2px solid grey;
     text-align: center;
     padding: 7px;
+    height: 2vh;
 }
 
 :deep(tr:nth-child(even)) {
