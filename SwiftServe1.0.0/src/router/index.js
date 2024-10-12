@@ -50,6 +50,7 @@ const router = createRouter({
       component: () => import('../views/Fig8_DiningOptionsView.vue')
     },
     {
+      //change to Fig 9
       path: '/foodItem',
       name: 'foodItemPage',
       // route level code-splitting
@@ -58,6 +59,7 @@ const router = createRouter({
       component: () => import('../views/FoodItemPage.vue')
     },
     {
+      //change to Fig 10
       path: '/hawkerCentre',
       name: 'hawkerCentrePage',
       // route level code-splitting
