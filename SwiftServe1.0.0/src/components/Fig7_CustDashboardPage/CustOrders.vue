@@ -16,7 +16,6 @@
                     <th>Order Status</th>
                     <th>Collected</th>
                 </tr>
-                <h1> hi </h1>
               </tbody>
             </table>
           </div>
