@@ -129,7 +129,7 @@
             <p>Occupied</p>
         </div>
 
-        <button id="SaveButton">Save</button>
+        <button id="SaveButton"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
     </div>
 </template>
 
@@ -142,12 +142,11 @@
         display: flex;
         flex-direction: column;
         font-family: 'Inria Sans';
-        font-size: 1.1em;
     }
 
     button {
         font-family: 'Inria Sans';
-        font-size: 1.1em;
+        font-size: 1.1vw;
     }
 
     .Seat{
@@ -171,6 +170,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        font-size: 1.1vw;
     }
 
     .SeatSection{
@@ -199,13 +199,14 @@
         background-color: #222831;
         height: 3vw;
         width: 30%;
-        margin: 0.5em 3em 3em 3em;
+        margin: 1.5vw 3vw 1.5vw 3vw;
         color: white;
 
         display: flex;
         text-align: center;
         align-items: center;
         justify-content: center;
+        font-size: 1.1vw;
     }
 
     .circletable{
@@ -219,6 +220,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        font-size: 1.1vw;
 
         position: absolute;
         top: 50%;
@@ -270,6 +272,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        font-size: 1.1vw;
     }
 
     #FreeLabel, #SelectedLabel, #OccupiedLabel {
@@ -305,6 +308,14 @@
         border-color: transparent;
         background-color: #00ADB5;
         color: white;
+        font-size: 2vw;
+
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+
+        text-indent:2vw;
     }
 </style>
 

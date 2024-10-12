@@ -19,7 +19,7 @@
 }
 
 #DineIn{
-    -webkit-text-stroke-width: 0.05em;
+    -webkit-text-stroke-width: 0.01em;
     font-size: 3em;
 }
 
