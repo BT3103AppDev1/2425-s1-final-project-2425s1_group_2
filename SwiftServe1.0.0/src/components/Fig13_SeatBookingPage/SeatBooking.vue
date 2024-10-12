@@ -1,0 +1,358 @@
+<template>
+    <h1 style="text-align:center;">Hawker Centre</h1>
+
+    <div class="StallArrangement">
+        <!-- code here for stalls, should change color for the selected stall -->
+         <div class = "stall" id = "001">Chicken Rice</div>
+         <div class = "stall" id = "002">Noodle</div>
+         <div class = "stall" id = "003">Mixed Rice</div>
+    </div>
+
+    <div class = "Seating">  
+        
+        <div class = "SeatSet">
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A35">A</button>
+                    <button class = "Seat" id = "A36">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">35</div>
+                    <div class = "table">36</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B35">B</button>
+                    <button class = "Seat" id = "B36">B</button>
+                 </div>
+        
+            </div>
+
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A37">A</button>
+                    <button class = "Seat" id = "A38">A</button>
+                    <button class = "Seat" id = "A39">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">37</div>
+                    <div class = "table">38</div>
+                    <div class = "table">39</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B37">B</button>
+                    <button class = "Seat" id = "B38">B</button>
+                    <button class = "Seat" id = "B39">B</button>
+                 </div>
+        
+            </div>
+        </div>
+
+        <div class = "CircleSeatArrangement">
+            <!-- able to select seats that are grey, cannot select seats that are red -->
+             <div class = "CircleSection">
+    
+                <span class = "circletable">10</span>
+    
+                <button class = "Seat seat-left" id = "10A">A</button>
+                <button class = "Seat seat-bottom" id = "10B">B</button>
+                <button class = "Seat seat-right" id = "10C">C</button>
+    
+             </div>    
+    
+        </div>
+
+        <div class = "SeatSet">
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A40">A</button>
+                    <button class = "Seat" id = "A41">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">40</div>
+                    <div class = "table">41</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B40">B</button>
+                    <button class = "Seat" id = "B41">B</button>
+                 </div>
+        
+            </div>
+
+
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A42">A</button>
+                    <button class = "Seat" id = "A43">A</button>
+                    <button class = "Seat" id = "A44">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">42</div>
+                    <div class = "table">43</div>
+                    <div class = "table">44</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B42">B</button>
+                    <button class = "Seat" id = "B43">B</button>
+                    <button class = "Seat" id = "B44">B</button>
+                 </div>
+        
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div id = "Legend">
+        <!-- able to display what has been chosen -->
+         <div id = "FreeLabel">
+            <div id="FreeSeatBlank"></div>
+            <p>Free</p>
+        </div>
+        <div id = "SelectedLabel">
+            <div id="SelectedSeatBlank"></div>
+            <p>Selected</p>
+        </div>
+        <div id = "OccupiedLabel">
+            <div id="OccupiedSeatBlank"></div>
+            <p>Occupied</p>
+        </div>
+
+        <button id="SaveButton"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
+    </div>
+</template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap');
+
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Inria Sans';
+    }
+
+    button {
+        font-family: 'Inria Sans';
+        font-size: 1.1vw;
+    }
+
+    .Seat{
+        background-color: #D9D9D9;
+        height: 4vw;
+        width: 4vw;
+        border-radius: 0.75vw;
+        border-color: transparent;
+    }
+
+    /* .Seat:hover{
+        background-color: purple;
+    } */
+
+    .table {
+        background-color: #C6D4D4;
+        height: 4.5vw;
+        width: 5.5vw;
+        margin: 0.75vw 0.75vw;
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1vw;
+    }
+
+    .SeatSection{
+        display: flex;
+        flex-direction: column;
+        gap: 1.1vw;
+    }
+
+    .SeatArrangement {
+        display: flex;
+        align-items: center; 
+        margin-top: 2vw;         
+    }
+
+    .CircleSeatArrangement{
+        margin-top: -3vw;
+    }
+
+    .StallArrangement{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stall {
+        background-color: #222831;
+        height: 3vw;
+        width: 30%;
+        margin: 1.5vw 3vw 1.5vw 3vw;
+        color: white;
+
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1vw;
+    }
+
+    .circletable{
+        height: 4vw;
+        width: 4vw;
+        background-color: #C6D4D4;
+        border-radius: 50%;
+        display: inline-block;
+
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1vw;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .CircleSection{
+        position: relative;
+        width: 15vw;
+        height: 10vw;
+    }
+
+    .seat-bottom {
+        position: absolute;
+        bottom: -15%; /* Adjust percentage to position the seat above the table */
+        left: 50%;
+        transform: translate(-50%,0);
+    }
+
+    .seat-left {
+        position: absolute;
+        top: 50%;
+        left: 5%; /* Adjust percentage to position the seat to the left of the table */
+        transform: translate(0,-50%);
+    }
+
+    .seat-right {
+        position: absolute;
+        top: 50%;
+        right: 5%; /* Adjust percentage to position the seat to the right of the table */
+        transform: translate(0,-50%);
+    }
+
+    .Seating {
+        display: flex;
+        justify-content: center;
+        gap: 1em;
+    }
+
+    #Legend {
+        background-color: #EEFFFF;
+        width:100%;
+        height: auto;
+        flex-grow: 1;
+        margin-top: 3vh;
+
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1vw;
+    }
+
+    #FreeLabel, #SelectedLabel, #OccupiedLabel {
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        margin: 1vw 3vw;
+    }
+
+    #FreeSeatBlank, #SelectedSeatBlank, #OccupiedSeatBlank {
+        background-color: #D9D9D9;
+        height: 4vw;
+        width: 4vw;
+        border-radius: 0.75vw;
+        border-color: transparent;
+        margin-right: 1em;
+    }
+
+    #SelectedSeatBlank{
+        background-color: #51E51C;
+    }
+
+    #OccupiedSeatBlank{
+        background-color: #FF2505;
+    }
+
+    #SaveButton {
+        width: 15vw;
+        height: 5vw;
+        margin-left: 10vw;
+        border-radius: 0.75vw;
+        border-color: transparent;
+        background-color: #00ADB5;
+        color: white;
+        font-size: 2vw;
+
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+
+        text-indent:2vw;
+    }
+</style>
+
+<script>
+export default {
+    data() {
+        return {
+            seatsChosen: [],
+        };
+    },
+    mounted() {
+        const seatButtons = Array.from(document.getElementsByClassName('Seat'));
+        
+        seatButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.getAttribute('data-selected') === 'true') {
+                    button.style.backgroundColor = '#D9D9D9';
+                    button.setAttribute('data-selected', 'false');
+                    this.removeSeat(button.id); 
+                } else {
+                    button.style.backgroundColor = '#51E51C'; 
+                    button.setAttribute('data-selected', 'true');
+                    this.addSeat(button.id); 
+                }
+                console.log(this.seatsChosen);
+            });
+        });
+    },
+    methods: {
+        addSeat(seatId) {
+            if (!this.seatsChosen.includes(seatId)) {
+                this.seatsChosen.push(seatId); 
+            }
+        },
+        removeSeat(seatId) {
+            this.seatsChosen = this.seatsChosen.filter(seat => seat !== seatId);
+        }
+    }
+};
+</script>
