@@ -38,6 +38,7 @@ export default {
 
 img {
     width: 20vw;
+    margin-left: 1vw;
 }
 
 h1 {
