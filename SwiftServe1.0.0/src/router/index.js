@@ -48,6 +48,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig11_CheckoutView.vue')
+    },
+    {
+      path: '/livereceipt',
+      name: 'liveReceiptPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig14_LiveReceiptView.vue')
     }
   ]
 })
