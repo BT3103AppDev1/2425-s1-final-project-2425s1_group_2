@@ -286,6 +286,15 @@
         width: 4vw;
         border-radius: 0.75vw;
         border-color: transparent;
+        margin-right: 1em;
+    }
+
+    #SelectedSeatBlank{
+        background-color: #51E51C;
+    }
+
+    #OccupiedSeatBlank{
+        background-color: #FF2505;
     }
 
     #SaveButton {
