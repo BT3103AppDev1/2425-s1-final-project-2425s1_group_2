@@ -1,6 +1,6 @@
 <template>
     <div class="food-item-details">
-      <Header />
+      <HeaderTag />
       <div class="food-details-section">
         <div class="food-image">
           <img :src="foodItem.image" :alt="foodItem.name">
@@ -31,14 +31,14 @@
   </template>
      
   <script>
-  import Header from '../components/Header.vue';
+  import HeaderTag from '../components/Header.vue';
   import AddOn from '../components/AddOn.vue';
   import SpecialInstructions from '../components/SpecialInstructions.vue';
   // import { EventBus } from '../eventBus.js';
   
   export default {
     components: {
-      Header,
+      HeaderTag,
       AddOn,
       SpecialInstructions
     },
@@ -112,12 +112,12 @@
       addToCartHandler() {
         // Handle adding to cart
         // Create a cart item object
-        const cartItem = {
+        /*const cartItem = {
             ...this.foodItem,
             quantity: this.quantity,
             addOns: this.addOns.filter(addOn => addOn.quantity > 0),
             specialInstructions: this.specialInstructions
-        };
+        };*/
 
         // EventBus.$emit('add-to-cart', cartItem);
         alert('Item added to cart');
