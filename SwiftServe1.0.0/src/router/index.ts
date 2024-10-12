@@ -9,7 +9,7 @@ const routes = [
         component: HawkerCentrePage
     },
     {
-        path: '/food-item/:id/:name/:price/;addOns',
+        path: '/food-item/:id/:name/:price/:stallId',
         name: 'FoodItemPage',
         component: FoodItemPage,
         props: true,

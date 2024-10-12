@@ -29,7 +29,7 @@
       </div>
     </div>
   </template>
-  
+     
   <script>
   import Header from '../components/Header.vue';
   import AddOn from '../components/AddOn.vue';
@@ -48,7 +48,7 @@
           id: null,
           name: '',
           image: '',
-          price: null
+          price: null,
         },
         quantity: 1,
         addOns: [],
@@ -58,13 +58,30 @@
     },
     created() {
       // Fetch food item details from route params when the component is created
-      const { id, name, price, addToCart, addOns } = this.$route.params;
+      const { id, name, price, addToCart, stallId } = this.$route.params;
       this.foodItem.id = id;
       this.foodItem.name = name;
       this.foodItem.price = price;
       this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
       this.addToCart = addToCart;
-      this.addOns = addOns ? JSON.parse(addOns) : [];
+      // this.addOns = addOns ? JSON.parse(addOns) : [];
+      console.log(this.$route.params.stallId);
+      const availableAddOns = {
+      1: [ // Add-ons for stall with ID 1
+        { id: 1, name: "Extra Rice", price: 1.0, quantity: 0 },
+        { id: 2, name: "Egg", price: 0.8, quantity: 0 }
+      ],
+      2: [ // Add-ons for stall with ID 2
+        { id: 3, name: "Raita", price: 0.5, quantity: 0 },
+        { id: 4, name: "Boiled Egg", price: 1.0, quantity: 0 }
+      ],
+      3: [ // Add-ons for stall with ID 3
+        { id: 5, name: "Ice", price: 0.3, quantity: 0 },
+        { id: 6, name: "Condensed Milk", price: 0.4, quantity: 0 }
+      ]
+    };
+
+      this.addOns = availableAddOns[stallId] || [];
     },
     computed: {
       totalPrice() {
@@ -186,4 +203,5 @@
 
   </style>
 
-  
+   
+ 

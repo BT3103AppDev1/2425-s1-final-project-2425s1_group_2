@@ -1,7 +1,7 @@
 <template>
     <header>
       <h1>SwiftServe</h1>
-      <p>Welcome Spencer!</p>
+      <p class="userName">Welcome Spencer!</p>
       <div class="icons">
         <button><i class="fas fa-home"></i></button> 
         <button><i class="fas fa-cog"></i></button> 
@@ -31,5 +31,9 @@ header h1 {
   margin-left: 15px;
   font-size: 18px;
   cursor: pointer;
+}
+
+.userName {
+  font-weight: bold;
 }
   </style>
