@@ -2,13 +2,16 @@
   <div class="receipt-container">
     <div class="receipt-header">
       <h1>Receipt</h1>
+      <router-link to="/">
+      <img src="/RedCross.png" alt="Go Back" class="cancel" />
+      </router-link>
     </div>
     <div class="order-items">
       <div v-for="(order, index) in orders" :key="index" class="order-item">
         <h2>Order {{ index + 1 }}</h2>
-        <p>{{ order.restaurant }}</p>
-        <p>{{ order.dish }}</p>
-        <p>{{ order.quantity }} {{ order.set }}</p>
+        <p>{{ order.hawker }}</p>
+        <p>{{ order.stall }}</p>
+        <p>{{ order.quantity }}x {{ order.dish }}</p>
         <p>${{ order.price.toFixed(2) }}</p>
         <button class="edit-button">Edit</button>
       </div>
@@ -18,28 +21,28 @@
     </div>
     <div class="options">
       <div class="option">
-          <label for="time-option">Dining Time: </label>
-          <select id="time-option">
+        <label for="dine-option">Dine in / Takeaway:</label>
+        <select id="dine-option" v-model="dineOption">
+          <option>Dine in</option>
+          <option>Takeaway</option>
+        </select>
+      </div>
+      <div class="option">
+        <label for="time-option">Dining Time:</label>
+        <select id="time-option" v-model="diningTime">
           <option>12:00pm - 12:30pm</option>
           <option>12:30pm - 1:00pm</option>
           <option>1:00pm - 1:30pm</option>
           <option>1:30pm - 2:00pm</option>
-      </select>
-      </div>
-      <div class="option">
-        <label>Dining Time:</label>
-        <select v-model="diningTime">
-          <option value="12:00pm - 12:30pm">12:00pm - 12:30pm</option>
-          <!-- Add more time options as needed -->
         </select>
       </div>
     </div>
     <div class="payment-mode">
       <h3>Payment Mode:</h3>
       <div class="payment-options">
-        <img src="@/assets/visamaster.png" alt="Visa/Mastercard" />
-        <img src="@/assets/Paynow.png" alt="PayNow" />
-        <img src="@/assets/paylah.png" alt="PayLah!" />
+        <img src="/visamaster.png" alt="Visa/Mastercard" />
+        <img src="/paynow.png" alt="PayNow" />
+        <img src="/paylah.png" alt="PayLah!" />
       </div>
     </div>
     <button class="confirm-button">Confirm and Pay</button>
@@ -53,28 +56,27 @@ export default {
     return {
       orders: [
         {
-          restaurant: 'Bukit Canberra Hawker Centre',
-          dish: 'Chin Lee Chicken Rice',
-          quantity: '1x',
-          set: 'Chicken Rice Set',
+          hawker: 'Bukit Canberra Hawker Centre',
+          stall: 'Chin Lee Chicken Rice',
+          quantity: 1,
+          dish: 'Chicken Rice Set',
           price: 6.99
         },
         {
-          restaurant: 'Bukit Canberra Hawker Centre',
-          dish: 'Wang Dao Kolo Mee',
-          quantity: '1x',
-          set: 'Kolo Mee Set',
+          hawker: 'Bukit Canberra Hawker Centre',
+          stall: 'Wang Dao Kolo Mee',
+          quantity: 1,
+          dish: 'Kolo Mee Set',
           price: 3.61
         }
       ],
-      dineOption: 'dineIn',
-      diningTime: '12:00pm - 12:30pm',
-      display: true
+      dineOption: 'Dine in',
+      diningTime: '12:00pm - 12:30pm'
     }
   },
   computed: {
     total() {
-      return this.orders.reduce((sum, order) => sum + order.price, 0)
+      return this.orders.reduce((sum, order) => sum + order.price * order.quantity, 0)
     }
   }
 }
@@ -87,11 +89,22 @@ export default {
   min-height: 100vh;
   padding: 20px;
   background-color: #EEFFFF;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .receipt-header {
   text-align: center;
   margin-bottom: 20px;
+  border-bottom: 2px solid black;
+  padding-bottom: 10px;
+}
+
+.cancel {
+  width: 50px;
+  position: absolute;
+  right: 20px;
+  top: 120px;
+  cursor: pointer;
 }
 
 .order-items {
@@ -100,7 +113,6 @@ export default {
 
 .order-item {
   background-color: #EEFFFF;
-  margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
   position: relative;
@@ -118,13 +130,22 @@ export default {
   background-color: #00adb5;
   color: white;
   border: none;
-  padding: 5px 10px;
+  padding: 12px 28px;
   border-radius: 3px;
+  font-size: 18px;
 }
 
 .total {
   text-align: right;
-  margin: 20px 0;
+  border-bottom: 2px solid black;
+  padding-bottom: 10px;
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 35px; /* Add margin to create space between total and dropdowns */
+}
+
+.options {
+  margin-bottom: 20px;
 }
 
 .option {
@@ -138,13 +159,14 @@ export default {
   margin-right: 10px;
   font-size: 17px;
   font-weight: bold;
+  text-align: right;
 }
 
 select {
-  flex-grow: 1; /* Dropdown will grow to take up available space */
+  width: 160px;
   padding: 5px;
   font-size: 1.0em;
-  font-family: 'Inria Sans', sans-serif; /* Applying Inria Sans */
+  font-family: 'Inria Sans', sans-serif;
   border: none;
   border-radius: 10px;
   background-color: #00adb5;
@@ -160,6 +182,8 @@ select {
 .payment-mode h3 {
   flex: 0 0 150px;
   margin-right: 10px;
+  font-weight: bold;
+  text-align: right;
 }
 
 .payment-options {
@@ -180,9 +204,7 @@ select {
   border: none;
   padding: 15px;
   font-size: 18px;
-  border-radius: 5px;
+  border-radius: 2px;
   width: 100%;
 }
-
-
 </style>
