@@ -1,17 +1,17 @@
 <template>
 <HeaderScreen/>
-<CustDScreen/>
+<DiningOptionsScreen/>
 </template>
 
 <script>
 import HeaderScreen from "@/components/FigX_UniversalHeader/UniversalHeader.vue";
-import CustDScreen from "@/components/Fig7_CustDashboardPage/CustOrders.vue";
+import DiningOptionsScreen from "@/components/Fig8_DiningOptionsPage/DOScreen.vue";
 
 export default {
-  name: 'CustDashboardPage',
+  name: 'DiningOptionsPage',
   components: {
     HeaderScreen,
-    CustDScreen
+    DiningOptionsScreen
   },
 
   data() {
