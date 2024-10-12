@@ -1,11 +1,17 @@
+
 <template>
   <header>
-    <!--
-    <div class="nav">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+    
+
+    <div class="wrapper">
+      <HelloWorld msg="You did it!" />
+
+      <nav>
+        <RouterLink to="/hawker">Hawker</RouterLink>
+      </nav>
+
     </div>
-    -->
+    
   </header>
 
   <router-view/>

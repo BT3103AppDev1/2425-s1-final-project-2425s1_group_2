@@ -31,6 +31,7 @@
   </template>
      
   <script>
+
   import HeaderTag from '../components/Header.vue';
   import AddOn from '../components/AddOn.vue';
   import SpecialInstructions from '../components/SpecialInstructions.vue';
@@ -38,6 +39,7 @@
   
   export default {
     components: {
+
       HeaderTag,
       AddOn,
       SpecialInstructions
@@ -112,7 +114,9 @@
       addToCartHandler() {
         // Handle adding to cart
         // Create a cart item object
+
         /*const cartItem = {
+
             ...this.foodItem,
             quantity: this.quantity,
             addOns: this.addOns.filter(addOn => addOn.quantity > 0),
