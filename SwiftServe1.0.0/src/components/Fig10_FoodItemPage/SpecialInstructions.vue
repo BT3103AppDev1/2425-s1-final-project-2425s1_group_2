@@ -1,7 +1,7 @@
 <template>
     <div class="special-instructions-section">
-      <h3>Special Instructions</h3>
-      <textarea v-model="instructions" placeholder="Add any special requests (eg. Less Rice, No Chilli)"></textarea>
+      <h2>Special Instructions</h2>
+      <textarea v-model="instructions" placeholder="Add any special requests"></textarea>
     </div>
   </template>
   

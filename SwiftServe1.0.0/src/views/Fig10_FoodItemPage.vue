@@ -6,6 +6,7 @@
         <h1 class="food-stall">{{ foodItem.stall }}</h1>
         <div class="food-image">
           <img :src="foodItem.image" :alt="foodItem.name">
+          <hr class="separator"> 
         </div>
         <h1 class="food-name">{{ foodItem.name }}</h1>
         <div class="food-info">
@@ -22,9 +23,6 @@
 
       <div class="right-column">
         <div class="green-box">
-          <!-- <div class="add-ons">
-            <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
-          </div> -->
           <div v-if="addOns.length > 0" class="add-ons"> 
             <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
           </div>
@@ -187,8 +185,8 @@
   
   .food-name {
     font-size: 24px;
-    font-weight: bold;
     margin-top: 15px;
+    margin-bottom: 5px;
   }
   
   .food-info {
@@ -217,8 +215,8 @@
     height: 50px;
     border-radius: 50%;
     background-color: #00A895;
-    color: white;
     border: none;
+    color: white;
     font-size: 18px;
     cursor: pointer;
     margin-left: 40px;
@@ -257,9 +255,10 @@
     padding: 10px 20px;
     border-radius: 5px;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     width: 25%;
+    display: flex;
   }
   
   .add-to-cart {
@@ -272,7 +271,13 @@
     color: white;
   }
   
-  .cart-icon, .cancel-icon {
+  .cart-icon, .cancel-icon, .cancel-order, .add-to-cart {
     margin-right: 5px;
+  }
+
+  .separator { 
+    border: none; 
+    border-top: 5px solid black;
+    margin: 10px 0; 
   }
   </style>

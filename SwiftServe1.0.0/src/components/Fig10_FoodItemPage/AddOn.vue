@@ -1,9 +1,9 @@
 <template>
     <div class="add-on-section">
-      <h3>Add On</h3>
+      <h2>Add On</h2>
       <div v-for="addOn in addOns" :key="addOn.id" class="add-on-item">
         <span>{{ addOn.name }}</span>
-        <span>${{ addOn.price }}</span>
+        <span class="price"><span class="currency">$</span>{{ addOn.price }}</span>
         <div class="quantity-controls">
           <button @click="decreaseQuantity(addOn)">-</button>
           <span class="quantity">{{ addOn.quantity }}</span>
@@ -42,6 +42,15 @@
     align-items: center;
     margin-bottom: 10px;
   }
+
+  .price { 
+    display: flex;  
+    align-items: center; 
+  }
+
+  .currency {
+    margin-right: 2px;
+  }
   
   .quantity-controls {
     display: flex;
@@ -52,10 +61,13 @@
     font-size: 1.2rem;
     margin: 0 15px; 
     font-weight: bold;
+    background-color: lightgray; 
+    padding: 10px; 
+    border-radius: 8px; 
   }
   
   .quantity-controls button {
-    background-color: white;
+    background-color: #e6f7f5;
     border: none;
     color: black;
     padding: 5px;
