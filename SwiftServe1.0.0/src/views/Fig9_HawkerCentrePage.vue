@@ -24,7 +24,7 @@
             :key="item.id"
             :item="item"
             @add-to-cart="addToCart"
-            @click="viewFoodItem(item)"
+            @click="viewFoodItem(item, findStall(item.stallId))"
           />
         </div>
       </div>
@@ -149,14 +149,18 @@
       cancelOrder() {
         this.cartItems = [];
       },
-      viewFoodItem(item) {
+      findStall(stallId) {
+        return this.stalls.find(stall => stall.id === stallId);
+      },
+      viewFoodItem(item, stall) {
         this.$router.push({
           name: 'foodItemPage',
           params: {
             id: item.id,        // Pass the food item ID 
-            name: item.name,    // Pass the food item name
+            foodItemName: item.name,    // Pass the food item name
             price: item.price,   // Pass the food item price
             stallId: item.stallId, // Pass the stall ID
+            stallName: stall.name, // Pass the stall name
           }
         });
       }

@@ -1,32 +1,48 @@
 <template>
-    <div class="food-item-details">
+    <div class="food-item-page">
       <HeaderTag />
-      <div class="food-details-section">
+      <div class="food-item-details">
+      <div class="left-column">
+        <h1 class="food-stall">{{ foodItem.stall }}</h1>
         <div class="food-image">
           <img :src="foodItem.image" :alt="foodItem.name">
+          <hr class="separator"> 
         </div>
+        <h1 class="food-name">{{ foodItem.name }}</h1>
         <div class="food-info">
-          <h1>{{ foodItem.name }}</h1>
-          <p class="price">${{ totalPrice.toFixed(2) }}</p>
-  
-          <div class="quantity-controls">
-            <button @click="decreaseQuantity">-</button>
-            <span class="quantity">{{ quantity }}</span>
-            <button @click="increaseQuantity">+</button>
+          <div class="price-quantity">
+            <p class="price">${{ totalPrice.toFixed(2) }}</p>
+            <div class="quantity-controls">
+              <span class="quantity">× {{ quantity }}</span>
+              <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
+              <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
+            </div>
           </div>
         </div>
       </div>
-  
-      <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
-  
-      <SpecialInstructions 
-        v-model="specialInstructions" 
-      />
-  
-      <div class="action-buttons">
-        <button class="add-to-cart" @click="addToCartHandler">Add to Cart</button>
-        <button class="cancel-order" @click="cancelOrder">Cancel Order</button>
+
+      <div class="right-column">
+        <div class="green-box">
+          <div v-if="addOns.length > 0" class="add-ons"> 
+            <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
+          </div>
+
+          <div class="special-instructions">
+            <SpecialInstructions v-model="specialInstructions" />
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="add-to-cart" @click="addToCartHandler">
+            <span class="cart-icon">🛒</span> Add to Cart
+          </button>
+          <button class="cancel-order" @click="cancelOrder">
+            <span class="cancel-icon">❌</span> Cancel Order
+          </button>
+        </div>
       </div>
+    </div>
+
     </div>
   </template>
      
@@ -51,6 +67,7 @@
           name: '',
           image: '',
           price: null,
+          stall: '',
         },
         quantity: 1,
         addOns: [],
@@ -60,12 +77,13 @@
     },
     created() {
       // Fetch food item details from route params when the component is created
-      const { id, name, price, addToCart, stallId } = this.$route.params;
+      const { id, foodItemName, price, addToCart, stallId, stallName } = this.$route.params;
       this.foodItem.id = id;
-      this.foodItem.name = name;
+      this.foodItem.name = foodItemName;
       this.foodItem.price = price;
       this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
       this.addToCart = addToCart;
+      this.foodItem.stall = stallName;
       // this.addOns = addOns ? JSON.parse(addOns) : [];
       console.log(this.$route.params.stallId);
       const availableAddOns = {
@@ -134,65 +152,113 @@
     }
   };
   </script>
-  
+
   <style scoped>
-  .food-item-details {
-    padding: 20px;
+  .food-item-page {
+    font-family: Arial, sans-serif;
+    max-width: 95%;
+    margin: 0 auto;
   }
   
-  .food-details-section {
+  .food-item-details {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    background-color: white;
+    padding: 15px;
+  }
+  
+  .left-column {
+    flex: 1;
+    padding-right: 15px;
+  }
+  
+  .right-column {
+    flex: 1;
+    padding-left: 15px;
   }
   
   .food-image img {
     width: 100%;
-    max-width: 300px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .food-name {
+    font-size: 24px;
+    margin-top: 15px;
+    margin-bottom: 5px;
   }
   
   .food-info {
+    margin-top: 15px;
+  }
+  
+  .price-quantity {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .price {
+    font-size: 50px;
+    font-weight: bold;
   }
   
   .quantity-controls {
     display: flex;
     align-items: center;
-    margin-top: 10px;
   }
   
-  .quantity-controls button {
+  .quantity-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background-color: #00A895;
-    border-radius: 100%;
+    border: none;
     color: white;
+    font-size: 18px;
     cursor: pointer;
-    border-color: #00A895;
-  }
-
-  .quantity-controls .quantity {
-    font-size: 1.2rem;
-    margin: 0 15px; 
-    font-weight: bold;
+    margin-left: 40px;
   }
   
-  .price {
-    font-size: 1.5rem;
-    font-weight: bold;
+  .quantity {
+    margin: 0 10px;
+    font-size: 30px;
+    margin-right: 100px;
+  }
+  
+  .green-box {
+    background-color: #e6f7f5;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .add-ons, .special-instructions {
+    margin-bottom: 20px;
+  }
+  
+  .add-ons h2, .special-instructions h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
   }
   
   .action-buttons {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
   }
   
   .add-to-cart, .cancel-order {
-    margin-top: 20px;
     padding: 10px 20px;
-    font-size: 1rem;
-    /* border-radius: 10%; */
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
     cursor: pointer;
+    width: 25%;
+    display: flex;
   }
   
   .add-to-cart {
@@ -204,8 +270,14 @@
     background-color: #00A895;
     color: white;
   }
+  
+  .cart-icon, .cancel-icon, .cancel-order, .add-to-cart {
+    margin-right: 5px;
+  }
 
+  .separator { 
+    border: none; 
+    border-top: 5px solid black;
+    margin: 10px 0; 
+  }
   </style>
-
-   
- 
