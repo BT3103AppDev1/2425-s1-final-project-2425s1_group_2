@@ -1,20 +1,15 @@
-
 <template>
   <header>
-    
-
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
       <!--<nav>
         <RouterLink to="/">Home</RouterLink>
       </nav>-->
-
     </div>
-    
   </header>
 
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
@@ -23,8 +18,4 @@ export default {
 }
 </script>
 
-
-
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,11 +1,11 @@
 <template>
   <nav>
     <ul>
-      <li 
-        v-for="category in categories" 
-        :key="category" 
-        @click="$emit('category-selected', category)" 
-        :class="{ active: activeCategory === category }" 
+      <li
+        v-for="category in categories"
+        :key="category"
+        @click="$emit('category-selected', category)"
+        :class="{ active: activeCategory === category }"
       >
         {{ category }}
       </li>
@@ -18,15 +18,15 @@ export default {
   props: {
     activeCategory: {
       type: String,
-      required: true, // Passed from the parent to track the active category
+      required: true // Passed from the parent to track the active category
     }
   },
   data() {
     return {
-      categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'], // Category list
-    };
+      categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'] // Category list
+    }
   }
-};
+}
 </script>
 
 <style scoped>
@@ -48,6 +48,6 @@ nav li {
 /* Styling for active category */
 nav li.active {
   font-weight: bold;
-  color: #00ADB5; /* Green text for the active category */
+  color: #00adb5; /* Green text for the active category */
 }
 </style>

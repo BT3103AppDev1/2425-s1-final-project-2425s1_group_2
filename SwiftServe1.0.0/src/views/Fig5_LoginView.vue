@@ -1,11 +1,11 @@
 <template>
-<LoginHeader/>
-<LoginScreen/>
+  <LoginHeader />
+  <LoginScreen />
 </template>
 
 <script>
-import LoginHeader from "@/components/FigX_UniversalHeader/LoginHeader.vue";
-import LoginScreen from "@/components/Fig5_LoginPage/LoginScreen.vue";
+import LoginHeader from '@/components/FigX_UniversalHeader/LoginHeader.vue'
+import LoginScreen from '@/components/Fig5_LoginPage/LoginScreen.vue'
 
 export default {
   name: 'LoginView',
@@ -14,8 +14,6 @@ export default {
     LoginScreen
   },
 
-  data() {
-
-  }
+  data() {}
 }
 </script>

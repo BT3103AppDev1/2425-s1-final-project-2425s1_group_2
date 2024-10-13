@@ -3,7 +3,7 @@
     <div class="receipt-header">
       <h1>Receipt</h1>
       <router-link to="/">
-      <img src="/RedCross.png" alt="Go Back" class="cancel" />
+        <img src="/RedCross.png" alt="Go Back" class="cancel" />
       </router-link>
     </div>
     <div class="order-items">
@@ -88,7 +88,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   padding: 20px;
-  background-color: #EEFFFF;
+  background-color: #eeffff;
   font-family: 'Inria Sans', sans-serif;
 }
 
@@ -112,7 +112,7 @@ export default {
 }
 
 .order-item {
-  background-color: #EEFFFF;
+  background-color: #eeffff;
   padding: 10px;
   border-radius: 5px;
   position: relative;
@@ -165,7 +165,7 @@ export default {
 select {
   width: 160px;
   padding: 5px;
-  font-size: 1.0em;
+  font-size: 1em;
   font-family: 'Inria Sans', sans-serif;
   border: none;
   border-radius: 10px;

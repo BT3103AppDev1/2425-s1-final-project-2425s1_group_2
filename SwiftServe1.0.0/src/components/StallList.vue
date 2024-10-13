@@ -1,55 +1,52 @@
 <template>
-    <div class="stall-list">
-      <div 
-        v-for="stall in stalls" 
-        :key="stall.id" 
-        :class="{ 'stall-item': true, active: stall === activeStall }" 
-        @click="selectStall(stall)"
-      >
-        {{ stall.name }}
-      </div>
+  <div class="stall-list">
+    <div
+      v-for="stall in stalls"
+      :key="stall.id"
+      :class="{ 'stall-item': true, active: stall === activeStall }"
+      @click="selectStall(stall)"
+    >
+      {{ stall.name }}
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      stalls: {
-        type: Array,
-        required: true,
-      },
-      activeStall: {
-        type: Object,
-        default: null
-      }
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    stalls: {
+      type: Array,
+      required: true
     },
-    methods: {
-      selectStall(stall) {
-        this.$emit('stall-selected', stall); // Emits the selected stall to parent
-      }
+    activeStall: {
+      type: Object,
+      default: null
     }
-  };
-  </script>
-  
-  <style scoped>
-  .stall-list {
-    overflow-y: auto;
-    width: 200px;
+  },
+  methods: {
+    selectStall(stall) {
+      this.$emit('stall-selected', stall) // Emits the selected stall to parent
+    }
   }
-  
-  /* Base stall item styling */
-  .stall-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-  }
-  
-  /* Styling for active stall */
-  .stall-item.active {
-    background-color: #f0f0f0; /* Greyed-out background for active stall */
-    font-weight: bold;
-  }
-  </style>
-  
-  
-  
+}
+</script>
+
+<style scoped>
+.stall-list {
+  overflow-y: auto;
+  width: 200px;
+}
+
+/* Base stall item styling */
+.stall-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+/* Styling for active stall */
+.stall-item.active {
+  background-color: #f0f0f0; /* Greyed-out background for active stall */
+  font-weight: bold;
+}
+</style>

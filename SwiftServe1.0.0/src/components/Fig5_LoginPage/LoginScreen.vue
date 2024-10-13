@@ -1,10 +1,7 @@
 <template>
-  <h1> Login </h1>
+  <h1>Login</h1>
 </template>
 
-<script>
-</script>
+<script></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
