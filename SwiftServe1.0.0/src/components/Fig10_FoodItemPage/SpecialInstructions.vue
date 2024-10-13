@@ -1,7 +1,7 @@
 <template>
     <div class="special-instructions-section">
       <h3>Special Instructions</h3>
-      <textarea v-model="instructions" placeholder="Add any special requests"></textarea>
+      <textarea v-model="instructions" placeholder="Add any special requests (eg. Less Rice, No Chilli)"></textarea>
     </div>
   </template>
   
@@ -27,7 +27,7 @@
   }
   
   textarea {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     font-size: 1rem;
     border-radius: 5px;
