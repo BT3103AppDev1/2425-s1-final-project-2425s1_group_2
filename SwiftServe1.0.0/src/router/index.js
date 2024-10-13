@@ -57,7 +57,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/FoodItemPage.vue')
+      component: () => import('../views/Fig10_FoodItemPage.vue')
     },
     {
       //change to Fig 10
@@ -66,7 +66,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HawkerCentrePage.vue')
+      component: () => import('../views/Fig9_HawkerCentrePage.vue')
     },
     {
       path: '/checkout',

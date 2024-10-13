@@ -44,11 +44,11 @@
   
   <script>
   import Header from '../components/Header.vue';
-  import CategoryNav from '../components/CategoryNav.vue';
-  import FoodItem from '../components/FoodItem.vue';
-  import OrderCart from '../components/OrderCart.vue';
-  import StallList from '../components/StallList.vue';
-  import FilterButtons from '../components/DietFilter.vue';
+  import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
+  import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
+  import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
+  import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue';
+  import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
   // import { EventBus } from '../eventBus.js';
   
   export default {
@@ -151,7 +151,7 @@
       },
       viewFoodItem(item) {
         this.$router.push({
-          name: 'FoodItemPage',
+          name: 'foodItemPage',
           params: {
             id: item.id,        // Pass the food item ID 
             name: item.name,    // Pass the food item name

@@ -6,9 +6,9 @@
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
-      <!--<nav>
-        <RouterLink to="/">Home</RouterLink>
-      </nav>-->
+      <nav>
+        <RouterLink to="/hawkerCentre">Hawker Centre Page</RouterLink>
+      </nav>
 
     </div>
     
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router';
+
 export default {
   name: 'App'
 }
