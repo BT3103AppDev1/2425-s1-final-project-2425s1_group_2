@@ -31,7 +31,6 @@ methods: {
 </script>
 
 <style scoped>
-/* Background image container */
 .WelcomeBGImg {
 width: 100vw;
 height: 100vh;
@@ -42,10 +41,9 @@ background-position: center;
 display: flex;
 justify-content: center;
 align-items: center;
-overflow: hidden; /* Prevent scrolling */
+overflow: hidden;
 }
 
-/* Container for content */
 .WelcomeContainer {
 text-align: center;
 font-family: 'Inria Sans', sans-serif;
@@ -84,7 +82,7 @@ button {
 background-color: #00adb5;
 font-weight: bold;
 color: white;
-border-radius: 5px;
+border-radius: 10px;
 border: none;
 height: 8vh; /* Make the button occupy 60-68% of the page's height */
 width: 20vw;
@@ -105,7 +103,7 @@ background-color: #007a80;
 font-family: 'Mada', sans-serif;
 font-size: clamp(2.5rem, 5vw, 9vh);
 color: #00adb5;
-font-weight: bold;
+font-weight: 600; /* semibold*/
 margin-top: 2vh;
 }
 
