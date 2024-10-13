@@ -125,11 +125,11 @@
 
         // EventBus.$emit('add-to-cart', cartItem);
         alert('Item added to cart');
-        this.$router.push('/hawker');
+        this.$router.push('/hawkerCentre');
       },
       cancelOrder() {
         // Handle cancel order
-        this.$router.push('/hawker');
+        this.$router.push('/hawkerCentre');
       }
     }
   };
