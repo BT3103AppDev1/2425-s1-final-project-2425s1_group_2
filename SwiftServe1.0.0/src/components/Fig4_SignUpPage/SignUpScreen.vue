@@ -20,22 +20,22 @@ import {createUser} from './createUser.js'
           <!-- <button type="button" @click="togglePassword" class="toggle-password">
             {{ showPassword ? 'Hide' : 'Show' }}
           </button> -->
-        </div> <br />
+        </div>
           <h2 class="inputTitles">Confirm password:</h2>
           <input :type="showPassword ? 'text' : 'password'" class="inputBoxes" id="cPassword1" v-model="cPassword" required />
         </div>
       </div>
-      <div class="form-group checkbox">
-          <input type="checkbox" id="agreeTerms" v-model="agreeToTerms" required />
-          <label for="agreeTerms">
-            By signing up you agree to our <a href="#" class="terms-link">Terms of Service</a>
-          </label>
-          </div>
+    </form>      
+    <div class="form-group checkbox">
+        <input type="checkbox" id="agreeTerms" v-model="agreeToTerms" required />
+        <label for="agreeTerms">
+          By signing up you agree to our <a href="#" class="terms-link">Terms of Service</a>
+        </label>
+        </div>
       <div class="save">
         <button id="savebutton" type="button" v-on:click="savetoFirestore">Sign Up</button>
         <br /><br />
       </div>
-    </form>
     <p class="merchant-info">
         Merchant? We'd love to hear from you! Reach out to us at
         <a href="mailto:swiftserve@gov.sg" class="email-link">swiftserve@gov.sg</a>
@@ -97,11 +97,15 @@ export default {
 .container {
   background-color: white;
   font-family: 'Inria Sans', sans-serif;
+  position: relative;
+  width: 100%;
+  height: 100vh;
   
 }
 
 .formData {
-  margin: 20px 0;
+  position: relative;
+  width: 100%;
 }
 
 .inputBoxes {
@@ -109,11 +113,12 @@ export default {
   border-radius: 5px;
   border: 2px solid #00adb5;
   padding: 10px;
+  font-size: 2.5vmin;
 }
 
 .inputTitles {
   color: #00adb5;
-  font-size: 1.2em;
+  font-size: 2.5vmin;
   font-weight: bold;
   margin: 10px 0 5px;
 }
@@ -125,19 +130,17 @@ export default {
 
 
 .toggle-password {
-  margin-left: 10px;
+  margin-left: 15px;
   background: none;
   border: none;
   color: #00adb5;
   cursor: pointer;
 }
 
-
-
 .formData {
   display: flex;
   margin-left: 30vw;
-  margin-top: 20vh;
+  margin-top: 10vh;
 }
 
 .save {
@@ -196,6 +199,7 @@ button {
   align-items: center;
   margin-top: 10px;
   justify-content: center; 
+  font-size: 2em;
 }
 
 .checkbox input {
@@ -223,7 +227,7 @@ button {
 
 .merchant-info {
   text-align: center;
-  font-size: 1.8vh;
+  font-size: 1em;
   margin-top: 2vh;
 }
 
@@ -233,7 +237,37 @@ button {
 }
 
 button:hover {
-background-color: #007a80;
+  background-color: #007a80;
 }
+
+#agreeTerms {
+  transform: scale(1.5);
+  margin: 0 10px;
+  appearance: none; 
+  width: 20px;
+  height: 20px;
+  border: 2px solid #00adb5;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#agreeTerms:checked {
+  background: #00adb5;
+  border: 2px solid #00adb5;
+}
+
+#agreeTerms:checked::after {
+  content: '';
+  display: block;
+  position: relative;
+  top: 0px;
+  left: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 
 </style>
