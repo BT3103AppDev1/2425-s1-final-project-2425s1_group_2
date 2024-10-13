@@ -3,17 +3,17 @@
       <HeaderTag />
       <div class="food-item-details">
       <div class="left-column">
+        <h1 class="food-stall">{{ foodItem.stall }}</h1>
         <div class="food-image">
           <img :src="foodItem.image" :alt="foodItem.name">
         </div>
         <h1 class="food-name">{{ foodItem.name }}</h1>
         <div class="food-info">
-          <h2 class="food-set-name">Chicken Rice Set</h2>
           <div class="price-quantity">
             <p class="price">${{ totalPrice.toFixed(2) }}</p>
             <div class="quantity-controls">
-              <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
               <span class="quantity">× {{ quantity }}</span>
+              <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
               <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
             </div>
           </div>
@@ -22,7 +22,10 @@
 
       <div class="right-column">
         <div class="green-box">
-          <div class="add-ons">
+          <!-- <div class="add-ons">
+            <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
+          </div> -->
+          <div v-if="addOns.length > 0" class="add-ons"> 
             <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
           </div>
 
@@ -66,6 +69,7 @@
           name: '',
           image: '',
           price: null,
+          stall: '',
         },
         quantity: 1,
         addOns: [],
@@ -75,12 +79,13 @@
     },
     created() {
       // Fetch food item details from route params when the component is created
-      const { id, name, price, addToCart, stallId } = this.$route.params;
+      const { id, foodItemName, price, addToCart, stallId, stallName } = this.$route.params;
       this.foodItem.id = id;
-      this.foodItem.name = name;
+      this.foodItem.name = foodItemName;
       this.foodItem.price = price;
       this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
       this.addToCart = addToCart;
+      this.foodItem.stall = stallName;
       // this.addOns = addOns ? JSON.parse(addOns) : [];
       console.log(this.$route.params.stallId);
       const availableAddOns = {
@@ -157,10 +162,6 @@
     margin: 0 auto;
   }
   
-  .icon {
-    font-size: 20px;
-  }
-  
   .food-item-details {
     display: flex;
     background-color: white;
@@ -194,11 +195,6 @@
     margin-top: 15px;
   }
   
-  .food-set-name {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
   .price-quantity {
     display: flex;
     justify-content: space-between;
@@ -207,7 +203,7 @@
   }
   
   .price {
-    font-size: 24px;
+    font-size: 50px;
     font-weight: bold;
   }
   
@@ -217,19 +213,21 @@
   }
   
   .quantity-btn {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #00A895;
     color: white;
     border: none;
     font-size: 18px;
     cursor: pointer;
+    margin-left: 40px;
   }
   
   .quantity {
     margin: 0 10px;
-    font-size: 18px;
+    font-size: 30px;
+    margin-right: 100px;
   }
   
   .green-box {
