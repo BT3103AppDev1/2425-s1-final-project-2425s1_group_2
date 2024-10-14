@@ -68,8 +68,9 @@ export default {
       const { email, username, password, cPassword, agreeToTerms } = this;
 
       try {
+        console.log(email,username,password,cPassword,agreeToTerms)
         const check = validateNewUser(email, username, password, cPassword, agreeToTerms);
-        if (check['value'] === false) {
+        if (check['valid'] === false) {
           alert(check['message']);
         } else {
           await createUser(email, username, password, cPassword);
@@ -157,7 +158,7 @@ export default {
 
 .inputTitles {
   color: #00adb5;
-  font-size: 2.5vh;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -168,7 +169,7 @@ button {
   color: white;
   border-radius: 5px;
   border: none;
-  height: 5vh;
+  height: 7vh;
   width: 20vw;
 }
 
@@ -199,7 +200,7 @@ button {
   align-items: center;
   margin-top: 10px;
   justify-content: center; 
-  font-size: 2em;
+  font-size: 18px;
 }
 
 .checkbox input {
@@ -228,7 +229,7 @@ button {
 .merchant-info {
   text-align: center;
   font-size: 1em;
-  margin-top: 2vh;
+  margin-top: 15px;
 }
 
 #form-group {

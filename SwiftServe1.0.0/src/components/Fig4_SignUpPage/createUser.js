@@ -5,6 +5,14 @@ import { doc, setDoc, addDoc, serverTimestamp, collection } from 'firebase/fires
 const db = getFirestore(firebaseApp)
 
 export async function createUser(email, username, password, cPassword) {
+
+    // have to rewrite this with authentification in mind
+    // use firebase authentification to Create
+    //eg
+        // // Create user in Firebase Authentication (instead of Firestore)
+        // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // const userId = userCredential.user.uid;  // Firebase Auth user ID
+    
     try {
     if (password === cPassword) {
         const userRef = await addDoc(collection(db, 'UserProfile'), {
