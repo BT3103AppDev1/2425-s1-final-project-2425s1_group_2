@@ -8,6 +8,11 @@
 
       <nav>
         <RouterLink to="/hawker">Hawker</RouterLink>
+        <RouterLink to = /payment>Payment</RouterLink>
+        <RouterLink to = /profile>Profile</RouterLink>
+        <RouterLink to = /livereceipt>Live Receipt</RouterLink>
+        <RouterLink to = /checkout>Checkout</RouterLink>
+
       </nav>
 
     </div>
