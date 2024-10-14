@@ -102,8 +102,8 @@ export default {
 .cancel {
   width: 50px;
   position: absolute;
-  right: 20px;
-  top: 120px;
+  right:70px;
+  top: 200px;
   cursor: pointer;
 }
 
