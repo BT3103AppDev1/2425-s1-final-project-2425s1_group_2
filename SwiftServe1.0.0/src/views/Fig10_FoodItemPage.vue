@@ -48,7 +48,7 @@
      
   <script>
 
-  import HeaderTag from '../components/Header.vue';
+  import HeaderTag from '../components/AppHeader.vue';
   import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
   import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
   // import { EventBus } from '../eventBus.js';

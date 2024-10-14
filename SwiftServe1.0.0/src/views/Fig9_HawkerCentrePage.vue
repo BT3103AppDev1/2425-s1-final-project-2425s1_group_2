@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header />
+    <AppHeader />
     <FilterButtons 
       :filters="availableFilters" 
       :activeFilter="activeCategory" 
@@ -18,23 +18,24 @@
         @stall-selected="updateActiveStall" 
       />
       <div class="food-area">
-        <div class="food-grid">
-          <FoodItem 
-            v-for="item in filteredItems"
-            :key="item.id"
-            :item="item"
-            @add-to-cart="addToCart"
-            @click="viewFoodItem(item, findStall(item.stallId))"
-          />
-        </div>
+        <div v-if="filteredStalls.length > 0" class="food-grid">
+        <FoodItem 
+          v-for="item in filteredItems"
+          :key="item.id"
+          :item="item"
+          @add-to-cart="addToCart"
+          @click="viewFoodItem(item, findStall(item.stallId))"
+        />
+      </div>
+      <div v-else class="no-stalls-message">No stalls found</div> 
       </div>
     </div>
     <div class="cart-and-checkout">
       <OrderCart :items="cartItems" @remove-item="removeItemFromCart" />
       <div class="checkout-area">
         <p class="totalAmount">Total Amount: ${{ totalAmount }}</p>
-        <button @click="checkout">Checkout</button>
-        <button @click="cancelOrder">Cancel Order</button>
+        <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
+        <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
       </div>
     </div>
     
@@ -43,7 +44,7 @@
 </template>
   
   <script>
-  import Header from '../components/Header.vue';
+  import AppHeader from '../components/AppHeader.vue';
   import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
   import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
   import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
@@ -53,7 +54,7 @@
   
   export default {
     components: {
-      Header,
+      AppHeader,
       CategoryNav,
       FoodItem,
       OrderCart,
@@ -183,14 +184,11 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;  
-
   padding-bottom: 20px;
-  border-bottom: 1px solid #ccc;
 }
 
 header h1 {
-  font-size:  
- 24px;
+  font-size: 24px;
   color: #00ADB5;  /* Your green */
 }
 
@@ -211,7 +209,7 @@ nav a {
   color: #333;
   font-weight: bold;
   padding: 10px;  
-  border-bottom: 2px solid transparent; /* For active state effect later */
+  border-bottom: 5px solid transparent; /* For active state effect later */
 }
 
 nav .active {  /* Style the active category */
@@ -324,6 +322,18 @@ nav .active {  /* Style the active category */
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.cart-icon, .cancel-icon {
+  margin-right: 10px;
+}
+
+.no-stalls-message {
+  text-align: center;
+  font-size: 25px;
+  color: #777; 
+  margin-top: 10px;
+  font-weight: bold;
 }
 
 </style>
