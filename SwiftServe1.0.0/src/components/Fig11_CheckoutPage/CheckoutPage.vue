@@ -126,13 +126,13 @@ export default {
 .edit-button {
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 50px;
   background-color: #00adb5;
   color: white;
   border: none;
   padding: 12px 28px;
   border-radius: 3px;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .total {
