@@ -45,7 +45,9 @@
         <img src="/paylah.png" alt="PayLah!" />
       </div>
     </div>
+    <router-link to = "/payment">
     <button class="confirm-button">Confirm and Pay</button>
+    </router-link>
   </div>
 </template>
 
