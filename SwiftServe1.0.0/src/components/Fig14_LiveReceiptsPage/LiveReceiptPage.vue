@@ -4,8 +4,10 @@
         <div class="avatar">
           <img src="/ProfilePicture.png" alt="User Avatar" />
         </div>
+        <div class = "info-text">
         <h2>{{ name }}</h2>
         <p>{{ email }}</p>
+        </div>
       </div>
       <div class="actions">
         <button @click="updateSettings">
@@ -56,15 +58,16 @@
     flex-direction: column;
     height: 100vh;
     font-family: 'Inria Sans', sans-serif;
+    align-items: flex-start;
   }
   
   .profile-info {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Aligns content to the left */
-    text-align: left; /* Left-align text */
+    text-align: center; /* Left-align text */
     margin-left: 20px; /* Add left margin to move the section from the page edge */
     margin-top: 80px;
+    text-align: center;
   }
   
   .avatar img {
@@ -74,6 +77,10 @@
     background-color: #ffffff;
     margin-bottom: 10px;
   }
+
+  .info-text {
+    text-align: center;
+  }
   
   .actions {
     display: flex;
@@ -81,6 +88,7 @@
     align-items: flex-start; /* Keep actions aligned to the left */
     width: 100%;
     margin-top: 20px;
+    margin-left: 20px;
   }
   
   button {
