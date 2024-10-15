@@ -46,6 +46,7 @@ export default {
     handleLogin() {
       // check, authenticate and login
       console.log('Login attempted', { email: this.email, password: this.password })
+      //route to page with login details
     },
     handleForgotPassword() {
       // router

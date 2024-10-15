@@ -11,9 +11,9 @@ import {createUser} from './createUser.js'
       <div class="formData">
         <div id="inputForm">
           <h2 class="inputTitles">Email:</h2>
-          <input type="email" class="inputBoxes" id="email1" v-model="email" required /> <br />
+          <input type="email" class="inputBoxes" id="email" v-model="email" required /> <br />
           <h2 class="inputTitles">Username:</h2>
-          <input type="text" class="inputBoxes" id="username1" v-model="username" required /> <br />
+          <input type="text" class="inputBoxes" id="username" v-model="username" required /> <br />
           <h2 class="inputTitles">Password:</h2>
         <div class="password-input">
           <input :type="showPassword ? 'text' : 'password'" class="inputBoxes" id="password1" v-model="password" required />
@@ -88,6 +88,8 @@ export default {
       this.cPassword = '';
       this.agreeToTerms = false;
     }
+
+    //do to log in page
   }
 }
 </script>
@@ -247,7 +249,7 @@ button:hover {
   appearance: none; 
   width: 20px;
   height: 20px;
-  border: 2px solid #00adb5;
+  border: 1.5px solid #00adb5;
   border-radius: 3px;
   cursor: pointer;
 }
