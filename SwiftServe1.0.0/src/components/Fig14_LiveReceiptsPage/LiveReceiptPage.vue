@@ -4,18 +4,24 @@
       <div class="avatar">
         <img src="/ProfilePicture.png" alt="User Avatar" />
       </div>
-      <h2>{{ name }}</h2>
-      <p>{{ email }}</p>
+      <div class="info-text">
+        <h2>{{ name }}</h2>
+        <p>{{ email }}</p>
+      </div>
     </div>
     <div class="actions">
-      <button @click="updateSettings">
-        <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
-        <span>Update Settings</span>
-      </button>
-      <button @click="showRecentOrder">
-        <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
-        <span>Most Recent Order Receipt</span>
-      </button>
+      <router-link to="/profile" class="action-link">
+        <button @click="updateSettings">
+          <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
+          <span>Update Settings</span>
+        </button>
+      </router-link>
+      <router-link to="/livereceipt" class="action-link">
+        <button @click="showRecentOrder">
+          <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
+          <span>Most Recent Order Receipt</span>
+        </button>
+      </router-link>
       <button @click="deleteAccount">
         <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
         <span>Delete Account</span>
@@ -56,14 +62,14 @@ export default {
   flex-direction: column;
   height: 100vh;
   font-family: 'Inria Sans', sans-serif;
+  align-items: flex-start;
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Aligns content to the left */
-  text-align: left; /* Left-align text */
-  margin-left: 20px; /* Add left margin to move the section from the page edge */
+  text-align: center;
+  margin-left: 20px;
   margin-top: 80px;
 }
 
@@ -75,14 +81,20 @@ export default {
   margin-bottom: 10px;
 }
 
+.info-text {
+  text-align: center;
+}
+
 .actions {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Keep actions aligned to the left */
+  align-items: flex-start;
   width: 100%;
   margin-top: 20px;
+  margin-left: 20px;
 }
 
+/* Button styles */
 button {
   background: none;
   border: none;
@@ -99,5 +111,23 @@ button .icon {
   margin-right: 10px;
   width: 20px;
   height: 20px;
+}
+
+/* Remove underline from router-link */
+.action-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+}
+
+/* Remove the underline from links inside router-link */
+.action-link span {
+  text-decoration: none;
+  color: white; /* Ensures text inherits button color */
+}
+
+.action-link:hover span {
+  color: #f1f1f1; /* Optional: adds a hover effect */
 }
 </style>

@@ -45,7 +45,9 @@
         <img src="/paylah.png" alt="PayLah!" />
       </div>
     </div>
+    <router-link to = "/payment">
     <button class="confirm-button">Confirm and Pay</button>
+    </router-link>
   </div>
 </template>
 
@@ -102,8 +104,8 @@ export default {
 .cancel {
   width: 50px;
   position: absolute;
-  right: 20px;
-  top: 120px;
+  right:70px;
+  top: 200px;
   cursor: pointer;
 }
 
@@ -126,13 +128,13 @@ export default {
 .edit-button {
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 50px;
   background-color: #00adb5;
   color: white;
   border: none;
   padding: 12px 28px;
   border-radius: 3px;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .total {
