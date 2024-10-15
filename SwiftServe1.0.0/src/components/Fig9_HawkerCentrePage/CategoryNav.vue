@@ -36,13 +36,15 @@ nav ul {
   margin: 10px 0;
   display: flex;
   gap: 15px;
-  border-bottom: 2px solid #eee; /* Bottom border for visual separation */
+  border-bottom: 3px solid black; /* Bottom border for visual separation */
 }
 
 nav li {
   padding: 8px 12px;
   cursor: pointer;
-  border-bottom: 2px solid transparent; /* Invisible border for inactive categories */
+  font-weight: bold;
+  border-bottom: 2px solid transparent; 
+  font-size: 22px;
 }
 
 /* Styling for active category */
