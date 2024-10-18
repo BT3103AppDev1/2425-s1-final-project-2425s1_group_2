@@ -1,6 +1,6 @@
 import { readUser } from './readUser.js'
 /* validates users creation, returns boolean and message*/
-export function validateNewUser(email, username, password, cPassword) {
+export function validateNewUser(email, username, password, cPassword, agreeToTerms) {
   if (username === '') {
     return { valid: false, message: 'Username must not be blank.' }
   }
@@ -31,6 +31,10 @@ export function validateNewUser(email, username, password, cPassword) {
   // Validate cPassword (must match password)
   if (password !== cPassword) {
     return { valid: false, message: 'Passwords do not match.' }
+  }
+
+  if (!agreeToTerms) {
+    return { valid: false, message: 'Please agree to the terms and conditions.' }
   }
 
   // If all validations pass

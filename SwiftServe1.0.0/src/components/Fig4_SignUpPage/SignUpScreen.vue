@@ -107,7 +107,7 @@ export default {
         // Reset form and show success message
         this.resetForm()
         alert('Account Created Successfully!')
-        this.$router.push('/custD')
+        this.$router.push('/custD') //change this to login after, this is made for fast game testing
         return false
       } catch (error) {
         alert('Error creating account: ' + error.message)

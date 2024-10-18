@@ -46,6 +46,7 @@
 import * as firebaseui from 'firebaseui'
 import { auth, GoogleProvider, EmailProvider } from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 export default {
   name: 'LoginPage',
   data() {
@@ -60,11 +61,21 @@ export default {
     this.initializeFirebaseUI()
   },
   methods: {
-    handleLogin() {
-      // check, authenticate and login
-      console.log('Login attempted', { email: this.email, password: this.password })
-      this.$router.push('/custD')
-      //route to page with login details
+    async handleLogin() {
+      try {
+        // Attempt to sign in the user with Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password)
+        const user = userCredential.user
+
+        // Log user data for verification purposes
+        console.log('Login successful:', user)
+
+        // Redirect to the customer dashboard after successful login
+        this.$router.push('/custD')
+      } catch (error) {
+        // Handle authentication errors
+        alert('Error during login: ' + error.message)
+      }
     },
     handleForgotPassword() {
       // router
