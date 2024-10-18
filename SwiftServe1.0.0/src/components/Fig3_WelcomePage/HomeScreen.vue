@@ -22,37 +22,37 @@
 
 <script>
 export default {
-methods: {
-  LGSClick() {
-    this.$router.push('/login');
+  methods: {
+    LGSClick() {
+      this.$router.push('/signup')
+    }
   }
 }
-};
 </script>
 
 <style scoped>
 .WelcomeBGImg {
-width: 100vw;
-height: 100vh;
-background-color: #FFFFFF;
-background-repeat: no-repeat;
-background-size: cover;
-background-position: center;
-display: flex;
-justify-content: center;
-align-items: center;
-overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .WelcomeContainer {
-text-align: center;
-font-family: 'Inria Sans', sans-serif;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-width: 100%;
-height: 80%;
+  text-align: center;
+  font-family: 'Inria Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80%;
 }
 
 /* Logo appears at 
@@ -62,9 +62,9 @@ height: 80%;
 */
 #SSLogo {
   position: absolute;
-  left: 50%;             
+  left: 50%;
   top: 20%;
-  height: 20vh; 
+  height: 20vh;
   max-width: 30vw; /* Ensure it doesn't exceed 30% of the width */
   object-fit: contain;
   transform: translateX(-50%);
@@ -72,45 +72,44 @@ height: 80%;
 
 /* Button styling */
 #SignUpButton {
-
-margin-top: 3vh;
-position: absolute;
-top: 55%; /* Positioning at 60% of the screen height */
+  margin-top: 3vh;
+  position: absolute;
+  top: 55%; /* Positioning at 60% of the screen height */
 }
 
 button {
-background-color: #00adb5;
-font-weight: bold;
-color: white;
-border-radius: 10px;
-border: none;
-height: 8vh; /* Make the button occupy 60-68% of the page's height */
-width: 20vw;
-cursor: pointer;
-font-size: clamp(1rem, 2.5vw, 3.5vh);
-padding: 0.5rem 1rem;
-display: flex;
-justify-content: center;
-align-items: center;
-text-align: center;
+  background-color: #00adb5;
+  font-weight: bold;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  height: 8vh; /* Make the button occupy 60-68% of the page's height */
+  width: 20vw;
+  cursor: pointer;
+  font-size: clamp(1rem, 2.5vw, 3.5vh);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 button:hover {
-background-color: #007a80;
+  background-color: #007a80;
 }
 
 .title {
-font-family: 'Mada', sans-serif;
-font-size: clamp(2.5rem, 5vw, 9vh);
-color: #00adb5;
-font-weight: 600; /* semibold*/
-margin-top: 2vh;
+  font-family: 'Mada', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 9vh);
+  color: #00adb5;
+  font-weight: 600; /* semibold*/
+  margin-top: 2vh;
 }
 
 h3 {
-font-size: clamp(1rem, 2vw, 3vh);
-color: #00adb5;
-margin-top: 2vh;
+  font-size: clamp(1rem, 2vw, 3vh);
+  color: #00adb5;
+  margin-top: 2vh;
 }
 
 #member {
@@ -132,12 +131,12 @@ margin-top: 2vh;
 }
 
 .Link {
-color: #00adb5;
-font-weight: bold;
-text-decoration: underline;
+  color: #00adb5;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .Link:hover {
-color: #007a80;
+  color: #007a80;
 }
 </style>
