@@ -3,54 +3,131 @@
 <!-- alignment and static -->
 <!-- underline -->
 <!-- routing -->
- <!-- eye problems -->
+<!-- eye problems -->
 
 <template>
   <div class="login-page">
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" required />
+    <form @submit.prevent="handleLogin">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" v-model="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          :type="showPassword ? 'text' : 'password'"
+          id="password"
+          v-model="password"
+          required
+        />
+      </div>
+
+      <div class="form-actions">
+        <a href="#" class="forgot-password" @click.prevent="handleForgotPassword"
+          >Forgot Password?</a
+        >
+        <div class="show-password">
+          <input type="checkbox" id="showPassword" v-model="showPassword" />
+          <label for="showPassword">Show Password</label>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input :type="showPassword ? 'text' : 'password'" id="password" v-model="password" required />
-        </div>
-
-        <div class="form-actions">
-          <a href="#" class="forgot-password" @click.prevent="handleForgotPassword">Forgot Password?</a>
-          <div class="show-password">
-            <input type="checkbox" id="showPassword" v-model="showPassword" />
-            <label for="showPassword">Show Password</label>
-          </div>
-        </div>
-
-        <button type="submit" class="login-button">Login</button>
-      </form>
-
+      <button type="submit" class="login-button">Login</button>
+    </form>
+    <!-- Firebase UI Auth Container -->
+    <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
+    <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button>
+    <button v-show="!showManualLogin" @click="toggleLoginMethod">Go Back to Manual Login</button>
   </div>
 </template>
 
 <script>
+import * as firebaseui from 'firebaseui'
+import { auth, GoogleProvider, EmailProvider } from '@/firebase.js'
+import 'firebaseui/dist/firebaseui.css'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 export default {
   name: 'LoginPage',
   data() {
     return {
       email: '',
       password: '',
-      showPassword: false
+      showPassword: false,
+      showManualLogin: true
     }
   },
+  mounted() {
+    this.initializeFirebaseUI()
+  },
   methods: {
-    handleLogin() {
-      // check, authenticate and login
-      console.log('Login attempted', { email: this.email, password: this.password })
-      //route to page with login details
+    async handleLogin() {
+      try {
+        // Attempt to sign in the user with Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password)
+        const user = userCredential.user
+
+        // Log user data for verification purposes
+        console.log('Login successful:', user)
+
+        // Redirect to the customer dashboard after successful login
+        this.$router.push('/custD')
+      } catch (error) {
+        // Handle authentication errors
+        alert('Error during login: ' + error.message)
+      }
     },
     handleForgotPassword() {
       // router
       console.log('Forgot password clicked')
+    },
+    toggleLoginMethod() {
+      // Toggle between showing manual login and FirebaseUI-based login
+      this.showManualLogin = !this.showManualLogin
+    },
+    initializeFirebaseUI() {
+      // Import FirebaseUI instance and initialize it with the `auth` from firebase.js
+      const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
+
+      const uiConfig = {
+        signInFlow: 'popup', // Use popup for sign-in to maintain SPA flow
+        signInOptions: [
+          GoogleProvider.providerId, // Allow Google sign-in
+          EmailProvider.providerId // Allow email sign-in
+        ],
+        callbacks: {
+          signInSuccessWithAuthResult: async (authResult) => {
+            // Extract user information from the authResult
+            const user = authResult.user
+
+            // Extract user details
+            const displayName = user.displayName || 'Anonymous User'
+            const email = user.email || 'No email provided'
+            const uid = user.uid
+
+            try {
+              // Save user data to Firestore
+              const userData = {
+                displayName: displayName,
+                email: email,
+                uid: uid,
+                dateCreated: new Date().toISOString(), // Using new Date() instead of serverTimestamp() to serialize correctly for cookies
+                profileType: 'Customer'
+              }
+              console.log('User data saved to Firestore:', userData)
+
+              // Redirect to home page after successful sign-in
+              this.$router.push('/custD')
+            } catch (error) {
+              console.error('Error saving user data to Firestore:', error)
+            }
+            return false // Prevent the automatic redirect to avoid default behavior
+          }
+        }
+      }
+
+      // Start the FirebaseUI with the configuration defined above
+      ui.start('#firebaseui-auth-container', uiConfig)
     }
   }
 }
@@ -59,7 +136,7 @@ export default {
 <style scoped>
 .login-page {
   font-family: 'Inria Sans', sans-serif;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -70,7 +147,6 @@ export default {
   width: 100%;
   max-width: 100vw;
 }
-
 
 form {
   width: 100%;
@@ -85,17 +161,17 @@ form {
 label {
   display: block;
   margin-bottom: 1vh;
-  color: #00ADB5;
+  color: #00adb5;
   font-size: 18px;
   font-weight: bold;
 }
 
-input[type="email"],
-input[type="password"],
-input[type="text"] {
+input[type='email'],
+input[type='password'],
+input[type='text'] {
   width: 100%;
   padding: 1vh;
-  border: 2px solid #00ADB5;
+  border: 2px solid #00adb5;
   border-radius: 5px;
   font-size: 18px;
   box-sizing: border-box;
@@ -109,7 +185,7 @@ input[type="text"] {
 }
 
 .forgot-password {
-  color: #00ADB5;
+  color: #00adb5;
   text-decoration: none;
   font-size: 18px;
 }
@@ -121,7 +197,6 @@ input[type="text"] {
 .show-password {
   display: flex;
   align-items: center;
-
 }
 
 .show-password input {
@@ -146,7 +221,7 @@ input[type="text"] {
   position: absolute;
   width: 5px;
   height: 10px;
-  border: #FFFFFF;
+  border: #ffffff;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
   top: 2px;
@@ -154,21 +229,23 @@ input[type="text"] {
 }
 
 .show-password label {
-  color: #00ADB5;
+  color: #00adb5;
   font-size: 18px;
 }
 
 .login-button {
   width: 100%;
-  background-color: #00ADB5;
-  color: #FFFFFF;
+  background-color: #00adb5;
+  color: #ffffff;
   border: none;
   padding: 12px;
   border-radius: 5px;
   font-size: 21px;
   font-weight: bold;
   cursor: pointer;
-  font-family: Inria Sans, sans-serif;
+  font-family:
+    Inria Sans,
+    sans-serif;
   box-sizing: border-box;
 }
 
@@ -180,4 +257,34 @@ button:hover {
   background-color: #007a80;
 }
 
+.toggle-button {
+  margin-top: 20px;
+  width: 100%;
+  background-color: #00adb5;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 21px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family:
+    Inria Sans,
+    sans-serif;
+  box-sizing: border-box;
+}
+
+.toggle-button:hover {
+  background-color: #007a80;
+}
+
+.social-login-container {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+  background-color: #f7f7f7;
+  border: 2px solid #00adb5;
+  border-radius: 5px;
+  padding: 20px;
+}
 </style>
