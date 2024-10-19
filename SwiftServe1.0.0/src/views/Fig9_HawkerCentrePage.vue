@@ -24,7 +24,7 @@
           :key="item.id"
           :item="item"
           @add-to-cart="addToCart"
-          @click="viewFoodItem(item, findStall(item.stallId))"
+          @click="viewFoodItem(item)"
         />
       </div>
       <div v-else class="no-stalls-message">No stalls found</div> 
@@ -95,6 +95,7 @@
           { label: 'Vegetarian', value: 'Vegetarian' },
         ],
         cartItems: [],
+        categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
       };
     },
     computed: {
@@ -121,7 +122,10 @@
             return stall;
           });
         } else if (this.activeCategory !== 'All') {
-          filtered = filtered.filter(item => item.category === this.activeCategory);
+          filtered = filtered.filter(item => {
+            const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.category === this.activeCategory);
+            return stall;
+          });
         }
         if (this.activeStall) {
           filtered = filtered.filter(item => item.merchantId === this.activeStall.uid);
@@ -145,18 +149,28 @@
     },
     methods: {
       async fetchStalls() {
-        const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
-        this.stalls = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          uid: doc.id,
-        }));
+        try {
+          const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
+          this.stalls = querySnapshot.docs.map(doc => ({
+            ...doc.data(),
+            uid: doc.id,
+          }));
+          console.log('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
+        } catch (error) {
+          console.error('Error fetching stalls: ', error);
+        }
       },
       async fetchItems() {
-        const querySnapshot = await db.collection('FoodItem').get();
-        this.items = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
+        try {
+          const querySnapshot = await db.collection('FoodItem').get();
+          this.items = querySnapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
+        } catch (error) {
+          console.error('Error fetching items: ', error);
+        }
       },
       updateActiveCategory(category) {
         this.activeCategory = category;
@@ -184,20 +198,23 @@
       findStall(merchantId) {
         return this.stalls.find(stall => stall.uid === merchantId);
       },
-      viewFoodItem(item, stall) {
+      viewFoodItem(item) {
         this.$router.push({
           name: 'foodItemPage',
           params: {
             id: item.id,        // Pass the food item ID 
-            foodItemName: item.name,    // Pass the food item name
-            price: item.price,   // Pass the food item price
-            stallId: item.stallId, // Pass the stall ID
-            stallName: stall.name, // Pass the stall name
+            // foodItemName: item.name,    // Pass the food item name
+            // price: item.price,   // Pass the food item price
+            // stallId: item.stallId, // Pass the stall ID
+            // stallName: stall.name, // Pass the stall name
           }
         });
       }
-    
-    }
+    },
+    mounted() {
+      this.fetchStalls();
+      this.fetchItems();
+    },
   };
   </script>
   
@@ -368,3 +385,359 @@ nav .active {  /* Style the active category */
 }
 
 </style>
+
+<!-- double filtering logic version but i don't think this works well eg. filter by halal + activeCategory -->
+<!-- <template>
+  <div id="app">
+    <AppHeader />
+    <FilterButtons 
+      :filters="availableFilters" 
+      :activeFilter="activeDietFilter" 
+      @filter-selected="updateActiveDietFilter" 
+    />
+    <CategoryNav 
+      :categories="categories" 
+      @category-selected="updateActiveCategory" 
+      :activeCategory="activeCategory"
+    />
+    <div class="main-content">
+      <StallList 
+        :stalls="filteredStalls" 
+        :activeStall="activeStall" 
+        @stall-selected="updateActiveStall" 
+      />
+      <div class="food-area">
+        <div v-if="filteredItems.length > 0" class="food-grid">
+          <FoodItem 
+            v-for="item in filteredItems"
+            :key="item.id"
+            :item="item"
+            @add-to-cart="addToCart"
+            @click="viewFoodItem(item)"
+          />
+        </div>
+        <div v-else class="no-stalls-message">No items found</div> 
+      </div>
+    </div>
+    <div class="cart-and-checkout">
+      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" />
+      <div class="checkout-area">
+        <p class="totalAmount">Total Amount: ${{ totalAmount }}</p>
+        <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
+        <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
+      </div>
+    </div>
+    <router-view :add-to-cart="addToCart"></router-view>
+  </div>
+</template>
+
+<script>
+import AppHeader from '../components/AppHeader.vue';
+import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
+import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
+import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
+import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue';
+import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
+import { db } from '../firebase.js';
+
+export default {
+  components: {
+    AppHeader,
+    CategoryNav,
+    FoodItem,
+    OrderCart,
+    StallList,
+    FilterButtons
+  },
+  data() {
+    return {
+      activeCategory: 'All',
+      activeDietFilter: 'All',
+      activeStall: null,
+      categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'], // Category list
+      stalls: [],
+      items: [],
+      cartItems: [],
+      availableFilters: [
+          { label: 'Halal', value: 'Halal' },
+          { label: 'Vegetarian', value: 'Vegetarian' },
+        ],
+    };
+  },
+  computed: {
+    filteredItems() {
+      let filtered = this.items;
+
+      // Filter by diet filter
+      if (this.activeDietFilter !== 'All') {
+        filtered = filtered.filter(item => {
+          const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall[this.activeDietFilter.toLowerCase()]);
+          return stall;
+        });
+      }
+
+      // Filter by food category
+      if (this.activeCategory !== 'All') {
+        filtered = filtered.filter(item => {
+          const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.category === this.activeCategory);
+          return stall;
+        });
+      }
+
+      // Filter by active stall
+      if (this.activeStall) {
+        filtered = filtered.filter(item => item.merchantId === this.activeStall.uid);
+      }
+
+      return filtered;
+    },
+    filteredStalls() {
+      let filtered = this.stalls;
+
+      // Filter by diet filter
+      if (this.activeDietFilter !== 'All') {
+        filtered = filtered.filter(stall => stall[this.activeDietFilter.toLowerCase()]);
+      }
+
+      // Filter by food category
+      if (this.activeCategory !== 'All') {
+        filtered = filtered.filter(stall => stall.category === this.activeCategory);
+      }
+
+      return filtered;
+    },
+    totalAmount() {
+      return this.cartItems.reduce((total, item) => total + item.foodItemPrice, 0).toFixed(2);
+    }
+  },
+  methods: {
+    async fetchStalls() {
+      try {
+        const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
+        this.stalls = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          uid: doc.id,
+        }));
+        console.log('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
+      } catch (error) {
+        console.error('Error fetching stalls: ', error);
+      }
+    },
+    async fetchItems() {
+      try {
+        const querySnapshot = await db.collection('FoodItem').get();
+        this.items = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
+      } catch (error) {
+        console.error('Error fetching items: ', error);
+      }
+    },
+    updateActiveCategory(category) {
+      this.activeCategory = category;
+      this.activeStall = null;
+    },
+    updateActiveDietFilter(filter) {
+      this.activeDietFilter = filter;
+      this.activeStall = null;
+    },
+    updateActiveStall(stall) {
+      this.activeStall = stall;
+    },
+    addToCart(item) {
+      this.cartItems.push(item);
+    },
+    removeItemFromCart(itemId) {
+      this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+    },
+    checkout() {
+      // Implement checkout logic here
+      alert('Checkout functionality coming soon!');
+    },
+    cancelOrder() {
+      this.cartItems = [];
+    },
+    findStall(merchantId) {
+      return this.stalls.find(stall => stall.uid === merchantId);
+    },
+    viewFoodItem(item) {
+      this.$router.push({
+        name: 'foodItemPage',
+        params: {
+          id: item.id // Pass only the food item ID
+        }
+      });
+    }
+  },
+  mounted() {
+    this.fetchStalls();
+    this.fetchItems();
+  },
+};
+</script>
+
+<style>
+#app {
+  font-family: 'Arial', sans-serif;  /* Or your chosen font */
+  width: 95%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header Styles */
+header { 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+  padding-bottom: 20px;
+}
+
+header h1 {
+  font-size: 24px;
+  color: #00ADB5;  /* Your green */
+}
+
+/* Navigation Styles */
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav li {
+  margin-right: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 10px;  
+  border-bottom: 5px solid transparent; /* For active state effect later */
+}
+
+nav .active {  /* Style the active category */
+  color: #00ADB5;
+  border-bottom-color: 2px solid#00ADB5;
+}
+
+/* Main Content Area */
+.main-content {
+  display: flex; 
+  margin-top: 20px;
+}
+
+/* Stall List */
+.stall-list {
+  width: 200px; 
+  border-right: 1px solid #ccc;
+  margin-right: 20px; 
+  overflow-y: auto;
+}
+
+.stall-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.stall-item.active {
+  background-color: #f0f0f0; 
+  font-weight: bold;
+}
+
+.food-area {
+  flex: 1;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.food-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.food-item img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Order Cart Styles */
+.order-cart {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.order-cart h2 {
+  margin-top: 0;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cart-item img {
+  width: 50px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.active {
+  color: #00ADB5;  
+  font-weight: bold; 
+}
+
+.totalAmount {
+  font-weight: bold;
+}
+
+.cart-and-checkout {
+  display: flex;
+  justify-content: space-between; /* Position elements on opposite sides */
+  align-items: flex-start; /* Align items to the top */
+  margin-top: 20px;
+}
+
+.checkout-area {
+  display: flex;
+  flex-direction: column; /* Stack checkout elements vertically */
+  align-items: flex-end; /* Align to the right */
+}
+
+.checkout-area button {
+  margin-top: 10px;
+  background-color: #00ADB5;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-icon, .cancel-icon {
+  margin-right: 10px;
+}
+
+.no-stalls-message {
+  text-align: center;
+  font-size: 25px;
+  color: #777; 
+  margin-top: 10px;
+  font-weight: bold;
+}
+</style> -->

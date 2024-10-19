@@ -1,122 +1,119 @@
 <template>
   <div class="food-item-page">
     <HeaderTag />
-    <div class="food-item-details">
-    <div class="left-column">
-      <h1 class="food-stall">{{ foodItem.stall }}</h1>
-      <div class="food-image">
-        <img :src="foodItem.image" :alt="foodItem.name">
-        <hr class="separator"> 
-      </div>
-      <h1 class="food-name">{{ foodItem.name }}</h1>
-      <div class="food-info">
-        <div class="price-quantity">
-          <p class="price">${{ totalPrice.toFixed(2) }}</p>
-          <div class="quantity-controls">
-            <span class="quantity">× {{ quantity }}</span>
-            <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
-            <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
+    <div class="food-item-details" v-if="foodItem && merchant">
+      <div class="left-column">
+        <h1 class="food-stall">{{ merchant.displayName }}</h1>
+        <div class="food-image">
+          <img :src="foodItem.foodItemImage" :alt="foodItem.foodItemName">
+          <hr class="separator"> 
+        </div>
+        <h1 class="food-name">{{ foodItem.foodItemName }}</h1>
+        <div class="food-info">
+          <div class="price-quantity">
+            <p class="price">${{ totalPrice.toFixed(2) }}</p>
+            <div class="quantity-controls">
+              <span class="quantity">× {{ quantity }}</span>
+              <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
+              <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="right-column">
-      <div class="green-box">
-        <div v-if="addOns.length > 0" class="add-ons"> 
-          <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
+      <div class="right-column">
+        <div class="green-box">
+          <div v-if="addOns.length > 0" class="add-ons"> 
+            <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
+          </div>
+
+          <div class="special-instructions">
+            <SpecialInstructions v-model="specialInstructions" />
+          </div>
         </div>
 
-        <div class="special-instructions">
-          <SpecialInstructions v-model="specialInstructions" />
+        <div class="action-buttons">
+          <button class="add-to-cart" @click="addToCartHandler">
+            <span class="cart-icon">🛒</span> Add to Cart
+          </button>
+          <button class="cancel-order" @click="cancelOrder">
+            <span class="cancel-icon">❌</span> Cancel Order
+          </button>
         </div>
       </div>
-
-      <div class="action-buttons">
-        <button class="add-to-cart" @click="addToCartHandler">
-          <span class="cart-icon">🛒</span> Add to Cart
-        </button>
-        <button class="cancel-order" @click="cancelOrder">
-          <span class="cancel-icon">❌</span> Cancel Order
-        </button>
-      </div>
     </div>
-  </div>
-
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
-   
-<script>
 
+<script>
 import HeaderTag from '../components/AppHeader.vue';
 import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
-// import { EventBus } from '../eventBus.js';
+import { db } from '../firebase.js';
 
 export default {
   components: {
-
     HeaderTag,
     AddOn,
     SpecialInstructions
   },
   data() {
     return {
-      foodItem: {
-        id: null,
-        name: '',
-        image: '',
-        price: null,
-        stall: '',
-      },
+      foodItem: null,
+      merchant: null,
       quantity: 1,
       addOns: [],
       specialInstructions: "",
       addToCart: null
     };
   },
-  created() {
-    // Fetch food item details from route params when the component is created
-    const { id, foodItemName, price, addToCart, stallId, stallName } = this.$route.params;
-    this.foodItem.id = id;
-    this.foodItem.name = foodItemName;
-    this.foodItem.price = price;
-    this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
-    this.addToCart = addToCart;
-    this.foodItem.stall = stallName;
-    // this.addOns = addOns ? JSON.parse(addOns) : [];
-    console.log(this.$route.params.stallId);
-    const availableAddOns = {
-    1: [ // Add-ons for stall with ID 1
-      { id: 1, name: "Extra Rice", price: 1.0, quantity: 0 },
-      { id: 2, name: "Egg", price: 0.8, quantity: 0 }
-    ],
-    2: [ // Add-ons for stall with ID 2
-      { id: 3, name: "Raita", price: 0.5, quantity: 0 },
-      { id: 4, name: "Boiled Egg", price: 1.0, quantity: 0 }
-    ],
-    3: [ // Add-ons for stall with ID 3
-      { id: 5, name: "Ice", price: 0.3, quantity: 0 },
-      { id: 6, name: "Condensed Milk", price: 0.4, quantity: 0 }
-    ]
-  };
-
-    this.addOns = availableAddOns[stallId] || [];
+  async created() {
+    const foodItemId = this.$route.params.id;
+    await this.fetchFoodItem(foodItemId);
   },
   computed: {
     totalPrice() {
-      // Base price of the food item multiplied by the quantity
-      let basePrice = this.foodItem.price * this.quantity;
-
-      // Add the price of any selected add-ons
       const addOnTotal = this.addOns.reduce((total, addOn) => {
         return total + addOn.price * addOn.quantity;
       }, 0);
 
-      return basePrice + addOnTotal;
+      return (this.foodItem.foodItemPrice + addOnTotal) * this.quantity;
     }
   },
   methods: {
+    async fetchFoodItem(foodItemId) {
+      try {
+        const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+        if (foodItemDoc.exists) {
+          this.foodItem = foodItemDoc.data();
+          await this.fetchMerchant(this.foodItem.merchantId);
+          this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
+            name: key,
+            price: this.foodItem.addOn[key],
+            quantity: 0
+          })) : [];
+        } else {
+          console.error('No such food item!');
+        }
+      } catch (error) {
+        console.error('Error fetching food item:', error);
+      }
+    },
+    async fetchMerchant(merchantId) {
+      try {
+        const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
+        if (merchantDoc.exists) {
+          this.merchant = merchantDoc.data();
+        } else {
+          console.error('No such merchant!');
+        }
+      } catch (error) {
+        console.error('Error fetching merchant:', error);
+      }
+    },
     increaseQuantity() {
       this.quantity++;
     },
@@ -124,22 +121,19 @@ export default {
       if (this.quantity > 1) this.quantity--;
     },
     updateAddOn(updatedAddOn) {
-      const addOnIndex = this.addOns.findIndex(a => a.id === updatedAddOn.id);
+      const addOnIndex = this.addOns.findIndex(a => a.name === updatedAddOn.name);
       if (addOnIndex !== -1) {
         this.addOns[addOnIndex] = updatedAddOn;
       }
     },
     addToCartHandler() {
       // Handle adding to cart
-      // Create a cart item object
-
-      /*const cartItem = {
-
-          ...this.foodItem,
-          quantity: this.quantity,
-          addOns: this.addOns.filter(addOn => addOn.quantity > 0),
-          specialInstructions: this.specialInstructions
-      };*/
+      const cartItem = {
+        ...this.foodItem,
+        quantity: this.quantity,
+        addOns: this.addOns.filter(addOn => addOn.quantity > 0),
+        specialInstructions: this.specialInstructions
+      };
 
       // EventBus.$emit('add-to-cart', cartItem);
       alert('Item added to cart');
@@ -280,4 +274,4 @@ export default {
   border-top: 5px solid black;
   margin: 10px 0; 
 }
-</style>
+</style>-

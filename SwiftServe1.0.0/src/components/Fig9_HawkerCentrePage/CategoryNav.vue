@@ -36,7 +36,7 @@
     margin: 10px 0;
     display: flex;
     gap: 15px;
-    border-bottom: 3px solid black; /* Bottom border for visual separation */
+    border-bottom: 3px solid black; 
   }
   
   nav li {
@@ -47,9 +47,8 @@
     font-size: 22px;
   }
   
-  /* Styling for active category */
   nav li.active {
     font-weight: bold;
-    color: #00ADB5; /* Green text for the active category */
+    color: #00ADB5;
   }
   </style>

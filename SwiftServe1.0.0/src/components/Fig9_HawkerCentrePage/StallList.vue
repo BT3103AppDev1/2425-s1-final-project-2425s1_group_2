@@ -6,7 +6,7 @@
         :class="{ 'stall-item': true, active: stall === activeStall }" 
         @click="selectStall(stall)"
       >
-        {{ stall.name }}
+        {{ stall.displayName }}
       </div>
     </div>
   </template>
@@ -25,7 +25,7 @@
     },
     methods: {
       selectStall(stall) {
-        this.$emit('stall-selected', stall); // Emits the selected stall to parent
+        this.$emit('stall-selected', stall); 
       }
     }
   };

@@ -1,7 +1,7 @@
 <template>
     <div class="food-item">
       <!-- <img :src="item.image" :alt="item.name"> -->
-      <h3>{{ item.name }}</h3>
+      <h3>{{ item.foodItemName }}</h3>
       <!-- <p>${{ item.price }}</p> -->
       <!-- <button @click="$emit('add-to-cart', item)">Add to Cart</button> -->
     </div>
