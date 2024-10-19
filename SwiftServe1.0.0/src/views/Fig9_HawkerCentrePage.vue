@@ -50,6 +50,7 @@
   import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
   import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue';
   import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
+  import { db } from '../firebase.js';
   // import { EventBus } from '../eventBus.js';
   
   export default {
@@ -72,25 +73,22 @@
         activeCategory: 'Chinese',
         activeStall: null, // Added to store the selected stall
         stalls: [
-        { id: 1, name: 'Chin Lee Chicken Rice', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: false },
-        { id: 2, name: 'Adam Briyani', category: 'Indian', addOns: [{name: 'Raita', price: 0.5}, {name: 'Boiled Egg', price: 1.0}], halal: true, vegetarian: false },
-        { id: 3, name: 'Octopus Drinks', category: 'Beverages', addOns: [{name: 'Ice', price: 0.3}, {name: 'Condensed Milk', price: 0.4}], halal: true, vegetarian: true },
-        { id: 4, name: 'Ru Ji Vegetarian', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: true }
+        // { id: 1, name: 'Chin Lee Chicken Rice', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: false },
+        // { id: 2, name: 'Adam Briyani', category: 'Indian', addOns: [{name: 'Raita', price: 0.5}, {name: 'Boiled Egg', price: 1.0}], halal: true, vegetarian: false },
+        // { id: 3, name: 'Octopus Drinks', category: 'Beverages', addOns: [{name: 'Ice', price: 0.3}, {name: 'Condensed Milk', price: 0.4}], halal: true, vegetarian: true },
+        // { id: 4, name: 'Ru Ji Vegetarian', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: true }
         ],
-          // ... more stalls
         items: [
-          // Your food item data here (replace with your actual data)
-          { id: 1, name: 'Chicken Rice Set', price: 5.50, category: 'Chinese', image: 'images/chicken-rice.jpg', stallId: 1 },
-          { id: 2, name: 'Roasted Chicken Rice', price: 4.80, category: 'Chinese', image: 'images/roasted-chicken-rice.jpg', stallId: 1 },
-          { id: 3, name: 'Char Siew Rice', price: 5.00, category: 'Chinese', image: 'images/char-siew-rice.jpg', stallId: 1 },
-          { id: 4, name: 'Chicken Briyani', price: 7.00, category: 'Indian', image: 'images/chicken-briyani.jpg', stallId: 2 },
-          { id: 5, name: 'Kopi Bing', price: 1.50, category: 'Beverages', image: 'images/kopi-bing.jpg', stallId: 3 },
-          { id: 6, name: 'Teh Bing', price: 1.50, category: 'Beverages', image: 'images/teh-bing.jpg', stallId: 3 },
-          { id: 7, name: 'Vegetarian Bee Hoon', price: 3.00, category: 'Chinese', image: 'images/veg-beehoon.jpg', stallId: 4 },
-          { id: 8, name: 'Vegetarian Char Kway Teow', price: 3.50, category: 'Chinese', image: 'images/veg-ckt.jpg', stallId: 4 },
-          { id: 9, name: 'Roasted Pork Belly Rice', price: 5.00, category: 'Chinese', image: 'images/roasted-pb-rice.jpg', stallId: 1 },
-          { id: 10, name: 'XL Chicken Cutlet Rice', price: 6.00, category: 'Chinese', image: 'images/xl-chickencutlet-rice.jpg', stallId: 1 },
-          // ... more items
+          // { id: 1, name: 'Chicken Rice Set', price: 5.50, category: 'Chinese', image: 'images/chicken-rice.jpg', stallId: 1 },
+          // { id: 2, name: 'Roasted Chicken Rice', price: 4.80, category: 'Chinese', image: 'images/roasted-chicken-rice.jpg', stallId: 1 },
+          // { id: 3, name: 'Char Siew Rice', price: 5.00, category: 'Chinese', image: 'images/char-siew-rice.jpg', stallId: 1 },
+          // { id: 4, name: 'Chicken Briyani', price: 7.00, category: 'Indian', image: 'images/chicken-briyani.jpg', stallId: 2 },
+          // { id: 5, name: 'Kopi Bing', price: 1.50, category: 'Beverages', image: 'images/kopi-bing.jpg', stallId: 3 },
+          // { id: 6, name: 'Teh Bing', price: 1.50, category: 'Beverages', image: 'images/teh-bing.jpg', stallId: 3 },
+          // { id: 7, name: 'Vegetarian Bee Hoon', price: 3.00, category: 'Chinese', image: 'images/veg-beehoon.jpg', stallId: 4 },
+          // { id: 8, name: 'Vegetarian Char Kway Teow', price: 3.50, category: 'Chinese', image: 'images/veg-ckt.jpg', stallId: 4 },
+          // { id: 9, name: 'Roasted Pork Belly Rice', price: 5.00, category: 'Chinese', image: 'images/roasted-pb-rice.jpg', stallId: 1 },
+          // { id: 10, name: 'XL Chicken Cutlet Rice', price: 6.00, category: 'Chinese', image: 'images/xl-chickencutlet-rice.jpg', stallId: 1 },
         ],
         availableFilters: [
           { label: 'Halal', value: 'Halal' },
@@ -102,15 +100,31 @@
     computed: {
       filteredItems() {
         let filtered = this.items;
+        // if (this.activeCategory === 'Halal') {
+        //   filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.halal));
+        // } else if (this.activeCategory === 'Vegetarian') {
+        //   filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.vegetarian));
+        // } else if (this.activeCategory !== 'All') {
+        //   filtered = filtered.filter(item => item.category === this.activeCategory);
+        // }
+        // if (this.activeStall) {
+        //   filtered = filtered.filter(item => item.stallId === this.activeStall.id);
+        // }
         if (this.activeCategory === 'Halal') {
-          filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.halal));
+          filtered = filtered.filter(item => {
+            const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.halal);
+            return stall;
+          });
         } else if (this.activeCategory === 'Vegetarian') {
-          filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.vegetarian));
+          filtered = filtered.filter(item => {
+            const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.vegetarian);
+            return stall;
+          });
         } else if (this.activeCategory !== 'All') {
           filtered = filtered.filter(item => item.category === this.activeCategory);
         }
         if (this.activeStall) {
-          filtered = filtered.filter(item => item.stallId === this.activeStall.id);
+          filtered = filtered.filter(item => item.merchantId === this.activeStall.uid);
         }
         return filtered;
       },
@@ -130,6 +144,20 @@
       }
     },
     methods: {
+      async fetchStalls() {
+        const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
+        this.stalls = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          uid: doc.id,
+        }));
+      },
+      async fetchItems() {
+        const querySnapshot = await db.collection('FoodItem').get();
+        this.items = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+      },
       updateActiveCategory(category) {
         this.activeCategory = category;
         this.activeStall = null;
@@ -150,8 +178,11 @@
       cancelOrder() {
         this.cartItems = [];
       },
-      findStall(stallId) {
-        return this.stalls.find(stall => stall.id === stallId);
+      // findStall(stallId) {
+      //   return this.stalls.find(stall => stall.id === stallId);
+      // },
+      findStall(merchantId) {
+        return this.stalls.find(stall => stall.uid === merchantId);
       },
       viewFoodItem(item, stall) {
         this.$router.push({

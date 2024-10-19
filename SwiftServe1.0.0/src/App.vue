@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <!-- <HelloWorld msg="You did it!" /> -->
 
       <nav>
         <RouterLink to="/hawkerCentre">Hawker Centre Page</RouterLink>
