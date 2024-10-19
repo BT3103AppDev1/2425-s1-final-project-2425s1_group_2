@@ -67,7 +67,8 @@ export default {
       quantity: 1,
       addOns: [],
       specialInstructions: "",
-      addToCart: null
+      addToCart: null,
+      userId: 'spencer1234' // Hardcoded for now
     };
   },
   async created() {
@@ -76,14 +77,19 @@ export default {
   },
   computed: {
     totalPrice() {
+      return this.calculateTotalPrice();
+    }
+  },
+  methods: {
+    calculateTotalPrice() {
+      // Calculate the total price of add-ons
       const addOnTotal = this.addOns.reduce((total, addOn) => {
         return total + addOn.price * addOn.quantity;
       }, 0);
 
+      // Calculate the total price by adding the base price and add-on total, then multiply by quantity
       return (this.foodItem.foodItemPrice + addOnTotal) * this.quantity;
-    }
-  },
-  methods: {
+    },
     async fetchFoodItem(foodItemId) {
       try {
         const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
@@ -126,18 +132,26 @@ export default {
         this.addOns[addOnIndex] = updatedAddOn;
       }
     },
-    addToCartHandler() {
+    async addToCartHandler() {
       // Handle adding to cart
       const cartItem = {
-        ...this.foodItem,
+        userId: this.userId,
+        foodItemName: this.foodItem.foodItemName,
+        foodItemPrice: this.calculateTotalPrice(),
         quantity: this.quantity,
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
-        specialInstructions: this.specialInstructions
+        specialInstructions: this.specialInstructions,
+        merchantName: this.merchant.displayName,
+        merchantId: this.merchant.uid
       };
 
-      // EventBus.$emit('add-to-cart', cartItem);
-      alert('Item added to cart');
-      this.$router.push('/hawkerCentre');
+      try {
+        await db.collection('Cart').add(cartItem);
+        alert('Item added to cart');
+        this.$router.push('/hawkerCentre');
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
     },
     cancelOrder() {
       // Handle cancel order

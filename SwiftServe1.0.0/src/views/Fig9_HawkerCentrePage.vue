@@ -40,6 +40,18 @@
     </div>
     
     <router-view :add-to-cart="addToCart"></router-view>
+      <div class="cart-items" v-if="cartItems.length > 0">
+        <h2>Cart Items</h2>
+        <ul>
+          <li v-for="item in cartItems" :key="item.id">
+            {{ item.foodItemName }} - ${{ item.foodItemPrice }} x {{ item.quantity }}
+          </li>
+        </ul>
+      </div>
+      <div v-else>
+        <p>No items in cart.</p>
+      </div>
+    
   </div>
 </template>
   
@@ -96,6 +108,7 @@
         ],
         cartItems: [],
         categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
+        userId: 'spencer1234'
       };
     },
     computed: {
@@ -172,6 +185,18 @@
           console.error('Error fetching items: ', error);
         }
       },
+      async fetchCartItems() {
+        try {
+          const querySnapshot = await db.collection('Cart').where('userId', '==', this.userId).get();
+          this.cartItems = querySnapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
+        } catch (error) {
+          console.error('Error fetching cart items: ', error);
+        }
+      },
       updateActiveCategory(category) {
         this.activeCategory = category;
         this.activeStall = null;
@@ -214,6 +239,7 @@
     mounted() {
       this.fetchStalls();
       this.fetchItems();
+      this.fetchCartItems();
     },
   };
   </script>
