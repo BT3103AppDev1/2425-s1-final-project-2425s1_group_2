@@ -1,5 +1,5 @@
 <template>
-    <h1 style="text-align:center;">Hawker Centre</h1>
+    <h1 style="text-align:center;font-family: 'Inria Sans';">Hawker Centre</h1>
 
     <div class="StallArrangement">
         <!-- code here for stalls, should change color for the selected stall -->
@@ -8,7 +8,7 @@
          <div class = "stall" id = "003">Mixed Rice</div>
     </div>
 
-    <div class = "Seating">  
+    <div id= "Seating">  
         
         <div class = "SeatSet">
             <div class = "SeatArrangement">
@@ -129,7 +129,7 @@
             <p>Occupied</p>
         </div>
 
-        <button id="SaveButton"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
+        <button id="SaveButton" @click="saveToFS"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
     </div>
 </template>
 
@@ -171,6 +171,8 @@
         align-items: center;
         justify-content: center;
         font-size: 1.1vw;
+
+        font-family: 'Inria Sans';
     }
 
     .SeatSection{
@@ -207,6 +209,7 @@
         align-items: center;
         justify-content: center;
         font-size: 1.1vw;
+        font-family: 'Inria Sans';
     }
 
     .circletable{
@@ -226,6 +229,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+
+        font-family: 'Inria Sans';
     }
 
     .CircleSection{
@@ -255,7 +260,7 @@
         transform: translate(0,-50%);
     }
 
-    .Seating {
+    #Seating {
         display: flex;
         justify-content: center;
         gap: 1em;
@@ -273,6 +278,7 @@
         align-items: center;
         justify-content: center;
         font-size: 1.1vw;
+        font-family: 'Inria Sans';
     }
 
     #FreeLabel, #SelectedLabel, #OccupiedLabel {
@@ -317,9 +323,21 @@
 
         text-indent:2vw;
     }
+
+    button:disabled {
+        background-color: #FF2505; /* Change background color */
+        color: black;            /* Change text color */
+        opacity: 1.0;              
+    }
 </style>
 
 <script>
+import firebaseApp from '@/firebase.js';
+import { getFirestore } from 'firebase/firestore';
+import {collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore";
+
+const db = getFirestore(firebaseApp);
+
 export default {
     data() {
         return {
@@ -343,6 +361,22 @@ export default {
                 console.log(this.seatsChosen);
             });
         });
+
+        async function display() {
+            let allSeatsTaken = await getDocs(collection(db, "Seats"));
+            allSeatsTaken.forEach((docs) => {
+                let documentData = docs.data();
+
+                let arrSeats = documentData.SeatsChosen;
+
+                arrSeats.forEach((seat)=> {
+                    document.getElementById(seat).disabled = true;
+                });
+            });
+        }
+
+        display();
+
     },
     methods: {
         addSeat(seatId) {
@@ -352,6 +386,36 @@ export default {
         },
         removeSeat(seatId) {
             this.seatsChosen = this.seatsChosen.filter(seat => seat !== seatId);
+        },
+
+        async saveToFS(){
+            console.log("saved to fs");
+
+            let customer = "Customer123";
+            let seatsChosen = [];
+            let newSeatsChosen = seatsChosen.concat(this.seatsChosen);
+
+            try{
+                const docRef = await setDoc(doc(db, "Seats", customer),{
+                    Customer: customer, SeatsChosen: newSeatsChosen})
+                    // need to refresh page
+                    // let seatingContainer = document.getElementById("Seating");
+                    // let inputs = seatingContainer.querySelectorAll("input, select, textarea");
+
+                    // inputs.forEach((input) => {
+                    // input.value = ''; // Clear the value of each input element
+                    // });
+                    location.reload();
+                                        
+            }
+            catch(error) {
+                console.error("Error adding document: ", error)
+            }
+        },
+
+        disableSeat(seatId){
+            console.log("disable seat: "+seatId);
+            document.getElementById(seatId).disabled = true;
         }
     }
 };
