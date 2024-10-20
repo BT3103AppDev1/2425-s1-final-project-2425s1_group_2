@@ -41,7 +41,9 @@ export default {
       this.$router.push('/custD')
     },
 
-    //SettingsClick. NOT DONE YET.
+    SettingsClick() {
+      this.$router.push('/profile')
+    },
 
     LogoutClick() {
       this.$router.push('/')
