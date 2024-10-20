@@ -5,7 +5,7 @@
     </div>
 
     <div class="welcomeCust">
-      <h2>Welcome Spencer TBC</h2>
+      <h2>Welcome {{ user.displayName }}</h2>
     </div>
 
     <img
@@ -33,11 +33,27 @@
 </template>
 
 <script>
-//Welcome Spencer TBC not done yet
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 export default {
+  name: 'UniversalHeader',
+
+  data() {
+    return {
+        user:false,
+    }
+  },
+
+  mounted(){
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+            }
+    })
+  },
+
   methods: {
     CDashClick() {
-      //logout from firebase. NOT DONE YET.
       this.$router.push('/custD')
     },
 
