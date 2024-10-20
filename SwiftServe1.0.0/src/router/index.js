@@ -51,7 +51,7 @@ const router = createRouter({
     },
     {
       //change to Fig 9
-      path: '/food-item/:id/',
+      path: '/food-item/:id?/:cartItemId?',
       name: 'foodItemPage',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route

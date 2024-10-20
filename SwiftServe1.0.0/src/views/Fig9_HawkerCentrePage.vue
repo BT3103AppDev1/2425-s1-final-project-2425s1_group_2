@@ -31,39 +31,21 @@
       </div>
     </div>
     <div class="cart-and-checkout">
-      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" />
-      <div class="checkout-area">
-        <p class="totalAmount">Total Amount: ${{ totalAmount }}</p>
-        <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
-        <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
-      </div>
+      <OrderCart :items="cartItems" @remove-item="removeItemFromCart"  @edit-item="editCartItem" class="order-cart" />
+      <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
     </div>
-    
-    <router-view :add-to-cart="addToCart"></router-view>
-      <div class="cart-items" v-if="cartItems.length > 0">
-        <h2>Cart Items</h2>
-        <ul>
-          <li v-for="item in cartItems" :key="item.id">
-            {{ item.foodItemName }} - ${{ item.foodItemPrice }} x {{ item.quantity }}
-          </li>
-        </ul>
-      </div>
-      <div v-else>
-        <p>No items in cart.</p>
-      </div>
-    
   </div>
 </template>
   
-  <script>
+<script>
   import AppHeader from '../components/AppHeader.vue';
   import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
   import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
   import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
   import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue';
   import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
+  import CheckoutArea from '../components/Fig9_HawkerCentrePage/CheckoutArea.vue';
   import { db } from '../firebase.js';
-  // import { EventBus } from '../eventBus.js';
   
   export default {
     components: {
@@ -72,36 +54,15 @@
       FoodItem,
       OrderCart,
       StallList,
-      FilterButtons
+      FilterButtons,
+      CheckoutArea
     },
-    // created() {
-    //   EventBus.$on('add-to-cart', this.addToCart);
-    // },
-    // beforeUnmount() {
-    //   EventBus.$off('add-to-cart', this.addToCart);
-    // },
     data() {
       return {
         activeCategory: 'Chinese',
-        activeStall: null, // Added to store the selected stall
-        stalls: [
-        // { id: 1, name: 'Chin Lee Chicken Rice', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: false },
-        // { id: 2, name: 'Adam Briyani', category: 'Indian', addOns: [{name: 'Raita', price: 0.5}, {name: 'Boiled Egg', price: 1.0}], halal: true, vegetarian: false },
-        // { id: 3, name: 'Octopus Drinks', category: 'Beverages', addOns: [{name: 'Ice', price: 0.3}, {name: 'Condensed Milk', price: 0.4}], halal: true, vegetarian: true },
-        // { id: 4, name: 'Ru Ji Vegetarian', category: 'Chinese', addOns: [{name: 'Extra Rice', price: 1.0}, {name: 'Egg', price: 0.8}], halal: false, vegetarian: true }
-        ],
-        items: [
-          // { id: 1, name: 'Chicken Rice Set', price: 5.50, category: 'Chinese', image: 'images/chicken-rice.jpg', stallId: 1 },
-          // { id: 2, name: 'Roasted Chicken Rice', price: 4.80, category: 'Chinese', image: 'images/roasted-chicken-rice.jpg', stallId: 1 },
-          // { id: 3, name: 'Char Siew Rice', price: 5.00, category: 'Chinese', image: 'images/char-siew-rice.jpg', stallId: 1 },
-          // { id: 4, name: 'Chicken Briyani', price: 7.00, category: 'Indian', image: 'images/chicken-briyani.jpg', stallId: 2 },
-          // { id: 5, name: 'Kopi Bing', price: 1.50, category: 'Beverages', image: 'images/kopi-bing.jpg', stallId: 3 },
-          // { id: 6, name: 'Teh Bing', price: 1.50, category: 'Beverages', image: 'images/teh-bing.jpg', stallId: 3 },
-          // { id: 7, name: 'Vegetarian Bee Hoon', price: 3.00, category: 'Chinese', image: 'images/veg-beehoon.jpg', stallId: 4 },
-          // { id: 8, name: 'Vegetarian Char Kway Teow', price: 3.50, category: 'Chinese', image: 'images/veg-ckt.jpg', stallId: 4 },
-          // { id: 9, name: 'Roasted Pork Belly Rice', price: 5.00, category: 'Chinese', image: 'images/roasted-pb-rice.jpg', stallId: 1 },
-          // { id: 10, name: 'XL Chicken Cutlet Rice', price: 6.00, category: 'Chinese', image: 'images/xl-chickencutlet-rice.jpg', stallId: 1 },
-        ],
+        activeStall: null, 
+        stalls: [],
+        items: [],
         availableFilters: [
           { label: 'Halal', value: 'Halal' },
           { label: 'Vegetarian', value: 'Vegetarian' },
@@ -114,16 +75,6 @@
     computed: {
       filteredItems() {
         let filtered = this.items;
-        // if (this.activeCategory === 'Halal') {
-        //   filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.halal));
-        // } else if (this.activeCategory === 'Vegetarian') {
-        //   filtered = filtered.filter(item => this.stalls.find(stall => stall.id === item.stallId && stall.vegetarian));
-        // } else if (this.activeCategory !== 'All') {
-        //   filtered = filtered.filter(item => item.category === this.activeCategory);
-        // }
-        // if (this.activeStall) {
-        //   filtered = filtered.filter(item => item.stallId === this.activeStall.id);
-        // }
         if (this.activeCategory === 'Halal') {
           filtered = filtered.filter(item => {
             const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.halal);
@@ -157,7 +108,7 @@
         }
       },
       totalAmount() {
-        return this.cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+        return this.cartItems.reduce((total, item) => total + item.foodItemPrice, 0).toFixed(2);
       }
     },
     methods: {
@@ -173,7 +124,7 @@
           console.error('Error fetching stalls: ', error);
         }
       },
-      async fetchItems() {
+      async fetchFoodItems() {
         try {
           const querySnapshot = await db.collection('FoodItem').get();
           this.items = querySnapshot.docs.map(doc => ({
@@ -197,6 +148,14 @@
           console.error('Error fetching cart items: ', error);
         }
       },
+      async removeItemFromCart(itemId) {
+        try {
+          await db.collection('Cart').doc(itemId).delete();
+          this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+        } catch (error) {
+          console.error('Error removing item from cart: ', error);
+        }
+      },
       updateActiveCategory(category) {
         this.activeCategory = category;
         this.activeStall = null;
@@ -207,19 +166,12 @@
       addToCart(item) {
         this.cartItems.push(item);
       },
-      removeItemFromCart(itemId) {
-        this.cartItems = this.cartItems.filter(item => item.id !== itemId);
-      },
       checkout() {
-        // Implement checkout logic here
         alert('Checkout functionality coming soon!');
       },
       cancelOrder() {
         this.cartItems = [];
       },
-      // findStall(stallId) {
-      //   return this.stalls.find(stall => stall.id === stallId);
-      // },
       findStall(merchantId) {
         return this.stalls.find(stall => stall.uid === merchantId);
       },
@@ -227,452 +179,39 @@
         this.$router.push({
           name: 'foodItemPage',
           params: {
-            id: item.id,        // Pass the food item ID 
-            // foodItemName: item.name,    // Pass the food item name
-            // price: item.price,   // Pass the food item price
-            // stallId: item.stallId, // Pass the stall ID
-            // stallName: stall.name, // Pass the stall name
+            id: item.id,  // Pass the food item ID 
           }
         });
-      }
+      },
+      editCartItem(item) {
+        this.$router.push({
+          name: 'foodItemPage',
+          params: {
+            cartItemId: item.id,  // Pass the cart item ID
+          }
+        });
+    }
+
     },
     mounted() {
       this.fetchStalls();
-      this.fetchItems();
+      this.fetchFoodItems();
       this.fetchCartItems();
     },
   };
-  </script>
-  
-
-<style>
-#app {
-  font-family: 'Arial', sans-serif;  /* Or your chosen font */
-  width: 95%;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Header Styles */
-header { 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;  
-  padding-bottom: 20px;
-}
-
-header h1 {
-  font-size: 24px;
-  color: #00ADB5;  /* Your green */
-}
-
-/* Navigation Styles */
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-nav li {
-  margin-right: 20px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-  padding: 10px;  
-  border-bottom: 5px solid transparent; /* For active state effect later */
-}
-
-nav .active {  /* Style the active category */
-  color: #00ADB5;
-  border-bottom-color: 2px solid#00ADB5;
-}
-
-/* Main Content Area */
-.main-content {
-  display: flex; 
-  margin-top: 20px;
-}
-
-/* Stall List */
-.stall-list {
-  width: 200px; 
-  border-right: 1px solid #ccc;
-  margin-right: 20px; 
-  overflow-y: auto;
-}
-
-.stall-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-
-.stall-item.active {
-  background-color: #f0f0f0; 
-  font-weight: bold;
-}
-
-.food-area {
-  flex: 1;
-}
-
-.food-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.food-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.food-item img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 10px;
-}
-
-/* Order Cart Styles */
-.order-cart {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 20px;
-}
-
-.order-cart h2 {
-  margin-top: 0;
-}
-
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.cart-item  
- img {
-  width: 50px;
-  height:  
- auto;
-  margin-right: 10px;
-}
-
-.active {
-  color: #00ADB5;  
-  font-weight: bold; 
-}
-
-.totalAmount {
-  font-weight: bold;
-}
-
-.cart-and-checkout {
-    display: flex;
-    justify-content: space-between; /* Position elements on opposite sides */
-    align-items: flex-start; /* Align items to the top */
-    margin-top: 20px;
-  }
-
-.checkout-area {
-  display: flex;
-  flex-direction: column; /* Stack checkout elements vertically */
-  align-items: flex-end; /* Align to the right */
-}
-
-.checkout-area button {
-  margin-top: 10px;
-  background-color: #00ADB5;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.cart-icon, .cancel-icon {
-  margin-right: 10px;
-}
-
-.no-stalls-message {
-  text-align: center;
-  font-size: 25px;
-  color: #777; 
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-</style>
-
-<!-- double filtering logic version but i don't think this works well eg. filter by halal + activeCategory -->
-<!-- <template>
-  <div id="app">
-    <AppHeader />
-    <FilterButtons 
-      :filters="availableFilters" 
-      :activeFilter="activeDietFilter" 
-      @filter-selected="updateActiveDietFilter" 
-    />
-    <CategoryNav 
-      :categories="categories" 
-      @category-selected="updateActiveCategory" 
-      :activeCategory="activeCategory"
-    />
-    <div class="main-content">
-      <StallList 
-        :stalls="filteredStalls" 
-        :activeStall="activeStall" 
-        @stall-selected="updateActiveStall" 
-      />
-      <div class="food-area">
-        <div v-if="filteredItems.length > 0" class="food-grid">
-          <FoodItem 
-            v-for="item in filteredItems"
-            :key="item.id"
-            :item="item"
-            @add-to-cart="addToCart"
-            @click="viewFoodItem(item)"
-          />
-        </div>
-        <div v-else class="no-stalls-message">No items found</div> 
-      </div>
-    </div>
-    <div class="cart-and-checkout">
-      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" />
-      <div class="checkout-area">
-        <p class="totalAmount">Total Amount: ${{ totalAmount }}</p>
-        <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
-        <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
-      </div>
-    </div>
-    <router-view :add-to-cart="addToCart"></router-view>
-  </div>
-</template>
-
-<script>
-import AppHeader from '../components/AppHeader.vue';
-import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
-import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
-import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
-import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue';
-import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
-import { db } from '../firebase.js';
-
-export default {
-  components: {
-    AppHeader,
-    CategoryNav,
-    FoodItem,
-    OrderCart,
-    StallList,
-    FilterButtons
-  },
-  data() {
-    return {
-      activeCategory: 'All',
-      activeDietFilter: 'All',
-      activeStall: null,
-      categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'], // Category list
-      stalls: [],
-      items: [],
-      cartItems: [],
-      availableFilters: [
-          { label: 'Halal', value: 'Halal' },
-          { label: 'Vegetarian', value: 'Vegetarian' },
-        ],
-    };
-  },
-  computed: {
-    filteredItems() {
-      let filtered = this.items;
-
-      // Filter by diet filter
-      if (this.activeDietFilter !== 'All') {
-        filtered = filtered.filter(item => {
-          const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall[this.activeDietFilter.toLowerCase()]);
-          return stall;
-        });
-      }
-
-      // Filter by food category
-      if (this.activeCategory !== 'All') {
-        filtered = filtered.filter(item => {
-          const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.category === this.activeCategory);
-          return stall;
-        });
-      }
-
-      // Filter by active stall
-      if (this.activeStall) {
-        filtered = filtered.filter(item => item.merchantId === this.activeStall.uid);
-      }
-
-      return filtered;
-    },
-    filteredStalls() {
-      let filtered = this.stalls;
-
-      // Filter by diet filter
-      if (this.activeDietFilter !== 'All') {
-        filtered = filtered.filter(stall => stall[this.activeDietFilter.toLowerCase()]);
-      }
-
-      // Filter by food category
-      if (this.activeCategory !== 'All') {
-        filtered = filtered.filter(stall => stall.category === this.activeCategory);
-      }
-
-      return filtered;
-    },
-    totalAmount() {
-      return this.cartItems.reduce((total, item) => total + item.foodItemPrice, 0).toFixed(2);
-    }
-  },
-  methods: {
-    async fetchStalls() {
-      try {
-        const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
-        this.stalls = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          uid: doc.id,
-        }));
-        console.log('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
-      } catch (error) {
-        console.error('Error fetching stalls: ', error);
-      }
-    },
-    async fetchItems() {
-      try {
-        const querySnapshot = await db.collection('FoodItem').get();
-        this.items = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
-      } catch (error) {
-        console.error('Error fetching items: ', error);
-      }
-    },
-    updateActiveCategory(category) {
-      this.activeCategory = category;
-      this.activeStall = null;
-    },
-    updateActiveDietFilter(filter) {
-      this.activeDietFilter = filter;
-      this.activeStall = null;
-    },
-    updateActiveStall(stall) {
-      this.activeStall = stall;
-    },
-    addToCart(item) {
-      this.cartItems.push(item);
-    },
-    removeItemFromCart(itemId) {
-      this.cartItems = this.cartItems.filter(item => item.id !== itemId);
-    },
-    checkout() {
-      // Implement checkout logic here
-      alert('Checkout functionality coming soon!');
-    },
-    cancelOrder() {
-      this.cartItems = [];
-    },
-    findStall(merchantId) {
-      return this.stalls.find(stall => stall.uid === merchantId);
-    },
-    viewFoodItem(item) {
-      this.$router.push({
-        name: 'foodItemPage',
-        params: {
-          id: item.id // Pass only the food item ID
-        }
-      });
-    }
-  },
-  mounted() {
-    this.fetchStalls();
-    this.fetchItems();
-  },
-};
 </script>
 
 <style>
 #app {
-  font-family: 'Arial', sans-serif;  /* Or your chosen font */
+  font-family: 'Arial', sans-serif;  
   width: 95%;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Header Styles */
-header { 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;  
-  padding-bottom: 20px;
-}
-
-header h1 {
-  font-size: 24px;
-  color: #00ADB5;  /* Your green */
-}
-
-/* Navigation Styles */
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-nav li {
-  margin-right: 20px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-  padding: 10px;  
-  border-bottom: 5px solid transparent; /* For active state effect later */
-}
-
-nav .active {  /* Style the active category */
-  color: #00ADB5;
-  border-bottom-color: 2px solid#00ADB5;
-}
-
-/* Main Content Area */
 .main-content {
   display: flex; 
   margin-top: 20px;
-}
-
-/* Stall List */
-.stall-list {
-  width: 200px; 
-  border-right: 1px solid #ccc;
-  margin-right: 20px; 
-  overflow-y: auto;
-}
-
-.stall-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-
-.stall-item.active {
-  background-color: #f0f0f0; 
-  font-weight: bold;
 }
 
 .food-area {
@@ -683,20 +222,6 @@ nav .active {  /* Style the active category */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-}
-
-.food-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.food-item img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 10px;
 }
 
 /* Order Cart Styles */
@@ -710,60 +235,33 @@ nav .active {  /* Style the active category */
   margin-top: 0;
 }
 
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.cart-item img {
-  width: 50px;
-  height: auto;
-  margin-right: 10px;
-}
-
 .active {
   color: #00ADB5;  
   font-weight: bold; 
 }
 
-.totalAmount {
-  font-weight: bold;
-}
-
 .cart-and-checkout {
-  display: flex;
-  justify-content: space-between; /* Position elements on opposite sides */
-  align-items: flex-start; /* Align items to the top */
-  margin-top: 20px;
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+.order-cart {
+  flex: 4;
+  margin-right: 20px;
 }
 
 .checkout-area {
+  flex: 1;
   display: flex;
-  flex-direction: column; /* Stack checkout elements vertically */
-  align-items: flex-end; /* Align to the right */
-}
-
-.checkout-area button {
-  margin-top: 10px;
-  background-color: #00ADB5;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.cart-icon, .cancel-icon {
-  margin-right: 10px;
+  flex-direction: column; 
+  align-items: flex-end; 
 }
 
 .no-stalls-message {
   text-align: center;
   font-size: 25px;
-  color: #777; 
   margin-top: 10px;
   font-weight: bold;
 }
-</style> -->
+</style>

@@ -3,7 +3,6 @@
       <!-- <img :src="item.image" :alt="item.name"> -->
       <h3>{{ item.foodItemName }}</h3>
       <!-- <p>${{ item.price }}</p> -->
-      <!-- <button @click="$emit('add-to-cart', item)">Add to Cart</button> -->
     </div>
   </template>
   
@@ -14,5 +13,16 @@
   </script>
   
   <style scoped>
-  /* Add styles for a food item */
+  .food-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.food-item img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
   </style>

@@ -35,6 +35,8 @@
   .stall-list {
     overflow-y: auto;
     width: 200px;
+    border-right: 1px solid #ccc;
+    margin-right: 20px; 
   }
   
   /* Base stall item styling */

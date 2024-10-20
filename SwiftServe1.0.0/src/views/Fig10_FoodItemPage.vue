@@ -1,26 +1,16 @@
 <template>
   <div class="food-item-page">
     <HeaderTag />
-    <div class="food-item-details" v-if="foodItem && merchant">
-      <div class="left-column">
-        <h1 class="food-stall">{{ merchant.displayName }}</h1>
-        <div class="food-image">
-          <img :src="foodItem.foodItemImage" :alt="foodItem.foodItemName">
-          <hr class="separator"> 
-        </div>
-        <h1 class="food-name">{{ foodItem.foodItemName }}</h1>
-        <div class="food-info">
-          <div class="price-quantity">
-            <p class="price">${{ totalPrice.toFixed(2) }}</p>
-            <div class="quantity-controls">
-              <span class="quantity">× {{ quantity }}</span>
-              <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
-              <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="food-item-details" v-if="(foodItem || cartItem) && merchant">
+      <LeftColumn
+        :merchant="merchant"
+        :foodItem="cartItem ? cartItem : foodItem"
+        :quantity="quantity"
+        :totalPrice="totalPrice"
+        @increaseQuantity="increaseQuantity"
+        @decreaseQuantity="decreaseQuantity"
+      />
+ 
       <div class="right-column">
         <div class="green-box">
           <div v-if="addOns.length > 0" class="add-ons"> 
@@ -52,13 +42,15 @@
 import HeaderTag from '../components/AppHeader.vue';
 import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
+import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
 import { db } from '../firebase.js';
 
 export default {
   components: {
     HeaderTag,
     AddOn,
-    SpecialInstructions
+    SpecialInstructions,
+    LeftColumn 
   },
   data() {
     return {
@@ -67,34 +59,66 @@ export default {
       quantity: 1,
       addOns: [],
       specialInstructions: "",
-      addToCart: null,
-      userId: 'spencer1234' // Hardcoded for now
+      userId: 'spencer1234', // Hardcoded for now
+      cartItemId: null,
+      cartItem: null,
+      totalPrice: 0
     };
   },
   async created() {
-    const foodItemId = this.$route.params.id;
-    await this.fetchFoodItem(foodItemId);
-  },
-  computed: {
-    totalPrice() {
-      return this.calculateTotalPrice();
+    const foodItemId = this.$route.params.id || null;
+    this.cartItemId = this.$route.params.cartItemId || null;
+    if (this.cartItemId) {
+      await this.fetchCartItem(this.cartItemId);
+    }
+    if (foodItemId) {
+      await this.fetchFoodItem(foodItemId);
     }
   },
+  watch: {
+    addOns: {
+      handler() {
+        this.updateTotalPrice();
+      },
+      deep: true
+    },
+    quantity() {
+      this.updateTotalPrice();
+    },
+    foodItem() {
+      this.updateTotalPrice();
+    },
+    cartItem() {
+      this.updateTotalPrice();
+    }
+  },
+  // computed: {
+  //   totalPrice() {
+  //     return this.calculateTotalPrice();
+  //   }
+  // },
   methods: {
     calculateTotalPrice() {
-      // Calculate the total price of add-ons
       const addOnTotal = this.addOns.reduce((total, addOn) => {
         return total + addOn.price * addOn.quantity;
       }, 0);
 
-      // Calculate the total price by adding the base price and add-on total, then multiply by quantity
-      return (this.foodItem.foodItemPrice + addOnTotal) * this.quantity;
+      // Multiply both base price and add-on total by the quantity
+      const basePrice = this.foodItem ? this.foodItem.foodItemPrice : this.cartItem.foodItemPrice;
+      return (basePrice + addOnTotal) * this.quantity;
+    },
+    updateTotalPrice() {
+      this.totalPrice = this.calculateTotalPrice();
     },
     async fetchFoodItem(foodItemId) {
       try {
         const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
         if (foodItemDoc.exists) {
-          this.foodItem = foodItemDoc.data();
+          this.foodItem = {
+            id: foodItemDoc.id, 
+            ...foodItemDoc.data()
+          };
+          console.log('Fetched food item:', this.foodItem); // Log the fetched food item
           await this.fetchMerchant(this.foodItem.merchantId);
           this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
             name: key,
@@ -113,11 +137,74 @@ export default {
         const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
         if (merchantDoc.exists) {
           this.merchant = merchantDoc.data();
+          console.log('Fetched merchant:', this.merchant); // Log the fetched merchant
         } else {
           console.error('No such merchant!');
         }
       } catch (error) {
         console.error('Error fetching merchant:', error);
+      }
+    },
+    async fetchCartItem(cartItemId) {
+      try {
+        const cartItemDoc = await db.collection('Cart').doc(cartItemId).get();
+        if (cartItemDoc.exists) {
+          const cartItem = cartItemDoc.data();
+          console.log('Fetched cart item:', cartItem); // Log the fetched cart item
+
+          // Extract the foodItemId from the cart item
+          const foodItemId = cartItem.foodItemId;
+
+          // Fetch the original food item from FoodItem collection using the foodItemId
+          const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+          let originalAddOns = [];
+          if (foodItemDoc.exists) {
+            const foodItem = foodItemDoc.data();
+            originalAddOns = foodItem.addOn ? Object.keys(foodItem.addOn).map(key => ({
+              name: key,
+              price: foodItem.addOn[key],
+              quantity: 0
+            })) : [];
+          } else {
+            console.error('No such food item!');
+          }
+
+          // Merge the original add-ons and the ones from the cart
+          const mergedAddOns = originalAddOns.map(originalAddOn => {
+            const cartAddOn = cartItem.addOns.find(addOn => addOn.name === originalAddOn.name);
+            return {
+              ...originalAddOn,
+              quantity: cartAddOn ? cartAddOn.quantity : 0 // Use cart quantity if available
+            };
+          });
+
+          // Update cartItem object
+          this.cartItem = {
+            userId: cartItem.userId,
+            foodItemName: cartItem.foodItemName,
+            foodItemPrice: cartItem.foodItemPrice,
+            foodItemId: cartItem.foodItemId,
+            quantity: cartItem.quantity,
+            addOns: mergedAddOns,
+            specialInstructions: cartItem.specialInstructions,
+            merchantName: cartItem.merchantName,
+            merchantId: cartItem.merchantId
+          };
+
+          // Update addOns and specialInstructions
+          this.quantity = this.cartItem.quantity;
+          this.addOns = this.cartItem.addOns;
+          this.specialInstructions = this.cartItem.specialInstructions;
+
+          // Fetch the merchant details
+          await this.fetchMerchant(cartItem.merchantId);
+
+          this.totalPrice = this.cartItem.foodItemPrice; // Set total price
+        } else {
+          console.error('No such cart item!');
+        }
+      } catch (error) {
+        console.error('Error fetching cart item:', error);
       }
     },
     increaseQuantity() {
@@ -133,11 +220,12 @@ export default {
       }
     },
     async addToCartHandler() {
-      // Handle adding to cart
+      console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
       const cartItem = {
         userId: this.userId,
-        foodItemName: this.foodItem.foodItemName,
+        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
         foodItemPrice: this.calculateTotalPrice(),
+        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
         quantity: this.quantity,
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
         specialInstructions: this.specialInstructions,
@@ -146,15 +234,19 @@ export default {
       };
 
       try {
-        await db.collection('Cart').add(cartItem);
-        alert('Item added to cart');
+        if (this.cartItemId) {
+          await db.collection('Cart').doc(this.cartItemId).update(cartItem);
+          alert('Item successfully edited in cart');
+        } else {
+          await db.collection('Cart').add(cartItem);
+          alert('Item added to cart');
+        }
         this.$router.push('/hawkerCentre');
       } catch (error) {
         console.error('Error adding to cart:', error);
       }
     },
     cancelOrder() {
-      // Handle cancel order
       this.$router.push('/hawkerCentre');
     }
   }
@@ -174,66 +266,9 @@ export default {
   padding: 15px;
 }
 
-.left-column {
-  flex: 1;
-  padding-right: 15px;
-}
-
 .right-column {
   flex: 1;
   padding-left: 15px;
-}
-
-.food-image img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.food-name {
-  font-size: 24px;
-  margin-top: 15px;
-  margin-bottom: 5px;
-}
-
-.food-info {
-  margin-top: 15px;
-}
-
-.price-quantity {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.price {
-  font-size: 50px;
-  font-weight: bold;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-}
-
-.quantity-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #00A895;
-  border: none;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: 40px;
-}
-
-.quantity {
-  margin: 0 10px;
-  font-size: 30px;
-  margin-right: 100px;
 }
 
 .green-box {
@@ -245,11 +280,6 @@ export default {
 
 .add-ons, .special-instructions {
   margin-bottom: 20px;
-}
-
-.add-ons h2, .special-instructions h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
 }
 
 .action-buttons {
@@ -288,4 +318,4 @@ export default {
   border-top: 5px solid black;
   margin: 10px 0; 
 }
-</style>-
+</style>
