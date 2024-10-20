@@ -1,17 +1,17 @@
 <template>
   <HeaderScreen />
-  <DiningOptionsScreen />
+  <ReceiptComponent />
 </template>
 
 <script>
 import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
-import DiningOptionsScreen from '@/components/Fig8_DiningOptionsPage/DOScreen.vue'
+import ReceiptComponent from '@/components/Fig11_CheckoutPage/CheckoutPage.vue'
 
 export default {
-  name: 'DiningOptionsPage',
+  name: 'CheckoutPage',
   components: {
     HeaderScreen,
-    DiningOptionsScreen
+    ReceiptComponent
   },
 
   data() {}

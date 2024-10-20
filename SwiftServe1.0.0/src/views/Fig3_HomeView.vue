@@ -1,10 +1,9 @@
-
 <template>
-<HomeScreen/>
+  <HomeScreen />
 </template>
 
 <script>
-import HomeScreen from "@/components/Fig3_WelcomePage/HomeScreen.vue";
+import HomeScreen from '@/components/Fig3_WelcomePage/HomeScreen.vue'
 
 export default {
   name: 'HomeView',
@@ -12,10 +11,6 @@ export default {
     HomeScreen
   },
 
-  data() {
-
-  }
+  data() {}
 }
 </script>
-
-
