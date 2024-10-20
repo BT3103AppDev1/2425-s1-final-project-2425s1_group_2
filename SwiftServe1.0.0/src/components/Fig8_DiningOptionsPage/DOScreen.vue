@@ -1,27 +1,26 @@
 <template>
   <div class="diningLocator">
-    <h3>Choose Dining Location</h3> <br>
+    <h3>Choose Dining Location</h3>
+    <br />
 
     <div class="inputForm">
-        <label for="hawkerCentre">Hawker Centre: </label>
+      <label for="hawkerCentre">Hawker Centre: </label>
 
-        <select v-model="selectedHawkerCentre" id="hawkerCentre">
-            <option v-for="centre in hawkerCentres" :key="centre" :value="centre">
-                {{ centre }}
-            </option>
-        </select>
+      <select v-model="selectedHawkerCentre" id="hawkerCentre">
+        <option v-for="centre in hawkerCentres" :key="centre" :value="centre">
+          {{ centre }}
+        </option>
+      </select>
     </div>
-    <br>
+    <br />
     <button @click="goHawkerCentrePage" id="HCButton">Let's go</button>
   </div>
 </template>
-
 
 <script>
 export default {
   data() {
     return {
-
       hawkerCentres: [
         'Bukit Canberra Hawker Centre',
         'Fengshan Hawker Centre',
@@ -31,8 +30,8 @@ export default {
       ],
 
       selectedHawkerCentre: ''
-    };
-  },
+    }
+  }
   //go to particular hawker centre page not done yet [selectedHawkerCentre]
   //goHawkerCentrePage button method not done yet
   //hawker centres hardcoded for now
@@ -40,35 +39,34 @@ export default {
 </script>
 
 <style scoped>
-
 .diningLocator {
-    margin-top: 20vh;
-    text-align: center;
+  margin-top: 20vh;
+  text-align: center;
 }
 
 .inputForm {
-    color: #00ADB5;
-    font-size: 2.5vh;
+  color: #00adb5;
+  font-size: 2.5vh;
 }
 
 h3 {
-    font-weight: bold;
-    font-size:4vh;
-    color: #00ADB5;
+  font-weight: bold;
+  font-size: 4vh;
+  color: #00adb5;
 }
 
 #hawkerCentre {
-    font-size: 2.5vh;
+  font-size: 2.5vh;
 }
 
 button {
-    background-color: #00ADB5;
-    font-weight: bold;
-    font-size: 3vh;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    height: 5vh;
-    width: 15vw;
+  background-color: #00adb5;
+  font-weight: bold;
+  font-size: 3vh;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  height: 5vh;
+  width: 15vw;
 }
 </style>

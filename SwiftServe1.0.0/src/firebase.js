@@ -1,4 +1,7 @@
-import { initializeApp } from 'firebase/app';
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import 'firebase/compat/firestore'
+import 'firebase/compat/storage'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -7,10 +10,16 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+}
 
-// Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig)
+const auth = firebase.auth()
+const onAuthStateChanged = auth.onAuthStateChanged.bind(auth)
 
-export default firebaseApp;
+const db = firebase.firestore()
+const GoogleProvider = new firebase.auth.GoogleAuthProvider()
+const EmailProvider = new firebase.auth.EmailAuthProvider()
+
+export { firebaseApp, firebase, auth, db, GoogleProvider, EmailProvider, onAuthStateChanged }
+export default firebaseApp
