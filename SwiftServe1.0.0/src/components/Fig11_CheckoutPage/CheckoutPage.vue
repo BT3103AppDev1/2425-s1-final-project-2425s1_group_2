@@ -2,7 +2,7 @@
   <div class="receipt-container">
     <div class="receipt-header">
       <h1>Receipt</h1>
-      <router-link to="/">
+      <router-link to="/hawkerCentre">
         <img src="/RedCross.png" alt="Go Back" class="cancel" />
       </router-link>
     </div>
@@ -45,13 +45,18 @@
         <img src="/paylah.png" alt="PayLah!" />
       </div>
     </div>
-    <router-link to = "/payment">
+    <router-link to = "/paymentSuccess">
     <button class="confirm-button">Confirm and Pay</button>
     </router-link>
   </div>
 </template>
 
 <script>
+import firebaseApp from '@/firebase.js';
+import { getAuth} from 'firebase/auth';
+const auth = getAuth();
+const user = auth.currentUser;
+
 export default {
   name: 'ReceiptComponent',
   data() {
