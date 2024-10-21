@@ -334,7 +334,7 @@
 <script>
 import firebaseApp from '@/firebase.js';
 import { getFirestore } from 'firebase/firestore';
-import {collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore";
+import {collection, getDocs, doc, deleteDoc, setDoc, serverTimestamp} from "firebase/firestore";
 
 const db = getFirestore(firebaseApp);
 
@@ -342,37 +342,85 @@ export default {
     data() {
         return {
             seatsChosen: [],
+            numSeatsChosen: 0,
+            maxSeats: 5
         };
     },
-    mounted() {
+    async mounted() {
         const seatButtons = Array.from(document.getElementsByClassName('Seat'));
+        let numSeatsLeft = await seatsLeft();
         
         seatButtons.forEach(button => {
+            // console.log(numSeatsLeft);
+            // console.log(this.seatsChosen);
+
+            if (numSeatsLeft <= 5) {
+                this.maxSeats = 2;
+            }
+           
             button.addEventListener('click', () => {
                 if (button.getAttribute('data-selected') === 'true') {
                     button.style.backgroundColor = '#D9D9D9';
                     button.setAttribute('data-selected', 'false');
                     this.removeSeat(button.id); 
                 } else {
+                    if (this.numSeatsChosen >= this.maxSeats) {
+                        alert(`You can only select a maximum of ${this.maxSeats} seats. Please deselect a seat to choose another.`);
+                        return;
+                    }
                     button.style.backgroundColor = '#51E51C'; 
                     button.setAttribute('data-selected', 'true');
                     this.addSeat(button.id); 
                 }
                 console.log(this.seatsChosen);
             });
+
         });
 
         async function display() {
             let allSeatsTaken = await getDocs(collection(db, "Seats"));
-            allSeatsTaken.forEach((docs) => {
+            allSeatsTaken.forEach(async (docs) => {
                 let documentData = docs.data();
+                let timeStamp = documentData.TimeStamp;
 
-                let arrSeats = documentData.SeatsChosen;
+                let timeDiff = 0;
 
-                arrSeats.forEach((seat)=> {
-                    document.getElementById(seat).disabled = true;
-                });
+                if (timeStamp){
+                    let timeSelected = timeStamp.toDate();
+                    // console.log(timeSelected);
+                    let currentTime = new Date();
+                    // console.log(currentTime);
+                    timeDiff = currentTime - timeSelected;
+                }
+
+                // console.log(timeDiff);
+                
+
+                if (timeDiff > 60000){ //60 seconds or 1 min
+                    await deleteDoc(doc(db, "Seats", docs.id));
+                    console.log(`Customer: ${docs.id} has been deleted.`);
+                } else {
+                    let arrSeats = documentData.SeatsChosen;
+
+                    arrSeats.forEach((seat)=> {
+                        document.getElementById(seat).disabled = true;
+                    });
+                }
             });
+        }
+
+        async function seatsLeft(){
+            let SeatsLeft = 23;
+
+            let allSeatsTaken = await getDocs(collection(db, "Seats"));
+            allSeatsTaken.forEach(async (docs) => {
+                let documentData = docs.data();
+                let num = documentData.NumSeats;
+
+                SeatsLeft -= num;
+            });
+
+            return SeatsLeft;
         }
 
         display();
@@ -383,34 +431,40 @@ export default {
             if (!this.seatsChosen.includes(seatId)) {
                 this.seatsChosen.push(seatId); 
             }
+            this.numSeatsChosen ++;
         },
         removeSeat(seatId) {
             this.seatsChosen = this.seatsChosen.filter(seat => seat !== seatId);
+            this.numSeatsChosen --;
         },
 
         async saveToFS(){
-            console.log("saved to fs");
+            if (this.numSeatsChosen <1) {
+                // i.e. user clicks save without choosing any seats
+                alert("You have not chosen any seat, are you sure?");
+            } else {
+                console.log("saved to fs");
 
-            let customer = "Customer123";
-            let seatsChosen = [];
-            let newSeatsChosen = seatsChosen.concat(this.seatsChosen);
+                let customer = "Customer123";
+                let newSeatsChosen = this.seatsChosen;
+                let numSeats = this.numSeatsChosen;
 
-            try{
-                const docRef = await setDoc(doc(db, "Seats", customer),{
-                    Customer: customer, SeatsChosen: newSeatsChosen})
-                    // need to refresh page
-                    // let seatingContainer = document.getElementById("Seating");
-                    // let inputs = seatingContainer.querySelectorAll("input, select, textarea");
+                let timeStamp = serverTimestamp();
 
-                    // inputs.forEach((input) => {
-                    // input.value = ''; // Clear the value of each input element
-                    // });
-                    location.reload();
-                                        
-            }
-            catch(error) {
-                console.error("Error adding document: ", error)
-            }
+                try{
+                    const docRef = await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
+                        Customer: customer,
+                        TimeStamp: timeStamp, 
+                        SeatsChosen: newSeatsChosen,
+                        NumSeats: numSeats
+                    })
+                        location.reload();
+                                            
+                }
+                catch(error) {
+                    console.error("Error adding document: ", error)
+                }
+            }           
         },
 
         disableSeat(seatId){
