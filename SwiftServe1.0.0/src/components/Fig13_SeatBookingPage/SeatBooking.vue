@@ -1,53 +1,11 @@
 <template>
     <h1 style="text-align:center;font-family: 'Inria Sans';">Hawker Centre</h1>
 
-  <div class="StallArrangement">
-    <!-- code here for stalls, should change color for the selected stall -->
-    <div class="stall" id="001">Chicken Rice</div>
-    <div class="stall" id="002">Noodle</div>
-    <div class="stall" id="003">Mixed Rice</div>
-  </div>
-
-  <div class="Seating">
-    <div class="SeatSet">
-      <div class="SeatArrangement">
-        <!-- able to select seats that are grey, cannot select seats that are red -->
-        <div class="SeatSection">
-          <button class="Seat" id="A35">A</button>
-          <button class="Seat" id="A36">A</button>
-        </div>
-
-        <div class="TableSection">
-          <div class="table">35</div>
-          <div class="table">36</div>
-        </div>
-
-        <div class="SeatSection">
-          <button class="Seat" id="B35">B</button>
-          <button class="Seat" id="B36">B</button>
-        </div>
-      </div>
-
-      <div class="SeatArrangement">
-        <!-- able to select seats that are grey, cannot select seats that are red -->
-        <div class="SeatSection">
-          <button class="Seat" id="A37">A</button>
-          <button class="Seat" id="A38">A</button>
-          <button class="Seat" id="A39">A</button>
-        </div>
-
-        <div class="TableSection">
-          <div class="table">37</div>
-          <div class="table">38</div>
-          <div class="table">39</div>
-        </div>
-
-        <div class="SeatSection">
-          <button class="Seat" id="B37">B</button>
-          <button class="Seat" id="B38">B</button>
-          <button class="Seat" id="B39">B</button>
-        </div>
-      </div>
+    <div class="StallArrangement">
+        <!-- code here for stalls, should change color for the selected stall -->
+         <div class = "stall" id = "001">Chicken Rice</div>
+         <div class = "stall" id = "002">Noodle</div>
+         <div class = "stall" id = "003">Mixed Rice</div>
     </div>
 
     <div id= "Seating">  
@@ -72,41 +30,107 @@
         
             </div>
 
-        <button class="Seat seat-left" id="10A">A</button>
-        <button class="Seat seat-bottom" id="10B">B</button>
-        <button class="Seat seat-right" id="10C">C</button>
-      </div>
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A37">A</button>
+                    <button class = "Seat" id = "A38">A</button>
+                    <button class = "Seat" id = "A39">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">37</div>
+                    <div class = "table">38</div>
+                    <div class = "table">39</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B37">B</button>
+                    <button class = "Seat" id = "B38">B</button>
+                    <button class = "Seat" id = "B39">B</button>
+                 </div>
+        
+            </div>
+        </div>
+
+        <div class = "CircleSeatArrangement">
+            <!-- able to select seats that are grey, cannot select seats that are red -->
+             <div class = "CircleSection">
+    
+                <span class = "circletable">10</span>
+    
+                <button class = "Seat seat-left" id = "10A">A</button>
+                <button class = "Seat seat-bottom" id = "10B">B</button>
+                <button class = "Seat seat-right" id = "10C">C</button>
+    
+             </div>    
+    
+        </div>
+
+        <div class = "SeatSet">
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A40">A</button>
+                    <button class = "Seat" id = "A41">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">40</div>
+                    <div class = "table">41</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B40">B</button>
+                    <button class = "Seat" id = "B41">B</button>
+                 </div>
+        
+            </div>
+
+
+            <div class = "SeatArrangement">
+                <!-- able to select seats that are grey, cannot select seats that are red -->
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "A42">A</button>
+                    <button class = "Seat" id = "A43">A</button>
+                    <button class = "Seat" id = "A44">A</button>
+                 </div>
+        
+                 <div class = "TableSection">
+                    <div class = "table">42</div>
+                    <div class = "table">43</div>
+                    <div class = "table">44</div>
+                 </div>
+        
+                 <div class = "SeatSection">
+                    <button class = "Seat" id = "B42">B</button>
+                    <button class = "Seat" id = "B43">B</button>
+                    <button class = "Seat" id = "B44">B</button>
+                 </div>
+        
+            </div>
+        </div>
+        
     </div>
 
-    <div class="SeatSet">
-      <div class="SeatArrangement">
-        <!-- able to select seats that are grey, cannot select seats that are red -->
-        <div class="SeatSection">
-          <button class="Seat" id="A40">A</button>
-          <button class="Seat" id="A41">A</button>
+
+    <div id = "Legend">
+        <!-- able to display what has been chosen -->
+         <div id = "FreeLabel">
+            <div id="FreeSeatBlank"></div>
+            <p>Free</p>
+        </div>
+        <div id = "SelectedLabel">
+            <div id="SelectedSeatBlank"></div>
+            <p>Selected</p>
+        </div>
+        <div id = "OccupiedLabel">
+            <div id="OccupiedSeatBlank"></div>
+            <p>Occupied</p>
         </div>
 
         <button id="SaveButton" @click="saveToFS"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
     </div>
-  </div>
-
-  <div id="Legend">
-    <!-- able to display what has been chosen -->
-    <div id="FreeLabel">
-      <div id="FreeSeatBlank"></div>
-      <p>Free</p>
-    </div>
-    <div id="SelectedLabel">
-      <div id="SelectedSeatBlank"></div>
-      <p>Selected</p>
-    </div>
-    <div id="OccupiedLabel">
-      <div id="OccupiedSeatBlank"></div>
-      <p>Occupied</p>
-    </div>
-
-    <button id="SaveButton"><img src="/floppydisk.png" alt="floppydisk" /> Save</button>
-  </div>
 </template>
 
 <style scoped>
