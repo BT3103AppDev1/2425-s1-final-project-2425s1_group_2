@@ -18,23 +18,44 @@
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import firebaseApp from '../../firebase.js'
+import { getFirestore } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
+
+const db = getFirestore(firebaseApp)
+
 export default {
   data() {
     return {
-      hawkerCentres: [
-        'Bukit Canberra Hawker Centre',
-        'Fengshan Hawker Centre',
-        'Tiong Bahru Hawker Centre',
-        'Old Airport Road',
-        'Chai Chee Hawker Centre'
-      ],
-
+      user: false,
+      hawkerCentres: [],
       selectedHawkerCentre: ''
     }
-  }
+  },
+  mounted() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+                this.fetchHawkerCentres();
+            }
+        })
+    },
+
+    methods: {
+      async fetchHawkerCentres() {
+        const hawkerList = await getDocs(collection(db, 'Hawker Centre')); 
+        this.hawkerCentres = [];
+
+        hawkerList.forEach((docs) => {
+          let docsData = docs.data();
+          this.hawkerCentres.push(docsData['Name'])
+        })
+      }
+    },
   //go to particular hawker centre page not done yet [selectedHawkerCentre]
   //goHawkerCentrePage button method not done yet
-  //hawker centres hardcoded for now
 }
 </script>
 
