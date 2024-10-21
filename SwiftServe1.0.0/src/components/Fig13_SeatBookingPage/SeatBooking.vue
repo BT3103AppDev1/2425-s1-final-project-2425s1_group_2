@@ -326,7 +326,7 @@
 
     button:disabled {
         background-color: #FF2505; /* Change background color */
-        color: black;            /* Change text color */
+        color: white;            /* Change text color */
         opacity: 1.0;              
     }
 </style>
