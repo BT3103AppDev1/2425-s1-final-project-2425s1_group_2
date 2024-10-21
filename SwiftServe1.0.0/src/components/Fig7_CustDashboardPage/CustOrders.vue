@@ -5,10 +5,11 @@
       <div class="tableContainer">
         <table id="table">
           <tbody>
-            <tr>
+            <tr id="data">
               <th>Order Number</th>
               <th>Hawker Centre</th>
               <th>Hawker Store</th>
+              <th>Items</th>
               <th>Quantity</th>
               <th>Dine in / Takeaway</th>
               <th>Dining Time</th>
@@ -30,66 +31,112 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore'
+import { getAuth } from "firebase/auth"
 
 const db = getFirestore(firebaseApp)
 
 export default {
-  mounted() {
-    async function getCurrentOrders() {
-      const userID = 'GCCtdHkClVS2iR9fb87A' //hard coded for now
-      let allOrders = await getDocs(collection(db, 'UserProfile', userID, 'Current Orders'))
+  name: 'CustOrders',
 
-      let index = 1
-
-      allOrders.forEach((docs) => {
-        let docsData = docs.data()
-
-        let orderNum = docsData['Order Number']
-        let hawkerCentre = docsData['Hawker Centre']
-        let hawkerStore = docsData['Hawker Store']
-        let Items = docsData['Item']
-        let DiningStatus = docsData['Dining Status']
-        let DiningTime = docsData['Dining Time']
-        let Seats = docsData['Seats']
-        let OrderStatus = docsData['Order Status']
-        let Collected = ''
-
-        let table = document.getElementById('table')
-        let row = table.insertRow(index)
-
-        let cell1 = row.insertCell(0)
-        let cell2 = row.insertCell(1)
-        let cell3 = row.insertCell(2)
-        let cell4 = row.insertCell(3)
-        let cell5 = row.insertCell(4)
-        let cell6 = row.insertCell(5)
-        let cell7 = row.insertCell(6)
-        let cell8 = row.insertCell(7)
-        let cell9 = row.insertCell(8)
-
-        cell1.innerHTML = orderNum
-        cell2.innerHTML = hawkerCentre
-        cell3.innerHTML = hawkerStore
-        cell4.innerHTML = Items
-        cell5.innerHTML = DiningStatus
-        cell6.innerHTML = DiningTime
-        cell7.innerHTML = Seats
-        cell8.innerHTML = OrderStatus
-        cell9.innerHTML = Collected
-
-        index += 1
-      })
+  data() {
+    return {
+        user:false,
     }
+  },
 
-    getCurrentOrders()
+  async mounted() {
+    const auth = getAuth();
+    this.user = auth.currentUser.uid;
+    await this.getCurrentOrders(this.user)
   },
 
   methods: {
     NOBClick() {
       this.$router.push('/diningOptions')
+    },
+    async getCurrentOrders(userID) {
+      let allOrders = await getDocs(collection(db, 'Placed Orders', userID, 'Orders'))
+
+      let index = 1
+
+      allOrders.forEach((docs) => {
+        let docsData = docs.data()
+        let orderID = docs.id;
+        if (docsData['Collected'] == false) {
+
+          let orderNum = docsData['OrderNum']
+          let hawkerCentre = docsData['Hawker Centre']
+          let hawkerStore = docsData['Hawker Store']
+          let Items = docsData['Item']
+          let Quantity = docsData['Quantity']
+          let DiningStatus = docsData['Dining Status']
+          let DiningTime = docsData['Dining Time']
+          let Seats = docsData['Seats']
+          let OrderStatus = docsData['Order Status']
+          //let Collected = docsData['Collected']
+
+          let table = document.getElementById('table')
+          let row = table.insertRow(index)
+
+          let cell1 = row.insertCell(0)
+          let cell2 = row.insertCell(1)
+          let cell3 = row.insertCell(2)
+          let cell4 = row.insertCell(3)
+          let cell5 = row.insertCell(4)
+          let cell6 = row.insertCell(5)
+          let cell7 = row.insertCell(6)
+          let cell8 = row.insertCell(7)
+          let cell9 = row.insertCell(8)
+          let cell10 = row.insertCell(9)
+
+          cell1.innerHTML = orderNum
+          cell2.innerHTML = hawkerCentre
+          cell3.innerHTML = hawkerStore
+          cell4.innerHTML = Items
+          cell5.innerHTML = Quantity
+          cell6.innerHTML = DiningStatus
+          cell7.innerHTML = DiningTime
+          cell8.innerHTML = Seats
+          cell9.innerHTML = OrderStatus
+          //cell10.innerHTML = Collected
+
+          if (OrderStatus === 'Preparing') {
+            cell9.classList.add('statusPreparing');
+            cell9.innerHTML = `<span class="statusBox">${OrderStatus}</span> `;
+            cell10.innerHTML = '';
+          } else {
+            cell9.classList.add('statusReady');
+            cell9.innerHTML = `<span class="statusBox">${OrderStatus}</span> `;
+
+            let collectButton = document.createElement('button');
+            collectButton.className = 'OrderCollected';
+            collectButton.innerHTML = 'Collected?';
+            collectButton.onclick = () => this.setCollectTrue(userID, orderID);
+            cell10.appendChild(collectButton);
+
+            //cell10.innerHTML = `<button class="OrderCollected" @click="this.setCollectTrue('${userID}', '${orderID}')">${"Collected?"}</button>`;
+          }
+
+          index += 1
+        }
+      })
+    },
+    async setCollectTrue(userID, orderID) {
+        const orderRef = doc(db, 'Placed Orders', userID, 'Orders', orderID);
+
+        await updateDoc(orderRef, {
+            Collected: true
+        });
+      
+      let tb = document.getElementById("table")
+        while (tb.rows.length > 1){
+          tb.deleteRow(1)
+        }
+      this.getCurrentOrders(this.user)
     }
   }
+    
 }
 </script>
 
@@ -148,5 +195,56 @@ th {
 
 :deep(tr:nth-child(even)) {
   background-color: rgb(214, 252, 252);
+}
+
+:deep(.statusPreparing) .statusBox {
+  background-color: rgb(173, 171, 171);
+  border-radius: 5px;
+  display: inline-block;  
+  width: 4vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  margin-left: 0.3vw;
+
+}
+
+:deep(.statusReady) .statusBox {
+  background-color: rgb(5, 248, 5);
+  border-radius: 5px;
+  display: inline-block;  
+  width: 4vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.3vw;
+}
+
+:deep(.OrderCollected) {
+  background-color: rgb(255, 204, 0);
+  border: none;
+  border-radius: 5px;
+  display: inline-block;  
+  width: 4vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.3vw;
+}
+
+:deep(.OrderCollected):hover {
+  background-color: orange;
+  border: 2px solid black;
+  border-radius: 5px;
+  display: inline-block;  
+  width: 4vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.3vw;
 }
 </style>
