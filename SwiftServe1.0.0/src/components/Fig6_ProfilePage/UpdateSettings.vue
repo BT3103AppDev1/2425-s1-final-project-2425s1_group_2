@@ -21,48 +21,33 @@
   </template>
   
   <script>
-  import firebaseApp from '../../firebase.js';
+  import firebaseApp from '@/firebase.js';
   import { getFirestore } from 'firebase/firestore';
-  import { doc, setDoc, addDoc, serverTimestamp, collection } from 'firebase/firestore';
-  const db = getFirestore(firebaseApp);
+  import { getAuth, updatePassword} from 'firebase/auth';
   
   export default {
     name: 'UpdateSettings',
     methods: {
       async savetoFirestore() {
-        let email = document.getElementById("email1").value;
-        let username = document.getElementById("username1").value;
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
   
         try {
+          const auth = getAuth();
+          const user = auth.currentUser;
           if (password === cPassword) {
-            const userRef = await addDoc(collection(db, "UserProfile"), {
-              DateCreated: serverTimestamp(),
-              Email: email,
-              Username: username,
-              password: password,
-              ProfileType: "Customer"
+            updatePassword(user,password).then(() => {
+              alert('Password updated successfully!');
+            }).catch((error) => {
+              console.log(error);
             });
-            const userId = userRef.id;
-  
-            await setDoc(doc(db, "UserProfile", userId), {
-              UserId: userId,
-              DateCreated: serverTimestamp(),
-              Email: email,
-              Username: username,
-              password: password,
-              ProfileType: "Customer"
-            });
-  
             document.getElementById('userForm').reset();
-            alert("Account Created Successfully!");
           } else {
             throw new Error("Passwords do not match!");
           }
         } catch (error) {
           console.error("Error adding document: ", error);
-          alert("No Account Created." + error);
+          alert("No Account Created. " + error);
         }
       }
     }
