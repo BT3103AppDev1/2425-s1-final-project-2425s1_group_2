@@ -1,32 +1,32 @@
 <template>
   <div class="profile-container">
-    <div class="profile-info">
-      <div class="avatar">
-        <img src="/ProfilePicture.png" alt="User Avatar" />
+      <div class="profile-info">
+        <div class="avatar">
+          <img src="/ProfilePicture.png" alt="User Avatar" />
+        </div>
+        <div class="info-text">
+          <h2>{{ name }}</h2>
+          <p>{{ email }}</p>
+        </div>
       </div>
-      <div class="info-text">
-        <h2>{{ name }}</h2>
-        <p>{{ email }}</p>
+      <div class="actions">
+        <router-link to="/profile" class="action-link">
+          <button @click="updateSettings">
+            <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
+            <span>Update Settings</span>
+          </button>
+        </router-link>
+        <router-link to="/livereceipt" class="action-link">
+          <button @click="showRecentOrder">
+            <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
+            <span>Most Recent Order Receipt</span>
+          </button>
+        </router-link>
+        <button @click="deleteAccount">
+          <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
+          <span>Delete Account</span>
+        </button>
       </div>
-    </div>
-    <div class="actions">
-      <router-link to="/profile" class="action-link">
-        <button @click="updateSettings">
-          <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
-          <span>Update Settings</span>
-        </button>
-      </router-link>
-      <router-link to="/livereceipt" class="action-link">
-        <button @click="showRecentOrder">
-          <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
-          <span>Most Recent Order Receipt</span>
-        </button>
-      </router-link>
-      <button @click="deleteAccount">
-        <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
-        <span>Delete Account</span>
-      </button>
-    </div>
   </div>
 </template>
 
@@ -81,6 +81,7 @@ export default {
   height: 100vh;
   font-family: 'Inria Sans', sans-serif;
   align-items: flex-start;
+  width: 15vw;
 }
 
 .profile-info {

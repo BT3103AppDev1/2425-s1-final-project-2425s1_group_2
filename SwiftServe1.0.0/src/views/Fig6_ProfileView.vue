@@ -1,12 +1,17 @@
 <template>
   <HeaderScreen />
-  <div class="profile-page">
-    <div class="profile-left">
-      <ProfileComponent />
-    </div>
-    <div class="profile-right">
-      <UpdateSettings />
-    </div>
+
+  <div class = 'container'>
+    <ProfileComponent />
+    <UpdateSettings />
+    <!--<div class="profile-page">
+      <div class="profile-left">
+        <ProfileComponent />
+      </div>
+      <div class="profile-right">
+        <UpdateSettings />
+      </div>
+    </div>-->
   </div>
 </template>
 
@@ -26,6 +31,12 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+}
+</style>
+
+<!-- <style scoped>
 /* Layout for the profile page */
 .profile-page {
   display: flex;
@@ -46,4 +57,4 @@ export default {
   background-color: #f9f9f9; /* Optional: Add background color for differentiation */
   padding: 20px;
 }
-</style>
+</style> -->
