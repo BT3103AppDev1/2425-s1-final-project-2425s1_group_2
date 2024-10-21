@@ -3,9 +3,9 @@
     <div class="wrapper">
       <!-- <HelloWorld msg="You did it!" /> -->
 
-      <nav>
+      <!--<nav>
         <RouterLink to="/hawkerCentre">Hawker Centre Page</RouterLink>
-      </nav>
+      </nav>-->
 
     </div>
   </header>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router';
+//import { RouterLink } from 'vue-router';
 
 export default {
   name: 'App'
