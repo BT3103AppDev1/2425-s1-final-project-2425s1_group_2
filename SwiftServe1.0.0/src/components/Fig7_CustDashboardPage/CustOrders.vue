@@ -115,7 +115,7 @@ export default {
             collectButton.onclick = () => this.setCollectTrue(userID, orderID);
             cell10.appendChild(collectButton);
 
-            //cell10.innerHTML = `<button class="OrderCollected" @click="this.setCollectTrue('${userID}', '${orderID}')">${"Collected?"}</button>`;
+  
           }
 
           index += 1
@@ -156,6 +156,12 @@ img {
   margin-top: 10vh;
 }
 
+img:hover {
+  border: 2px solid black;
+  border-radius: 10px;
+  opacity: 0.6;
+}
+
 .tableContainer {
   border: 2px solid #00adb5;
   width: 90%;
@@ -168,7 +174,6 @@ img {
   border-collapse: collapse;
   table-layout: fixed;
   margin: 0;
-  font-size: 2vh;
   overflow: auto;
   table-layout: fixed;
 }
@@ -184,11 +189,13 @@ th {
   border: 2px solid grey;
   text-align: center;
   padding: 7px;
+  font-size: 2vh;
 }
 
 :deep(td) {
   border: 2px solid grey;
   text-align: center;
+  font-size: 2vh;
   padding: 7px;
   height: 2vh;
 }
@@ -201,7 +208,7 @@ th {
   background-color: rgb(173, 171, 171);
   border-radius: 5px;
   display: inline-block;  
-  width: 4vw;
+  width: 6vw;
   height: 3vh;
   display: flex;
   justify-content: center;
@@ -214,7 +221,7 @@ th {
   background-color: rgb(5, 248, 5);
   border-radius: 5px;
   display: inline-block;  
-  width: 4vw;
+  width: 6vw;
   height: 3vh;
   display: flex;
   justify-content: center;
@@ -223,11 +230,12 @@ th {
 }
 
 :deep(.OrderCollected) {
+  font-size: 2vh;
   background-color: rgb(255, 204, 0);
   border: none;
   border-radius: 5px;
   display: inline-block;  
-  width: 4vw;
+  width: 6vw;
   height: 3vh;
   display: flex;
   justify-content: center;
@@ -236,11 +244,12 @@ th {
 }
 
 :deep(.OrderCollected):hover {
+  font-size: 2vh;
   background-color: orange;
   border: 2px solid black;
   border-radius: 5px;
   display: inline-block;  
-  width: 4vw;
+  width: 6vw;
   height: 3vh;
   display: flex;
   justify-content: center;

@@ -59,13 +59,14 @@ export default {
 
       allOrders.forEach((docs) => {
         let docsData = docs.data()
+        let orderID = docs.id;
 
         let orderNum = docsData['OrderNum']
         let hawkerCentre = docsData['Hawker Centre']
         let hawkerStore = docsData['Hawker Store']
         let Items = docsData['Item']
         let Quantity = docsData['Quantity']
-        let QuickOrder = ''
+        //let QuickOrder = ''
 
         let table = document.getElementById('historyTable')
         let row = table.insertRow(index)
@@ -83,11 +84,22 @@ export default {
         cell3.innerHTML = hawkerStore
         cell4.innerHTML = Items
         cell5.innerHTML = Quantity
-        cell6.innerHTML = QuickOrder
+
+        let quickOrderButton = document.createElement('button');
+        quickOrderButton.className = 'QuickOrder';
+        quickOrderButton.innerHTML = 'Quick Order';
+        quickOrderButton.onclick = () => this.quickOrder(userID, orderID);
+        cell6.appendChild(quickOrderButton);
 
         index += 1
 
       })
+    },
+
+    quickOrder(userID, orderID) {
+      //Add to cart feature not done yet
+      console.log(userID);
+      console.log(orderID)
     }
 
   }
@@ -118,6 +130,7 @@ tbody,
 th {
   border: 1px solid black;
   text-align: center;
+  font-size: 2vh;
   padding: 7px;
 }
 
@@ -129,5 +142,33 @@ th {
 
 :deep(tr:nth-child(even)) {
   background-color: rgb(214, 252, 252);
+}
+
+:deep(.QuickOrder) {
+  font-size: 2vh;
+  background-color: rgb(255, 204, 0);
+  border: none;
+  border-radius: 5px;
+  display: inline-block;  
+  width: 10vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.3vw;
+}
+
+:deep(.QuickOrder):hover {
+  font-size: 2vh;
+  background-color: orange;
+  border: 2px solid black;
+  border-radius: 5px;
+  display: inline-block;  
+  width: 10vw;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.3vw;
 }
 </style>
