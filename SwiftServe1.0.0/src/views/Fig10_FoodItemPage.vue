@@ -1,122 +1,212 @@
 <template>
   <div class="food-item-page">
     <HeaderTag />
-    <div class="food-item-details">
-    <div class="left-column">
-      <h1 class="food-stall">{{ foodItem.stall }}</h1>
-      <div class="food-image">
-        <img :src="foodItem.image" :alt="foodItem.name">
-        <hr class="separator"> 
-      </div>
-      <h1 class="food-name">{{ foodItem.name }}</h1>
-      <div class="food-info">
-        <div class="price-quantity">
-          <p class="price">${{ totalPrice.toFixed(2) }}</p>
-          <div class="quantity-controls">
-            <span class="quantity">× {{ quantity }}</span>
-            <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>
-            <button @click="increaseQuantity" class="quantity-btn" aria-label="Increase quantity">+</button>
+    <div class="food-item-details" v-if="(foodItem || cartItem) && merchant">
+      <LeftColumn
+        :merchant="merchant"
+        :foodItem="cartItem ? cartItem : foodItem"
+        :quantity="quantity"
+        :totalPrice="totalPrice"
+        @increaseQuantity="increaseQuantity"
+        @decreaseQuantity="decreaseQuantity"
+      />
+ 
+      <div class="right-column">
+        <div class="green-box">
+          <div v-if="addOns.length > 0" class="add-ons"> 
+            <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
+          </div>
+
+          <div class="special-instructions">
+            <SpecialInstructions v-model="specialInstructions" />
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="right-column">
-      <div class="green-box">
-        <div v-if="addOns.length > 0" class="add-ons"> 
-          <AddOn :addOns="addOns" @updateAddOn="updateAddOn" />
-        </div>
-
-        <div class="special-instructions">
-          <SpecialInstructions v-model="specialInstructions" />
+        <div class="action-buttons">
+          <button class="add-to-cart" @click="addToCartHandler">
+            <span class="cart-icon">🛒</span> Add to Cart
+          </button>
+          <button class="cancel-order" @click="cancelOrder">
+            <span class="cancel-icon">❌</span> Cancel Order
+          </button>
         </div>
       </div>
-
-      <div class="action-buttons">
-        <button class="add-to-cart" @click="addToCartHandler">
-          <span class="cart-icon">🛒</span> Add to Cart
-        </button>
-        <button class="cancel-order" @click="cancelOrder">
-          <span class="cancel-icon">❌</span> Cancel Order
-        </button>
-      </div>
     </div>
-  </div>
-
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
-   
-<script>
 
+<script>
 import HeaderTag from '../components/AppHeader.vue';
 import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
-// import { EventBus } from '../eventBus.js';
+import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
+import { db } from '../firebase.js';
 
 export default {
   components: {
-
     HeaderTag,
     AddOn,
-    SpecialInstructions
+    SpecialInstructions,
+    LeftColumn 
   },
   data() {
     return {
-      foodItem: {
-        id: null,
-        name: '',
-        image: '',
-        price: null,
-        stall: '',
-      },
+      foodItem: null,
+      merchant: null,
       quantity: 1,
       addOns: [],
       specialInstructions: "",
-      addToCart: null
+      userId: 'spencer1234', // Hardcoded for now
+      cartItemId: null,
+      cartItem: null,
+      totalPrice: 0
     };
   },
-  created() {
-    // Fetch food item details from route params when the component is created
-    const { id, foodItemName, price, addToCart, stallId, stallName } = this.$route.params;
-    this.foodItem.id = id;
-    this.foodItem.name = foodItemName;
-    this.foodItem.price = price;
-    this.foodItem.image = "images/chicken-rice.jpg"; // or set based on id if needed
-    this.addToCart = addToCart;
-    this.foodItem.stall = stallName;
-    // this.addOns = addOns ? JSON.parse(addOns) : [];
-    console.log(this.$route.params.stallId);
-    const availableAddOns = {
-    1: [ // Add-ons for stall with ID 1
-      { id: 1, name: "Extra Rice", price: 1.0, quantity: 0 },
-      { id: 2, name: "Egg", price: 0.8, quantity: 0 }
-    ],
-    2: [ // Add-ons for stall with ID 2
-      { id: 3, name: "Raita", price: 0.5, quantity: 0 },
-      { id: 4, name: "Boiled Egg", price: 1.0, quantity: 0 }
-    ],
-    3: [ // Add-ons for stall with ID 3
-      { id: 5, name: "Ice", price: 0.3, quantity: 0 },
-      { id: 6, name: "Condensed Milk", price: 0.4, quantity: 0 }
-    ]
-  };
-
-    this.addOns = availableAddOns[stallId] || [];
+  async created() {
+    const foodItemId = this.$route.params.id || null;
+    this.cartItemId = this.$route.params.cartItemId || null;
+    if (this.cartItemId) {
+      await this.fetchCartItem(this.cartItemId);
+    }
+    if (foodItemId) {
+      await this.fetchFoodItem(foodItemId);
+    }
   },
-  computed: {
-    totalPrice() {
-      // Base price of the food item multiplied by the quantity
-      let basePrice = this.foodItem.price * this.quantity;
-
-      // Add the price of any selected add-ons
+  watch: {
+    addOns: {
+      handler() {
+        this.updateTotalPrice();
+      },
+      deep: true
+    },
+    quantity() {
+      this.updateTotalPrice();
+    },
+    foodItem() {
+      this.updateTotalPrice();
+    },
+    cartItem() {
+      this.updateTotalPrice();
+    }
+  },
+  // computed: {
+  //   totalPrice() {
+  //     return this.calculateTotalPrice();
+  //   }
+  // },
+  methods: {
+    calculateTotalPrice() {
       const addOnTotal = this.addOns.reduce((total, addOn) => {
         return total + addOn.price * addOn.quantity;
       }, 0);
 
-      return basePrice + addOnTotal;
-    }
-  },
-  methods: {
+      // Multiply both base price and add-on total by the quantity
+      const basePrice = this.foodItem ? this.foodItem.foodItemPrice : this.cartItem.foodItemPrice;
+      return (basePrice + addOnTotal) * this.quantity;
+    },
+    updateTotalPrice() {
+      this.totalPrice = this.calculateTotalPrice();
+    },
+    async fetchFoodItem(foodItemId) {
+      try {
+        const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+        if (foodItemDoc.exists) {
+          this.foodItem = {
+            id: foodItemDoc.id, 
+            ...foodItemDoc.data()
+          };
+          console.log('Fetched food item:', this.foodItem); // Log the fetched food item
+          await this.fetchMerchant(this.foodItem.merchantId);
+          this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
+            name: key,
+            price: this.foodItem.addOn[key],
+            quantity: 0
+          })) : [];
+        } else {
+          console.error('No such food item!');
+        }
+      } catch (error) {
+        console.error('Error fetching food item:', error);
+      }
+    },
+    async fetchMerchant(merchantId) {
+      try {
+        const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
+        if (merchantDoc.exists) {
+          this.merchant = merchantDoc.data();
+          console.log('Fetched merchant:', this.merchant); // Log the fetched merchant
+        } else {
+          console.error('No such merchant!');
+        }
+      } catch (error) {
+        console.error('Error fetching merchant:', error);
+      }
+    },
+    async fetchCartItem(cartItemId) {
+      try {
+        const cartItemDoc = await db.collection('Cart').doc(cartItemId).get();
+        if (cartItemDoc.exists) {
+          const cartItem = cartItemDoc.data();
+          console.log('Fetched cart item:', cartItem); // Log the fetched cart item
+
+          // Extract the foodItemId from the cart item
+          const foodItemId = cartItem.foodItemId;
+
+          // Fetch the original food item from FoodItem collection using the foodItemId
+          const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+          let originalAddOns = [];
+          if (foodItemDoc.exists) {
+            const foodItem = foodItemDoc.data();
+            originalAddOns = foodItem.addOn ? Object.keys(foodItem.addOn).map(key => ({
+              name: key,
+              price: foodItem.addOn[key],
+              quantity: 0
+            })) : [];
+          } else {
+            console.error('No such food item!');
+          }
+
+          // Merge the original add-ons and the ones from the cart
+          const mergedAddOns = originalAddOns.map(originalAddOn => {
+            const cartAddOn = cartItem.addOns.find(addOn => addOn.name === originalAddOn.name);
+            return {
+              ...originalAddOn,
+              quantity: cartAddOn ? cartAddOn.quantity : 0 // Use cart quantity if available
+            };
+          });
+
+          // Update cartItem object
+          this.cartItem = {
+            userId: cartItem.userId,
+            foodItemName: cartItem.foodItemName,
+            foodItemPrice: cartItem.foodItemPrice,
+            foodItemId: cartItem.foodItemId,
+            quantity: cartItem.quantity,
+            addOns: mergedAddOns,
+            specialInstructions: cartItem.specialInstructions,
+            merchantName: cartItem.merchantName,
+            merchantId: cartItem.merchantId
+          };
+
+          // Update addOns and specialInstructions
+          this.quantity = this.cartItem.quantity;
+          this.addOns = this.cartItem.addOns;
+          this.specialInstructions = this.cartItem.specialInstructions;
+
+          // Fetch the merchant details
+          await this.fetchMerchant(cartItem.merchantId);
+
+          this.totalPrice = this.cartItem.foodItemPrice; // Set total price
+        } else {
+          console.error('No such cart item!');
+        }
+      } catch (error) {
+        console.error('Error fetching cart item:', error);
+      }
+    },
     increaseQuantity() {
       this.quantity++;
     },
@@ -124,29 +214,39 @@ export default {
       if (this.quantity > 1) this.quantity--;
     },
     updateAddOn(updatedAddOn) {
-      const addOnIndex = this.addOns.findIndex(a => a.id === updatedAddOn.id);
+      const addOnIndex = this.addOns.findIndex(a => a.name === updatedAddOn.name);
       if (addOnIndex !== -1) {
         this.addOns[addOnIndex] = updatedAddOn;
       }
     },
-    addToCartHandler() {
-      // Handle adding to cart
-      // Create a cart item object
+    async addToCartHandler() {
+      console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
+      const cartItem = {
+        userId: this.userId,
+        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
+        foodItemPrice: this.calculateTotalPrice(),
+        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
+        quantity: this.quantity,
+        addOns: this.addOns.filter(addOn => addOn.quantity > 0),
+        specialInstructions: this.specialInstructions,
+        merchantName: this.merchant.displayName,
+        merchantId: this.merchant.uid
+      };
 
-      /*const cartItem = {
-
-          ...this.foodItem,
-          quantity: this.quantity,
-          addOns: this.addOns.filter(addOn => addOn.quantity > 0),
-          specialInstructions: this.specialInstructions
-      };*/
-
-      // EventBus.$emit('add-to-cart', cartItem);
-      alert('Item added to cart');
-      this.$router.push('/hawkerCentre');
+      try {
+        if (this.cartItemId) {
+          await db.collection('Cart').doc(this.cartItemId).update(cartItem);
+          alert('Item successfully edited in cart');
+        } else {
+          await db.collection('Cart').add(cartItem);
+          alert('Item added to cart');
+        }
+        this.$router.push('/hawkerCentre');
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
     },
     cancelOrder() {
-      // Handle cancel order
       this.$router.push('/hawkerCentre');
     }
   }
@@ -166,66 +266,9 @@ export default {
   padding: 15px;
 }
 
-.left-column {
-  flex: 1;
-  padding-right: 15px;
-}
-
 .right-column {
   flex: 1;
   padding-left: 15px;
-}
-
-.food-image img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.food-name {
-  font-size: 24px;
-  margin-top: 15px;
-  margin-bottom: 5px;
-}
-
-.food-info {
-  margin-top: 15px;
-}
-
-.price-quantity {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.price {
-  font-size: 50px;
-  font-weight: bold;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-}
-
-.quantity-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #00A895;
-  border: none;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: 40px;
-}
-
-.quantity {
-  margin: 0 10px;
-  font-size: 30px;
-  margin-right: 100px;
 }
 
 .green-box {
@@ -237,11 +280,6 @@ export default {
 
 .add-ons, .special-instructions {
   margin-bottom: 20px;
-}
-
-.add-ons h2, .special-instructions h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
 }
 
 .action-buttons {

@@ -13,8 +13,11 @@
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap');
+
 .Payment {
   text-align: center;
+  font-family: 'Inria Sans';
 }
 
 #DineIn {
