@@ -89,6 +89,7 @@
     height: 5vh; /* Increase the height */
     border-radius: 5px;
     border: 2px solid #00ADB5;
+    font-size: 20px;
   }
   
   .inputTitles {
