@@ -1,5 +1,5 @@
 <template>
-    <h1 style="text-align:center;font-family: 'Inria Sans';">Hawker Centre</h1>
+    <h1 style="text-align:center;font-family: 'Inria Sans';background-color: #eeffff;font-size: 2.4vw;">Bukit Canberra Hawker Centre</h1>
 
     <div class="StallArrangement">
         <!-- code here for stalls, should change color for the selected stall -->
@@ -118,18 +118,18 @@
         <!-- able to display what has been chosen -->
          <div id = "FreeLabel">
             <div id="FreeSeatBlank"></div>
-            <p>Free</p>
+            <p><strong>Free</strong></p>
         </div>
         <div id = "SelectedLabel">
             <div id="SelectedSeatBlank"></div>
-            <p>Selected</p>
+            <p><strong>Selected</strong></p>
         </div>
         <div id = "OccupiedLabel">
             <div id="OccupiedSeatBlank"></div>
-            <p>Occupied</p>
+            <p><strong>Occupied</strong></p>
         </div>
 
-        <button id="SaveButton" @click="saveToFS"><img src = "/floppydisk.png" alt = "floppydisk"> Save</button>
+        <button id="SaveButton" @click="saveToFS"><img id = "floppy" src = "/floppydisk.png" alt = "floppydisk"> Save</button>
     </div>
 </template>
 
@@ -158,9 +158,13 @@ button {
   border-color: transparent;
 }
 
-/* .Seat:hover{
-        background-color: purple;
-    } */
+.Seat:not(.selected):not([disabled]):hover {
+    background-color: #afafaf;
+}
+
+.Seat.selected {
+    background-color: #51E51C;
+}
 
     .table {
         background-color: #C6D4D4;
@@ -202,7 +206,7 @@ button {
   background-color: #222831;
   height: 3vw;
   width: 30%;
-  margin: 1.5vw 3vw 1.5vw 3vw;
+  margin: 0vw 3vw 1.5vw 3vw;
   color: white;
 
         display: flex;
@@ -272,7 +276,7 @@ button {
   width: 100%;
   height: auto;
   flex-grow: 1;
-  margin-top: 3vh;
+  margin-top: 1vh;
 
         display: flex;
         text-align: center;
@@ -313,7 +317,7 @@ button {
 
 #SaveButton {
   width: 15vw;
-  height: 5vw;
+  height: 4.5vw;
   margin-left: 10vw;
   border-radius: 0.75vw;
   border-color: transparent;
@@ -334,12 +338,21 @@ button {
         color: white;            /* Change text color */
         opacity: 1.0;              
     }
+
+#floppy {
+    width: 3.3vw;
+}
+
+#SaveButton:hover {
+    background-color: #058b92;
+}
 </style>
 
 <script>
 import firebaseApp from '@/firebase.js';
 import { getFirestore } from 'firebase/firestore';
-import {collection, getDocs, doc, deleteDoc, setDoc, serverTimestamp} from "firebase/firestore";
+import {collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const db = getFirestore(firebaseApp);
 
@@ -348,10 +361,22 @@ export default {
         return {
             seatsChosen: [],
             numSeatsChosen: 0,
-            maxSeats: 5
+            maxSeats: 5,
+
+            name: 'guest',
+            email: 'guest',
+            user:false,
         };
     },
     async mounted() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+                this.setProfile();
+            }
+        })
+
         const seatButtons = Array.from(document.getElementsByClassName('Seat'));
         let numSeatsLeft = await seatsLeft();
         
@@ -365,16 +390,18 @@ export default {
            
             button.addEventListener('click', () => {
                 if (button.getAttribute('data-selected') === 'true') {
-                    button.style.backgroundColor = '#D9D9D9';
+                    // button.style.backgroundColor = '#D9D9D9';
                     button.setAttribute('data-selected', 'false');
+                    button.classList.remove('selected');
                     this.removeSeat(button.id); 
                 } else {
                     if (this.numSeatsChosen >= this.maxSeats) {
                         alert(`You can only select a maximum of ${this.maxSeats} seats. Please deselect a seat to choose another.`);
                         return;
                     }
-                    button.style.backgroundColor = '#51E51C'; 
+                    // button.style.backgroundColor = '#51E51C'; 
                     button.setAttribute('data-selected', 'true');
+                    button.classList.add('selected');
                     this.addSeat(button.id); 
                 }
                 console.log(this.seatsChosen);
@@ -386,22 +413,21 @@ export default {
             let allSeatsTaken = await getDocs(collection(db, "Seats"));
             allSeatsTaken.forEach(async (docs) => {
                 let documentData = docs.data();
-                let timeStamp = documentData.TimeStamp;
-
+                let EndTime = documentData.EndTime;
                 let timeDiff = 0;
 
-                if (timeStamp){
-                    let timeSelected = timeStamp.toDate();
+                if (EndTime){
+                    let endTime = EndTime.toDate();
                     // console.log(timeSelected);
                     let currentTime = new Date();
                     // console.log(currentTime);
-                    timeDiff = currentTime - timeSelected;
+                    timeDiff = currentTime - endTime;
                 }
 
                 // console.log(timeDiff);
                 
 
-                if (timeDiff > 60000){ //60 seconds or 1 min
+                if (timeDiff > 0){ //the end time has passed
                     await deleteDoc(doc(db, "Seats", docs.id));
                     console.log(`Customer: ${docs.id} has been deleted.`);
                 } else {
@@ -450,16 +476,15 @@ export default {
             } else {
                 console.log("saved to fs");
 
-                let customer = "Customer123";
+                let customer = this.email;
                 let newSeatsChosen = this.seatsChosen;
                 let numSeats = this.numSeatsChosen;
 
-                let timeStamp = serverTimestamp();
-
                 try{
-                    const docRef = await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
+                    await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
                         Customer: customer,
-                        TimeStamp: timeStamp, 
+                        StartTime: new Date(), 
+                        EndTime: new Date(new Date().getTime() + 60000), //1 min
                         SeatsChosen: newSeatsChosen,
                         NumSeats: numSeats
                     })
@@ -475,6 +500,11 @@ export default {
         disableSeat(seatId){
             console.log("disable seat: "+seatId);
             document.getElementById(seatId).disabled = true;
+        },
+
+        setProfile() {
+            this.name = this.user.displayName;
+            this.email = this.user.email;
         }
     }
   }
