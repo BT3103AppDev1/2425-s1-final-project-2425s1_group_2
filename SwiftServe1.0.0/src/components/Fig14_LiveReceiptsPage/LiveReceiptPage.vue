@@ -31,15 +31,33 @@
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default {
   name: 'ProfileComponent',
+
   data() {
     return {
-      name: 'Spencer',
-      email: 'Foodlover123@hotmail.com'
+      name: '',
+      email: '',
+      user:false,
     }
   },
+  mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if (user) {
+              this.user = user;
+              this.setProfile()
+          }
+      })
+  },
+
   methods: {
+    setProfile() {
+      this.name = this.user.displayName;
+      this.email = this.user.email;
+    },
     updateSettings() {
       console.log('Update settings clicked')
     },
