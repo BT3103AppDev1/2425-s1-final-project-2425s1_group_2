@@ -7,8 +7,8 @@
       <label for="hawkerCentre">Hawker Centre: </label>
 
       <select v-model="selectedHawkerCentre" id="hawkerCentre">
-        <option v-for="centre in hawkerCentres" :key="centre" :value="centre">
-          {{ centre }}
+        <option v-for="centre in hawkerCentres" :key="centre" :value="centre" :disabled="centre.Status !== 'Open'">
+          {{ centre.Name }}
         </option>
       </select>
     </div>
@@ -44,13 +44,21 @@ export default {
     },
 
     methods: {
+      goHawkerCentrePage() {
+      this.$router.push('/hawkerCentre')
+      },
+
       async fetchHawkerCentres() {
         const hawkerList = await getDocs(collection(db, 'Hawker Centre')); 
         this.hawkerCentres = [];
 
         hawkerList.forEach((docs) => {
           let docsData = docs.data();
-          this.hawkerCentres.push(docsData['Name'])
+          this.hawkerCentres.push({
+            Name: docsData['Name'],
+            Status: docsData['Status']
+          })
+          
         })
       }
     },
