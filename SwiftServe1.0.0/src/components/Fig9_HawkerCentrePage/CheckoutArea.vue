@@ -18,7 +18,8 @@
     methods: {
       checkout() {
         // Implement checkout logic here
-        console.log('Checkout clicked');
+        this.$router.push('/checkout')
+        //console.log('Checkout clicked');
       },
       cancelOrder() {
         // Implement cancel order logic here

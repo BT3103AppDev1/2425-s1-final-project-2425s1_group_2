@@ -1,6 +1,8 @@
 <template>
+
   <div id="app">
-    <AppHeader />
+    <!--<AppHeader />-->
+    <HeaderScreen />
     <FilterButtons 
       :filters="availableFilters" 
       :activeFilter="activeCategory" 
@@ -38,7 +40,8 @@
 </template>
   
 <script>
-  import AppHeader from '../components/AppHeader.vue';
+  //import AppHeader from '../components/AppHeader.vue';
+  import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
   import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue';
   import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue';
   import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue';
@@ -49,7 +52,8 @@
   
   export default {
     components: {
-      AppHeader,
+      //AppHeader,
+      HeaderScreen,
       CategoryNav,
       FoodItem,
       OrderCart,
