@@ -128,7 +128,7 @@ export default {
 
   computed: {
     total() {
-      return this.orders.reduce((sum, order) => sum + order.price * order.quantity, 0)
+      return this.orders.reduce((sum, order) => sum + order.price, 0)
     }
   },
   methods: {

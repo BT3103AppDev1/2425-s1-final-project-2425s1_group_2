@@ -23,7 +23,7 @@
           </button>
         </router-link>
         <button @click="deleteAccount">
-          <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
+          <img src="/DeleteAccount.png" alt="Delete Account" class="icon"/>
           <span>Delete Account</span>
         </button>
       </div>
@@ -31,7 +31,10 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import firebaseApp from '@/firebase.js';
+import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged,EmailAuthProvider, reauthenticateWithCredential, deleteUser  } from "firebase/auth";
+const db = getFirestore(firebaseApp);
 
 export default {
   name: 'ProfileComponent',
@@ -43,6 +46,7 @@ export default {
       user:false,
     }
   },
+
   mounted() {
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
@@ -64,10 +68,34 @@ export default {
     showRecentOrder() {
       console.log('Show recent order clicked')
     },
-    deleteAccount() {
-      console.log('Delete account clicked')
+    async deleteAccount() {
+      try {
+        const currentPassword = prompt('Please enter your current password to confirm account deletion:');
+
+        if (currentPassword) {
+          // Reauthenticate the user with their email and current password
+          const credential = EmailAuthProvider.credential(this.email, currentPassword);
+          await reauthenticateWithCredential(this.user, credential);
+        } else {
+            alert("Reauthentication failed: No password provided.");
+            return;  // Exit if no password is provided
+        }
+        // Delete the user's Firestore profile document (optional)
+        const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust Firestore path as needed
+        await deleteDoc(userDocRef);
+        console.log('User profile deleted from Firestore.');
+
+        // Delete the user from Firebase Authentication
+        await deleteUser(this.user);
+        alert('Account deleted successfully.');
+        console.log('User account deleted from Firebase Authentication.');
+        this.$router.push('/'); // Adjust the route as needed
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        alert('Error deleting account: ' + error.message);
     }
-  }
+  },
+},
 }
 </script>
 
