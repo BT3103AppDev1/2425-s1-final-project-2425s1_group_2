@@ -134,7 +134,7 @@ export default {
   methods: {
       goPaymentSuccess() {
         //add method to clear cart in hawker centre page
-        if (this.dineOption === "Dine In") {
+        if (this.dineOption === "Dine in") {
           this.$router.push('/paymentSuccess');
         } else {
           this.$router.push('/takeawaySuccess');
