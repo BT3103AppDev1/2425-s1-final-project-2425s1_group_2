@@ -16,9 +16,10 @@
       <div class="form-group">
         <label for="password">Password:</label>
         <input
-          :type="showPassword ? 'text' : 'password'"
+          :type="showPassword ? 'text' : 'text'"
           id="password"
           v-model="password"
+          :style="{ '-webkit-text-security': showPassword ? 'none' : 'disc' }"
           required
         />
       </div>
@@ -82,8 +83,19 @@ export default {
       }
     },
     handleForgotPassword() {
-      // router
-      console.log('Forgot password clicked')
+      // Password reset logic
+      if (this.email) {
+        auth
+          .sendPasswordResetEmail(this.email)
+          .then(() => {
+            alert('Password reset email sent! Check your inbox.');
+          })
+          .catch((error) => {
+            alert('Error sending password reset email: ' + error.message);
+          });
+      } else {
+        alert('Please enter your email address to reset your password.');
+      }
     },
     toggleLoginMethod() {
       // Toggle between showing manual login and FirebaseUI-based login
@@ -280,7 +292,7 @@ input[type='text'] {
   border: none;
   padding: 12px;
   border-radius: 5px;
-  font-size: 21px;
+  font-size: 30px;
   font-weight: bold;
   cursor: pointer;
   font-family:
