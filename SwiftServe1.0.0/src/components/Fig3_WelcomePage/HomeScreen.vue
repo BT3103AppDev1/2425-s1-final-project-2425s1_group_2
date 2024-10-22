@@ -78,6 +78,8 @@ export default {
 }
 
 button {
+  position: relative;
+  overflow: hidden;
   background-color: #00adb5;
   font-weight: bold;
   color: white;
@@ -92,6 +94,40 @@ button {
   justify-content: center;
   align-items: center;
   text-align: center;
+  z-index: 1;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+button:hover::before {
+  opacity: 1;
+  animation: waveAnimation 1.2s forwards;
+}
+
+@keyframes waveAnimation {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+button span {
+  position: relative;
+  z-index: 2;
 }
 
 button:hover {
