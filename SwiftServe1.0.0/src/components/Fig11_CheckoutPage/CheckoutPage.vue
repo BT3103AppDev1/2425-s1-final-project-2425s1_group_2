@@ -111,7 +111,8 @@ export default {
   },
   methods: {
       goPaymentSuccess() {
-      this.$router.push('/paymentSuccess')
+        //add method to clear cart in hawker centre page
+        this.$router.push('/paymentSuccess')
       },
 
       goHawkerCentre() {

@@ -75,9 +75,14 @@
         cartItems: [],
         categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
         user:false,
+        HCName: false,
       };
     },
     async mounted() {
+      //route from DOScreen with hawker centre name [NOTE WHEN ADD MORE HAWKER CENTRES]
+      this.HCName = this.$route.query.HCName;
+      console.log(this.HCName)
+
       this.fetchStalls();
       this.fetchFoodItems();
 
@@ -193,10 +198,14 @@
         return this.stalls.find(stall => stall.uid === merchantId);
       },
       viewFoodItem(item) {
+        console.log(this.HCName)
         this.$router.push({
           name: 'foodItemPage',
           params: {
-            id: item.id,  // Pass the food item ID 
+            id: item.id,  // Pass the food item ID
+          },
+          query: {
+            HCName: this.HCName 
           }
         });
       },
