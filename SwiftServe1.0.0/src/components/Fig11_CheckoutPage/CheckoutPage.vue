@@ -93,7 +93,6 @@ export default {
 .receipt-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   padding: 20px;
   background-color: #eeffff;
   font-family: 'Inria Sans', sans-serif;

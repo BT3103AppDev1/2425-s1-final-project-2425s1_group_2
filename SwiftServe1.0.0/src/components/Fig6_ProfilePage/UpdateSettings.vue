@@ -23,25 +23,41 @@
   <script>
   import firebaseApp from '@/firebase.js';
   import { getFirestore } from 'firebase/firestore';
-  import { getAuth, updatePassword} from 'firebase/auth';
+  import { getAuth, updatePassword, onAuthStateChanged} from 'firebase/auth';
+
   
   export default {
     name: 'UpdateSettings',
+    data() {
+    return {
+      user:false,
+    }
+  },
+    mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if (user) {
+              this.user = user;
+              console.log(user);
+          }
+      })
+  },
     methods: {
       async savetoFirestore() {
+        let username = document.getElementById("username1").value;
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
   
         try {
-          const auth = getAuth();
-          const user = auth.currentUser;
-          if (password === cPassword) {
-            updatePassword(user,password).then(() => {
+          if (username) {
+            this.user.displayName = username;
+          }
+          if (password && cPassword && password === cPassword) {
+            updatePassword(this.user,password).then(() => {
               alert('Password updated successfully!');
             }).catch((error) => {
               console.log(error);
             });
-            document.getElementById('userForm').reset();
           } else {
             throw new Error("Passwords do not match!");
           }
