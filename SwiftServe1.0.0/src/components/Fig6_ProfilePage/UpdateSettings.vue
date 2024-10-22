@@ -22,9 +22,9 @@
   
   <script>
   import firebaseApp from '@/firebase.js';
-  import { getFirestore } from 'firebase/firestore';
+  import { getFirestore,doc,updateDoc } from 'firebase/firestore';
   import { getAuth, updatePassword, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updateProfile} from 'firebase/auth';
-
+  const db = getFirestore(firebaseApp);
   
   export default {
     name: 'UpdateSettings',
@@ -54,6 +54,10 @@
             await updateProfile(this.user, {displayName: username}).then(() => {
               alert("Username successfully changed!");
             });
+            // Update displayName in Firestore
+            const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust path to your Firestore collection
+            await updateDoc(userDocRef, { displayName: username });
+            console.log('Username updated in Firestore!, username is: ' + this.user.displayName);
           }
           if (!password || !cPassword) {
             alert("Please fill in both password fields!");
