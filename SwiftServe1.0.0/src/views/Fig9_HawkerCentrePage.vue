@@ -49,6 +49,7 @@
   import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
   import CheckoutArea from '../components/Fig9_HawkerCentrePage/CheckoutArea.vue';
   import { db } from '../firebase.js';
+  import { getAuth } from "firebase/auth"
   
   export default {
     components: {
@@ -73,8 +74,16 @@
         ],
         cartItems: [],
         categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
-        userId: 'spencer1234'
+        user:false,
       };
+    },
+    async mounted() {
+      this.fetchStalls();
+      this.fetchFoodItems();
+
+      const auth = getAuth();
+      this.user = auth.currentUser;
+      this.fetchCartItems();
     },
     computed: {
       filteredItems() {
@@ -123,7 +132,7 @@
             ...doc.data(),
             uid: doc.id,
           }));
-          console.log('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
+          //('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
         } catch (error) {
           console.error('Error fetching stalls: ', error);
         }
@@ -135,19 +144,19 @@
             ...doc.data(),
             id: doc.id,
           }));
-          console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
+          //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
           console.error('Error fetching items: ', error);
         }
       },
       async fetchCartItems() {
         try {
-          const querySnapshot = await db.collection('Cart').where('userId', '==', this.userId).get();
+          const querySnapshot = await db.collection('Cart').where('userId', '==', this.user.uid).get();
           this.cartItems = querySnapshot.docs.map(doc => ({
             ...doc.data(),
             id: doc.id,
           }));
-          console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
+          //console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
         } catch (error) {
           console.error('Error fetching cart items: ', error);
         }
@@ -191,21 +200,16 @@
           }
         });
       },
-      editCartItem(item) {
+      /*editCartItem(item) {
         this.$router.push({
           name: 'foodItemPage',
           params: {
             cartItemId: item.id,  // Pass the cart item ID
           }
         });
-    }
+      }*/
 
-    },
-    mounted() {
-      this.fetchStalls();
-      this.fetchFoodItems();
-      this.fetchCartItems();
-    },
+    }
   };
 </script>
 
