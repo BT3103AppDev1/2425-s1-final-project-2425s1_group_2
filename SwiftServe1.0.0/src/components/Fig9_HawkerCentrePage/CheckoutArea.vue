@@ -23,7 +23,9 @@
       },
       cancelOrder() {
         // Implement cancel order logic here
-        console.log('Cancel Order clicked');
+        //console.log('Cancel Order clicked');
+        this.$emit('cancelOrder');
+        this.$router.push('/CustD')
       }
     }
   };
