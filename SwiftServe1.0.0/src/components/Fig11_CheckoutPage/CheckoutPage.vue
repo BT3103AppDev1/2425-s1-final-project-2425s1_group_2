@@ -1,23 +1,23 @@
 <template>
   <div class="receipt-container">
     <div class="receipt-header">
-      <h1>Receipt</h1>
-      <router-link to="/hawkercentre">
-        <img src="/RedCross.png" alt="Go Back" class="cancel" />
-      </router-link>
+      <h2 id="receipt">Receipt</h2>
+      <img src="/RedCross.png" alt="Go Back" class="cancel" @click="goHawkerCentre"/>
+      <!--<router-link to="/hawkercentre">
+      </router-link>-->
     </div>
     <div class="order-items">
       <div v-for="(order, index) in orders" :key="index" class="order-item">
-        <h2>Order {{ index + 1 }}</h2>
+        <h3>Order {{ index + 1 }}</h3>
         <p>{{ order.hawker }}</p>
         <p>{{ order.stall }}</p>
         <p>{{ order.quantity }}x {{ order.dish }}</p>
         <p>${{ order.price.toFixed(2) }}</p>
-        <button class="edit-button">Edit</button>
+        <!--<button class="edit-button">Edit</button>-->
       </div>
     </div>
     <div class="total">
-      <h2>Total: ${{ total.toFixed(2) }}</h2>
+      <h3 id="TotalPrice">Total: ${{ total.toFixed(2) }}</h3>
     </div>
     <div class="options">
       <div class="option">
@@ -40,9 +40,17 @@
     <div class="payment-mode">
       <h3>Payment Mode:</h3>
       <div class="payment-options">
-        <img src="/visamaster.png" alt="Visa/Mastercard" />
+        <img 
+          v-for="(method, index) in paymentMethods" 
+          :key="index" 
+          :src="method.src" 
+          :alt="method.alt" 
+          :class="{ selected: selectedMethod === method.alt }" 
+          @click="selectMethod(method.alt)"
+        />
+        <!--<img src="/visamaster.png" alt="Visa/Mastercard" />
         <img src="/paynow.png" alt="PayNow" />
-        <img src="/paylah.png" alt="PayLah!" />
+        <img src="/paylah.png" alt="PayLah!" />-->
       </div>
     </div>
     <!--<router-link to = "/payment">-->
@@ -56,6 +64,12 @@ export default {
   name: 'ReceiptComponent',
   data() {
     return {
+      selectedMethod: null, // Track the selected method
+      paymentMethods: [
+        { src: '/visamaster.png', alt: 'Visa/Mastercard' },
+        { src: '/paynow.png', alt: 'PayNow' },
+        { src: '/paylah.png', alt: 'PayLah!' }
+      ],
       orders: [
         {
           hawker: 'Bukit Canberra Hawker Centre',
@@ -63,6 +77,20 @@ export default {
           quantity: 1,
           dish: 'Chicken Rice Set',
           price: 6.99
+        },
+        {
+          hawker: 'Bukit Canberra Hawker Centre',
+          stall: 'Wang Dao Kolo Mee',
+          quantity: 1,
+          dish: 'Kolo Mee Set',
+          price: 3.61
+        },
+        {
+          hawker: 'Bukit Canberra Hawker Centre',
+          stall: 'Wang Dao Kolo Mee',
+          quantity: 1,
+          dish: 'Kolo Mee Set',
+          price: 3.61
         },
         {
           hawker: 'Bukit Canberra Hawker Centre',
@@ -85,6 +113,13 @@ export default {
       goPaymentSuccess() {
       this.$router.push('/paymentSuccess')
       },
+
+      goHawkerCentre() {
+        this.$router.push('/hawkerCentre')
+      },
+      selectMethod(method) {
+        this.selectedMethod = method; 
+      }
   }
 }
 </script>
@@ -94,43 +129,49 @@ export default {
   width: 40%;
   display: flex;
   flex-direction: column;
-  padding: 20px;
   background-color: #eeffff;
   font-family: 'Inria Sans', sans-serif;
+  margin-left: 25vw;
+  font-size: 2vh;
 }
 
 .receipt-header {
+  display: flex;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 2vh;
   border-bottom: 2px solid black;
-  padding-bottom: 10px;
+}
+
+#receipt {
+  margin-left: 17vw;
 }
 
 .cancel {
-  width: 50px;
-  position: absolute;
-  right:70px;
-  top: 200px;
-  cursor: pointer;
+  width: 5vh;
+  height: 5vh;
+  margin-top: 2vh;
+  margin-left: 10vw;
 }
 
 .order-items {
-  flex-grow: 1;
+  max-height: 25vh;
+  overflow-y: auto;
+}
+
+#TotalPrice {
+  font-size: 4vh;
 }
 
 .order-item {
   background-color: #eeffff;
-  padding: 10px;
-  border-radius: 5px;
-  position: relative;
 }
 
 .order-item p {
-  margin: 5px 0;
-  line-height: 1.2;
+  margin: 0px 0;
+  line-height: 1;
 }
 
-.edit-button {
+/*.edit-button {
   position: absolute;
   right: 10px;
   top: 50px;
@@ -140,37 +181,31 @@ export default {
   padding: 12px 28px;
   border-radius: 3px;
   font-size: 24px;
-}
+}*/
 
 .total {
   text-align: right;
   border-bottom: 2px solid black;
-  padding-bottom: 10px;
-  font-size: 25px;
   font-weight: bold;
-  margin-bottom: 35px; /* Add margin to create space between total and dropdowns */
-}
-
-.options {
-  margin-bottom: 20px;
+  margin-bottom: 2vh; /* Add margin to create space between total and dropdowns */
 }
 
 .option {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1vh;
 }
 
 .option label {
-  flex: 0 0 150px;
-  margin-right: 10px;
-  font-size: 17px;
+  flex: 0 0 14vw;
+  margin-right: 2vw;
+  font-size: 2vh;
   font-weight: bold;
   text-align: right;
 }
 
 select {
-  width: 160px;
+  width: 15vw;
   padding: 5px;
   font-size: 1em;
   font-family: 'Inria Sans', sans-serif;
@@ -183,13 +218,14 @@ select {
 .payment-mode {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1vh;
 }
 
 .payment-mode h3 {
-  flex: 0 0 150px;
-  margin-right: 10px;
+  flex: 0 0 12vw;
+  margin-right: 1vw;
   font-weight: bold;
+  font-size: 2vh;
   text-align: right;
 }
 
@@ -200,18 +236,26 @@ select {
 }
 
 .payment-options img {
-  height: 30px;
+  height: 4vh;
   width: auto;
-  margin-right: 10px;
+  margin-right: 1vw;
+}
+
+.payment-options img:hover {
+  border: 2px solid #00adb5;
+}
+
+.payment-options img.selected {
+  border: 2px solid #00adb5;
 }
 
 .confirm-button {
   background-color: #00adb5;
   color: white;
   border: none;
-  padding: 15px;
-  font-size: 18px;
-  border-radius: 2px;
+  padding: 10px;
+  font-size: 3vh;
+  border-radius: 5px;
   width: 100%;
 }
 </style>
