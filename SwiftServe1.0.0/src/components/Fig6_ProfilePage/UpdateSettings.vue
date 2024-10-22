@@ -23,7 +23,7 @@
   <script>
   import firebaseApp from '@/firebase.js';
   import { getFirestore } from 'firebase/firestore';
-  import { getAuth, updatePassword, onAuthStateChanged} from 'firebase/auth';
+  import { getAuth, updatePassword, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updateProfile} from 'firebase/auth';
 
   
   export default {
@@ -38,7 +38,8 @@
       onAuthStateChanged(auth, (user) => {
           if (user) {
               this.user = user;
-              console.log(user);
+              console.log(this.user);
+              console.log(this.user.displayName);
           }
       })
   },
@@ -49,21 +50,27 @@
         let cPassword = document.getElementById("cPassword1").value;
   
         try {
-          if (username) {
-            this.user.displayName = username;
+          if (username && username != this.user.displayName) {
+            await updateProfile(this.user, {displayName: username}).then(() => {
+              alert("Username successfully changed!");
+            });
           }
-          if (password && cPassword && password === cPassword) {
-            updatePassword(this.user,password).then(() => {
+          if (!password || !cPassword) {
+            alert("Please fill in both password fields!");
+          } else if (password === cPassword) {
+              // Reauthenticate the user using their email and current password
+              const credential = EmailAuthProvider.credential(this.user.email, password);
+              await reauthenticateWithCredential(this.user, credential);
+              await updatePassword(this.user,password).then(() => {
+                console.log("Password change successful");
               alert('Password updated successfully!');
-            }).catch((error) => {
-              console.log(error);
             });
           } else {
-            throw new Error("Passwords do not match!");
+            alert("Passwords do not match!");
           }
+
         } catch (error) {
-          console.error("Error adding document: ", error);
-          alert("No Account Created. " + error);
+          console.error("Error adding document: ", error);;
         }
       }
     }
