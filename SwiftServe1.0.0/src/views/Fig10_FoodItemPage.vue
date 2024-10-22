@@ -44,6 +44,7 @@ import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
 import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
 import { db } from '../firebase.js';
+import { getAuth } from "firebase/auth"
 
 export default {
   components: {
@@ -59,12 +60,17 @@ export default {
       quantity: 1,
       addOns: [],
       specialInstructions: "",
-      userId: 'spencer1234', // Hardcoded for now
+      //userId: 'spencer1234', // Hardcoded for now
+      user: false,
       cartItemId: null,
       cartItem: null,
       totalPrice: 0
     };
   },
+  async mounted() {
+      const auth = getAuth();
+      this.user = auth.currentUser;
+    },
   async created() {
     const foodItemId = this.$route.params.id || null;
     this.cartItemId = this.$route.params.cartItemId || null;
@@ -118,7 +124,7 @@ export default {
             id: foodItemDoc.id, 
             ...foodItemDoc.data()
           };
-          console.log('Fetched food item:', this.foodItem); // Log the fetched food item
+          //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
           await this.fetchMerchant(this.foodItem.merchantId);
           this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
             name: key,
@@ -137,7 +143,7 @@ export default {
         const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
         if (merchantDoc.exists) {
           this.merchant = merchantDoc.data();
-          console.log('Fetched merchant:', this.merchant); // Log the fetched merchant
+          //console.log('Fetched merchant:', this.merchant); // Log the fetched merchant
         } else {
           console.error('No such merchant!');
         }
@@ -179,6 +185,7 @@ export default {
           });
 
           // Update cartItem object
+
           this.cartItem = {
             userId: cartItem.userId,
             foodItemName: cartItem.foodItemName,
@@ -220,9 +227,9 @@ export default {
       }
     },
     async addToCartHandler() {
-      console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
+      //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
       const cartItem = {
-        userId: this.userId,
+        userId: this.user.uid,
         foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
         foodItemPrice: this.calculateTotalPrice(),
         foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
