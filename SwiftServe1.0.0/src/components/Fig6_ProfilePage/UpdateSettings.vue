@@ -21,48 +21,62 @@
   </template>
   
   <script>
-  import firebaseApp from '../../firebase.js';
-  import { getFirestore } from 'firebase/firestore';
-  import { doc, setDoc, addDoc, serverTimestamp, collection } from 'firebase/firestore';
+  import firebaseApp from '@/firebase.js';
+  import { getFirestore,doc,updateDoc } from 'firebase/firestore';
+  import { getAuth, updatePassword, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updateProfile} from 'firebase/auth';
   const db = getFirestore(firebaseApp);
   
   export default {
     name: 'UpdateSettings',
+    data() {
+    return {
+      user:false,
+    }
+  },
+    mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if (user) {
+              this.user = user;
+              console.log(this.user);
+              console.log(this.user.displayName);
+          }
+      })
+  },
     methods: {
       async savetoFirestore() {
-        let email = document.getElementById("email1").value;
         let username = document.getElementById("username1").value;
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
   
         try {
-          if (password === cPassword) {
-            const userRef = await addDoc(collection(db, "UserProfile"), {
-              DateCreated: serverTimestamp(),
-              Email: email,
-              Username: username,
-              password: password,
-              ProfileType: "Customer"
+          if (username && username != this.user.displayName) {
+            await updateProfile(this.user, {displayName: username}).then(() => {
+              alert("Username successfully changed!");
             });
-            const userId = userRef.id;
-  
-            await setDoc(doc(db, "UserProfile", userId), {
-              UserId: userId,
-              DateCreated: serverTimestamp(),
-              Email: email,
-              Username: username,
-              password: password,
-              ProfileType: "Customer"
-            });
-  
-            document.getElementById('userForm').reset();
-            alert("Account Created Successfully!");
-          } else {
-            throw new Error("Passwords do not match!");
+            // Update displayName in Firestore
+            const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust path to your Firestore collection
+            await updateDoc(userDocRef, { displayName: username });
+            console.log('Username updated in Firestore!, username is: ' + this.user.displayName);
           }
+          if (!password || !cPassword) {
+            alert("Please fill in both password fields!");
+          } else if (password === cPassword) {
+              // Reauthenticate the user using their email and current password
+              const credential = EmailAuthProvider.credential(this.user.email, password);
+              await reauthenticateWithCredential(this.user, credential);
+              await updatePassword(this.user,password).then(() => {
+                console.log("Password change successful");
+                alert('Password updated successfully!');
+                document.getElementById('userForm').reset();
+            });
+          } else {
+            alert("Passwords do not match!");
+            document.getElementById('userForm').reset();
+          }
+
         } catch (error) {
-          console.error("Error adding document: ", error);
-          alert("No Account Created." + error);
+          console.error("Error adding document: ", error);;
         }
       }
     }
