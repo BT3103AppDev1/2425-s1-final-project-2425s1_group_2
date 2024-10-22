@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="cart-and-checkout">
-      <OrderCart :items="cartItems" @remove-item="removeItemFromCart"  @edit-item="editCartItem" class="order-cart" />
+      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" class="order-cart" /> <!--@edit-item="editCartItem"-->
       <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
     </div>
   </div>
@@ -174,7 +174,11 @@
         alert('Checkout functionality coming soon!');
       },
       cancelOrder() {
-        this.cartItems = [];
+        for (let item of this.cartItems) {
+          this.removeItemFromCart(item.id)
+        }
+        //this.cartItems = [];
+        //console.log(this.cartItems)
       },
       findStall(merchantId) {
         return this.stalls.find(stall => stall.uid === merchantId);
