@@ -64,10 +64,13 @@ export default {
       user: false,
       cartItemId: null,
       cartItem: null,
-      totalPrice: 0
+      totalPrice: 0,
+      hawkerCentre: false
     };
   },
   async mounted() {
+      this.hawkerCentre = this.$route.query.HCName || null;
+      console.log(this.hawkerCentre)
       const auth = getAuth();
       this.user = auth.currentUser;
     },
@@ -237,9 +240,10 @@ export default {
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
         specialInstructions: this.specialInstructions,
         merchantName: this.merchant.displayName,
-        merchantId: this.merchant.uid
+        merchantId: this.merchant.uid,
+        hawkerCentre: this.hawkerCentre
       };
-
+      cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);
       try {
         if (this.cartItemId) {
           await db.collection('Cart').doc(this.cartItemId).update(cartItem);
@@ -248,13 +252,20 @@ export default {
           await db.collection('Cart').add(cartItem);
           alert('Item added to cart');
         }
-        this.$router.push('/hawkerCentre');
+
+        this.$router.push({
+          path: '/hawkerCentre',
+          query: {HCName: this.hawkerCentre}
+        })
       } catch (error) {
         console.error('Error adding to cart:', error);
       }
     },
     cancelOrder() {
-      this.$router.push('/hawkerCentre');
+      this.$router.push({
+        path: '/hawkerCentre',
+        query: {HCName: this.hawkerCentre}
+      })
     }
   }
 };
