@@ -35,6 +35,10 @@
 
       <button type="submit" class="login-button">Login</button>
     </form>
+    <!-- Add Google Sign-In Button -->
+    <button class="google-login-button" @click="handleGoogleSignIn">Sign in with
+    Google</button>
+    
     <!-- Firebase UI Auth Container -->
     <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
     <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button>
@@ -44,9 +48,9 @@
 
 <script>
 import * as firebaseui from 'firebaseui'
-import { auth, GoogleProvider, EmailProvider } from '@/firebase.js'
+import { auth, GoogleProvider, EmailProvider} from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider} from 'firebase/auth'
 export default {
   name: 'LoginPage',
   data() {
@@ -84,6 +88,42 @@ export default {
     toggleLoginMethod() {
       // Toggle between showing manual login and FirebaseUI-based login
       this.showManualLogin = !this.showManualLogin
+    },
+    async handleGoogleSignIn() {
+      const provider = new GoogleAuthProvider()
+      var userCredential
+      try {
+        const userCredential = await auth.signInWithPopup(provider)
+        const user = userCredential.user
+        console.log('Google login successful:', user)
+        this.$router.push('/custD')
+      } catch (error) {
+        if (error.code === 'auth/account-exists-with-different-credential') {
+          const email = error.email
+          const methods = await auth.fetchSignInMethodsForEmail(email)
+
+          // Handle existing email/password account
+          if (methods.includes('password')) {
+            alert(
+              'An account already exists with this email. Would you like to link your Google account to it?'
+            )
+            // Prompt to link accounts
+            const credential = GoogleProvider.credential(userCredential.credential.idToken)
+            try {
+              const usercred = await linkWithCredential(auth.currentUser, credential)
+              console.log('Account linking success', usercred.user)
+              this.$router.push('/custD')
+            } catch (linkError) {
+              console.log('Account linking error', linkError)
+              alert('Error linking account: ' + linkError.message)
+            }
+          } else {
+            alert('Please sign in using the existing method.')
+          }
+        } else {
+          alert('Error during Google sign-in: ' + error.message)
+        }
+      }
     },
     initializeFirebaseUI() {
       // Import FirebaseUI instance and initialize it with the `auth` from firebase.js
