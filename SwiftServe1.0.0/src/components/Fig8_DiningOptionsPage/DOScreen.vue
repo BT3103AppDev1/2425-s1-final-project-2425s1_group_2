@@ -45,7 +45,11 @@ export default {
 
     methods: {
       goHawkerCentrePage() {
-      this.$router.push('/hawkerCentre')
+        if (this.selectedHawkerCentre) {
+          this.$router.push('/hawkerCentre')
+        } else {
+          alert("No Hawker Centre Selected.")
+        }
       },
 
       async fetchHawkerCentres() {

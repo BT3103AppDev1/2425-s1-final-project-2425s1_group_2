@@ -1,5 +1,5 @@
 <template>
-    <h1 style="text-align:center;font-family: 'Inria Sans';background-color: #eeffff;font-size: 2.4vw;">Bukit Canberra Hawker Centre</h1>
+    <h1 style="text-align:center;font-family: 'Inria Sans';background-color: #eeffff;font-size: 2.4vw;">Yuhua Village Market and Food Centre</h1>
 
     <div class="StallArrangement">
         <!-- code here for stalls, should change color for the selected stall -->
@@ -473,6 +473,7 @@ export default {
             if (this.numSeatsChosen <1) {
                 // i.e. user clicks save without choosing any seats
                 alert("You have not chosen any seat, are you sure?");
+                return
             } else {
                 console.log("saved to fs");
 
@@ -488,13 +489,15 @@ export default {
                         SeatsChosen: newSeatsChosen,
                         NumSeats: numSeats
                     })
-                        location.reload();
+                    alert("Your seat has been reserved.");
+                        //location.reload();
                                             
                 }
                 catch(error) {
                     console.error("Error adding document: ", error)
                 }
-            }           
+            }  
+            this.$router.push('/livereceipt')         
         },
 
         disableSeat(seatId){

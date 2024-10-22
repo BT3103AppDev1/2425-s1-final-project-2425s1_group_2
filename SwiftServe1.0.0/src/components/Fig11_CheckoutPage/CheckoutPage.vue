@@ -2,7 +2,7 @@
   <div class="receipt-container">
     <div class="receipt-header">
       <h1>Receipt</h1>
-      <router-link to="/">
+      <router-link to="/hawkercentre">
         <img src="/RedCross.png" alt="Go Back" class="cancel" />
       </router-link>
     </div>
@@ -45,9 +45,9 @@
         <img src="/paylah.png" alt="PayLah!" />
       </div>
     </div>
-    <router-link to = "/payment">
-    <button class="confirm-button">Confirm and Pay</button>
-    </router-link>
+    <!--<router-link to = "/payment">-->
+    <button class="confirm-button" @click="goPaymentSuccess">Confirm and Pay</button>
+    <!--</router-link>-->
   </div>
 </template>
 
@@ -80,15 +80,20 @@ export default {
     total() {
       return this.orders.reduce((sum, order) => sum + order.price * order.quantity, 0)
     }
+  },
+  methods: {
+      goPaymentSuccess() {
+      this.$router.push('/paymentSuccess')
+      },
   }
 }
 </script>
 
 <style scoped>
 .receipt-container {
+  width: 40%;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   padding: 20px;
   background-color: #eeffff;
   font-family: 'Inria Sans', sans-serif;
