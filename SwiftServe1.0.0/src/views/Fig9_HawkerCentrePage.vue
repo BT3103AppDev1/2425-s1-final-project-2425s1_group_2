@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="cart-and-checkout">
-      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" class="order-cart" /> <!--@edit-item="editCartItem"-->
+      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" /> 
       <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
     </div>
   </div>
@@ -49,7 +49,7 @@
   import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue';
   import CheckoutArea from '../components/Fig9_HawkerCentrePage/CheckoutArea.vue';
   import { db } from '../firebase.js';
-  import { getAuth } from "firebase/auth"
+  import { getAuth, onAuthStateChanged } from "firebase/auth"
   
   export default {
     components: {
@@ -74,21 +74,24 @@
         ],
         cartItems: [],
         categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
-        user:false,
+        user: null,
         HCName: false,
       };
     },
     async mounted() {
-      //route from DOScreen with hawker centre name [NOTE WHEN ADD MORE HAWKER CENTRES]
-      this.HCName = this.$route.query.HCName;
-      console.log(this.HCName)
-
-      this.fetchStalls();
-      this.fetchFoodItems();
-
       const auth = getAuth();
-      this.user = auth.currentUser;
-      this.fetchCartItems();
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user;
+          this.HCName = this.$route.query.HCName;
+          console.log(this.HCName);
+
+          this.fetchStalls();
+          this.fetchFoodItems();
+          this.fetchCartItems();
+        } 
+      });
     },
     computed: {
       filteredItems() {
@@ -213,14 +216,14 @@
           }
         });
       },
-      /*editCartItem(item) {
+      editCartItem(item) {
         this.$router.push({
           name: 'foodItemPage',
           params: {
             cartItemId: item.id,  // Pass the cart item ID
           }
         });
-      }*/
+      }
 
     }
   };
