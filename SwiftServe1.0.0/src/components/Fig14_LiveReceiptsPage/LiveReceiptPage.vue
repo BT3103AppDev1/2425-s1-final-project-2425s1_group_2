@@ -70,7 +70,7 @@ export default {
     },
     async deleteAccount() {
       try {
-        const currentPassword = prompt('Please enter your current password to confirm account deletion:');
+        const currentPassword = prompt('Are you sure you want to delete your account? Please enter your current password to confirm account deletion:');
 
         if (currentPassword) {
           // Reauthenticate the user with their email and current password
