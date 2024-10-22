@@ -63,10 +63,12 @@
               await reauthenticateWithCredential(this.user, credential);
               await updatePassword(this.user,password).then(() => {
                 console.log("Password change successful");
-              alert('Password updated successfully!');
+                alert('Password updated successfully!');
+                document.getElementById('userForm').reset();
             });
           } else {
             alert("Passwords do not match!");
+            document.getElementById('userForm').reset();
           }
 
         } catch (error) {
