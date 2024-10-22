@@ -185,7 +185,11 @@
         this.cartItems.push(item);
       },
       checkout() {
-        alert('Checkout functionality coming soon!');
+        this.$router.push({
+          path: '/checkout',
+          query: {HCName: this.HCName}
+        })
+        //alert('Checkout functionality coming soon!');
       },
       cancelOrder() {
         for (let item of this.cartItems) {
