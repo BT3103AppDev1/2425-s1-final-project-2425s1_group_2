@@ -60,13 +60,17 @@
 </template>
 
 <script>
-import firebaseApp from '@/firebase.js';
-import { getAuth} from 'firebase/auth';
-const auth = getAuth();
-const user = auth.currentUser;
+import firebaseApp from '../../firebase.js'
+import { getFirestore } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth';
+
+const db = getFirestore(firebaseApp)
 
 export default {
+
   name: 'ReceiptComponent',
+
   data() {
     return {
       selectedMethod: null, // Track the selected method
@@ -75,7 +79,7 @@ export default {
         { src: '/paynow.png', alt: 'PayNow' },
         { src: '/paylah.png', alt: 'PayLah!' }
       ],
-      orders: [
+      /*orders: [
         {
           hawker: 'Bukit Canberra Hawker Centre',
           stall: 'Chin Lee Chicken Rice',
@@ -104,11 +108,24 @@ export default {
           dish: 'Kolo Mee Set',
           price: 3.61
         }
-      ],
+      ]*/
+      orders: [],
       dineOption: 'Dine in',
-      diningTime: '12:00pm - 12:30pm'
+      diningTime: '12:00pm - 12:30pm',
+      user: false,
+      HCName: false
     }
   },
+
+  async mounted() {
+    this.HCName = this.$route.query.HCName;
+    console.log(this.HCName)
+
+    const auth = getAuth();
+    this.user = auth.currentUser.uid;;
+    await this.getCartOrders(this.user)
+  },
+
   computed: {
     total() {
       return this.orders.reduce((sum, order) => sum + order.price * order.quantity, 0)
@@ -121,10 +138,37 @@ export default {
       },
 
       goHawkerCentre() {
-        this.$router.push('/hawkerCentre')
+        //this.$router.push('/hawkerCentre')
+        this.$router.push({
+        path: '/hawkerCentre',
+        query: {HCName: this.HCName}
+      })
       },
       selectMethod(method) {
         this.selectedMethod = method; 
+      },
+
+      async getCartOrders(userID) {
+        let allOrders = await getDocs(collection(db, 'Cart'))
+
+        allOrders.forEach((docs) => {
+          let docsData = docs.data()
+          let docUserID = docsData.userId;
+
+          if (docUserID === userID) {
+            let newOrder = {
+              hawker: docsData.hawkerCentre,
+              stall: docsData.merchantName,
+              quantity: docsData.quantity,
+              dish: docsData.foodItemName,
+              price: docsData.foodItemPrice
+            };
+            this.orders.push(newOrder);
+          }
+
+
+
+        })
       }
   }
 }

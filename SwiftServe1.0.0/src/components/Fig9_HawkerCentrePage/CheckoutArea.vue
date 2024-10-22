@@ -17,9 +17,14 @@
     },
     methods: {
       checkout() {
+        this.$emit('checkout')
         // Implement checkout logic here
-        this.$router.push('/checkout')
+        /*this.$router.push('/checkout')
         //console.log('Checkout clicked');
+        this.$router.push({
+          path: '/checkout',
+          query: {HCName: this.hawkerCentre}
+        })*/
       },
       cancelOrder() {
         // Implement cancel order logic here
