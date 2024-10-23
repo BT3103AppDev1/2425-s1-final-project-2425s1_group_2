@@ -90,27 +90,22 @@ export default {
     }
   },
   watch: {
-    // addOns: {
-    //   handler() {
-    //     this.updateTotalPrice();
-    //   },
-    //   deep: true
-    // },
-    // quantity() {
-    //   this.updateTotalPrice();
-    // },
-    // foodItem() {
-    //   this.updateTotalPrice();
-    // },
-    // cartItem() {
-    //   this.updateTotalPrice();
-    // }
-  },
-  // computed: {
-  //   totalPrice() {
-  //     return this.calculateTotalPrice();
-  //   }
+  // addOns: {
+  //   handler() {
+  //     this.updateTotalPrice();
+  //   },
+  //   deep: true
   // },
+  // quantity() {
+  //   this.updateTotalPrice();
+  // },
+  foodItem() {
+    this.updateTotalPrice();
+  },
+  // cartItem() {
+  //   this.updateTotalPrice();
+  // }
+  },
   methods: {
     async calculateTotalPrice() {
       const addOnTotal = this.addOns.reduce((total, addOn) => {
@@ -125,9 +120,8 @@ export default {
         const foodItemDoc = await db.collection('FoodItem').doc(this.cartItem.foodItemId).get();
         if (foodItemDoc.exists) {
           const foodItem = foodItemDoc.data();
-          basePrice = foodItem.price; 
+          basePrice = foodItem.foodItemPrice; 
         }
-        basePrice = this.cartItem.foodItemPrice;
       }
 
       return (basePrice + addOnTotal) * this.quantity;

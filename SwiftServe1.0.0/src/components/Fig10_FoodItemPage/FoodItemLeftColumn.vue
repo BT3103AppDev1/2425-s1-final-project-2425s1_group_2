@@ -8,7 +8,7 @@
       <h1 class="food-name">{{ foodItem.foodItemName }}</h1>
       <div class="food-info">
         <div class="price-quantity">
-          <p class="price">${{ totalPrice }}</p>
+          <p class="price">${{ totalPrice.toFixed(2) }}</p>
           <div class="quantity-controls">
             <span class="quantity">× {{ quantity }}</span>
             <button @click="decreaseQuantity" class="quantity-btn" aria-label="Decrease quantity">-</button>

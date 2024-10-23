@@ -7,14 +7,19 @@
   
   <script>
   export default {
-    props: ['value'],
+    props: {
+      modelValue: {
+        type: String,
+        default: ''
+      }
+    },
     computed: {
       instructions: {
         get() {
-          return this.value;
+          return this.modelValue;
         },
         set(val) {
-          this.$emit('input', val);
+          this.$emit('update:modelValue', val);
         }
       }
     }
