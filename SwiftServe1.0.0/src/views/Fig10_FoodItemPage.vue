@@ -23,7 +23,7 @@
         </div>
 
         <div class="action-buttons">
-          <button class="add-to-cart" @click="addToCartHandler">
+          <button class="add-to-cart" @click="openAddToCartModal">
             <span class="cart-icon">🛒</span> Add to Cart
           </button>
           <button class="cancel-order" @click="cancelOrder">
@@ -34,6 +34,21 @@
     </div>
     <div v-else>
       <p>Loading...</p>
+
+    </div>
+        <!-- Custom Modal for Confirming Item Removal -->
+        <div v-if="showAddToCartModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="closeAddToCartModal">&times;</button>
+        <div class="modal-text">
+          <h2>Confirm Add to Cart</h2>
+          <p>Are you sure you want to add this into your cart?</p>
+          <div class="modal-actions">
+            <button @click="addToCartHandler">Yes, proceed to add</button>
+            <button @click="closeAddToCartModal">No, return back to food item</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,7 +59,7 @@ import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
 import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
 import { db } from '../firebase.js';
-import { getAuth } from "firebase/auth"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 
 export default {
   components: {
@@ -60,20 +75,26 @@ export default {
       quantity: 1,
       addOns: [],
       specialInstructions: "",
-      //userId: 'spencer1234', // Hardcoded for now
-      user: false,
+      user: null,
       cartItemId: null,
       cartItem: null,
       totalPrice: 0,
-      hawkerCentre: false
+      hawkerCentre: false,
+      showAddToCartModal: false
     };
   },
   async mounted() {
-      this.hawkerCentre = this.$route.query.HCName || null;
-      console.log(this.hawkerCentre)
-      const auth = getAuth();
-      this.user = auth.currentUser;
-    },
+    this.hawkerCentre = this.$route.query.HCName || null;
+    console.log(this.hawkerCentre);
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user;
+          console.log("User is authenticated:", user);
+        } 
+    });
+  },
   async created() {
     const foodItemId = this.$route.params.id || null;
     this.cartItemId = this.$route.params.cartItemId || null;
@@ -85,39 +106,51 @@ export default {
     }
   },
   watch: {
-    addOns: {
-      handler() {
-        this.updateTotalPrice();
-      },
-      deep: true
-    },
-    quantity() {
-      this.updateTotalPrice();
-    },
-    foodItem() {
-      this.updateTotalPrice();
-    },
-    cartItem() {
-      this.updateTotalPrice();
-    }
-  },
-  // computed: {
-  //   totalPrice() {
-  //     return this.calculateTotalPrice();
-  //   }
+  // addOns: {
+  //   handler() {
+  //     this.updateTotalPrice();
+  //   },
+  //   deep: true
   // },
+  // quantity() {
+  //   this.updateTotalPrice();
+  // },
+  foodItem() {
+    this.updateTotalPrice();
+  },
+  // cartItem() {
+  //   this.updateTotalPrice();
+  // }
+  },
   methods: {
-    calculateTotalPrice() {
+        // Modal control methods
+        openAddToCartModal() {
+      this.showAddToCartModal = true;
+    },
+    closeAddToCartModal() {
+      this.showAddToCartModal = false;
+    },
+    async calculateTotalPrice() {
       const addOnTotal = this.addOns.reduce((total, addOn) => {
         return total + addOn.price * addOn.quantity;
       }, 0);
 
       // Multiply both base price and add-on total by the quantity
-      const basePrice = this.foodItem ? this.foodItem.foodItemPrice : this.cartItem.foodItemPrice;
+      let basePrice = 0;
+      if (this.foodItem) {
+        basePrice = this.foodItem.foodItemPrice; 
+      } else if (this.cartItem) {
+        const foodItemDoc = await db.collection('FoodItem').doc(this.cartItem.foodItemId).get();
+        if (foodItemDoc.exists) {
+          const foodItem = foodItemDoc.data();
+          basePrice = foodItem.foodItemPrice; 
+        }
+      }
+
       return (basePrice + addOnTotal) * this.quantity;
     },
-    updateTotalPrice() {
-      this.totalPrice = this.calculateTotalPrice();
+    async updateTotalPrice() {
+      this.totalPrice = await this.calculateTotalPrice();
     },
     async fetchFoodItem(foodItemId) {
       try {
@@ -210,6 +243,7 @@ export default {
           await this.fetchMerchant(cartItem.merchantId);
 
           this.totalPrice = this.cartItem.foodItemPrice; // Set total price
+          console.log(this.totalPrice)
         } else {
           console.error('No such cart item!');
         }
@@ -219,14 +253,19 @@ export default {
     },
     increaseQuantity() {
       this.quantity++;
+      this.updateTotalPrice();
     },
     decreaseQuantity() {
-      if (this.quantity > 1) this.quantity--;
+      if (this.quantity > 1) {
+        this.quantity--;
+        this.updateTotalPrice();
+      }
     },
     updateAddOn(updatedAddOn) {
       const addOnIndex = this.addOns.findIndex(a => a.name === updatedAddOn.name);
       if (addOnIndex !== -1) {
         this.addOns[addOnIndex] = updatedAddOn;
+        this.updateTotalPrice();
       }
     },
     async addToCartHandler() {
@@ -234,7 +273,7 @@ export default {
       const cartItem = {
         userId: this.user.uid,
         foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
-        foodItemPrice: this.calculateTotalPrice(),
+        foodItemPrice: this.totalPrice,
         foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
         quantity: this.quantity,
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
@@ -247,12 +286,9 @@ export default {
       try {
         if (this.cartItemId) {
           await db.collection('Cart').doc(this.cartItemId).update(cartItem);
-          alert('Item successfully edited in cart');
         } else {
           await db.collection('Cart').add(cartItem);
-          alert('Item added to cart');
         }
-
         this.$router.push({
           path: '/hawkerCentre',
           query: {HCName: this.hawkerCentre}
@@ -335,5 +371,84 @@ export default {
   border: none; 
   border-top: 5px solid black;
   margin: 10px 0; 
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 24px;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.modal-actions button:last-child {
+  margin-bottom: 0;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
 }
 </style>

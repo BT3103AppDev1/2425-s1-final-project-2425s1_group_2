@@ -27,42 +27,71 @@
       alt="LogoutButton"
       class="headerButtons"
       id="lButton"
-      @click="LogoutClick"
+      @click="openLogoutModal"
     />
+
+    <!-- Modal for logout confirmation -->
+    <div v-if="showLogoutModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="closeLogoutModal">&times;</button>
+        <div class="modal-text">
+          <h2>Are you sure you want to log out?</h2>
+          <div class="modal-actions">
+            <button @click="confirmLogout">Yes, log me out</button>
+            <button @click="closeLogoutModal">No, stay logged in</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth"
 export default {
   name: 'UniversalHeader',
 
   data() {
     return {
-        user:false,
+      user: false,
+      showLogoutModal: false, // Control the modal visibility
     }
   },
 
-  mounted(){
+  mounted() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-            if (user) {
-                this.user = user;
-            }
-    })
+      if (user) {
+        this.user = user;
+      }
+    });
   },
 
   methods: {
     CDashClick() {
-      this.$router.push('/custD')
+      this.$router.push('/custD');
     },
 
     SettingsClick() {
-      this.$router.push('/profile')
+      this.$router.push('/profile');
     },
 
-    LogoutClick() {
-      this.$router.push('/')
+    openLogoutModal() {
+      this.showLogoutModal = true;
+    },
+
+    closeLogoutModal() {
+      this.showLogoutModal = false;
+    },
+
+    confirmLogout() {
+      const auth = getAuth();
+      signOut(auth).then(() => {
+        this.$router.push('/');
+        this.showLogoutModal = false; // Close the modal after logging out
+      }).catch((error) => {
+        console.error("Error signing out: ", error);
+      });
     }
   }
 }
@@ -114,5 +143,69 @@ h1 {
 #lButton {
   position: absolute;
   left: 95vw;
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-text h2 {
+  margin-bottom: 20px;
+  color: #00adb5;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
 }
 </style>
