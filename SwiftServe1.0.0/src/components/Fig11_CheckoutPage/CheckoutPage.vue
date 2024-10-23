@@ -62,7 +62,7 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
 
 const db = getFirestore(firebaseApp)
@@ -124,6 +124,7 @@ export default {
     const auth = getAuth();
     this.user = auth.currentUser.uid;;
     await this.getCartOrders(this.user)
+    console.log(this.orders);
   },
 
   computed: {
@@ -132,7 +133,32 @@ export default {
     }
   },
   methods: {
-      goPaymentSuccess() {
+      async goPaymentSuccess() {
+
+        if (this.selectedMethod == null) {
+          alert("No Payment Method Selected.")
+          return;
+        }
+
+        let allOrders = await getDocs(collection(db, 'Cart'))
+
+        //allOrders.forEach((docs) => {
+        for (const docs of allOrders.docs) {
+          let docsData = docs.data();
+          let docUserID = docsData.userId;
+
+          if (docUserID === this.user) {
+            docsData.collected = false;
+            docsData.diningStatus = this.dineOption;
+            docsData.diningTime = this.diningTime;
+            docsData.orderStatus = "Preparing";
+            docsData.paymendMode = this.selectedMethod;
+            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+            //console.log(docsData.quantity);
+            //console.log(docsData)
+          }
+        }
+
         //add method to clear cart in hawker centre page
         if (this.dineOption === "Dine in") {
           this.$router.push('/paymentSuccess');
