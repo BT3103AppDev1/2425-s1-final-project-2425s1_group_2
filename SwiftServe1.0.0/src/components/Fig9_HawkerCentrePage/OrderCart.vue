@@ -25,7 +25,7 @@
         <button class="close-button" @click="closeDeleteModal">&times;</button>
         <div class="modal-text">
           <h2>Confirm Cart Deletion</h2>
-          <p>Are you sure you want to delete your cart?</p>
+          <p>Are you sure you want to delete this item from your cart?</p>
           <div class="modal-actions">
             <button @click="removeItem">Yes</button>
             <button @click="closeDeleteModal">Go back to ordering</button>
