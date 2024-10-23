@@ -62,7 +62,7 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
 
 const db = getFirestore(firebaseApp)
@@ -154,18 +154,17 @@ export default {
             docsData.orderStatus = "Preparing";
             docsData.paymendMode = this.selectedMethod;
             await setDoc(doc(db, 'Cart', docs.id), docsData)
-
-            //console.log(docsData.quantity);
-            //console.log(docsData)
           }
+          if (this.dineOption === "Dine in") {
+            this.$router.push('/paymentSuccess');
+          } else {
+            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+            await deleteDoc(doc(db, 'Cart', docs.id));
+            this.$router.push('/takeawaySuccess');
+        }
         }
 
         //add method to clear cart in hawker centre page
-        if (this.dineOption === "Dine in") {
-          this.$router.push('/paymentSuccess');
-        } else {
-          this.$router.push('/takeawaySuccess');
-        }
       },
 
       goHawkerCentre() {
