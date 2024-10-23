@@ -153,7 +153,8 @@ export default {
             docsData.diningTime = this.diningTime;
             docsData.orderStatus = "Preparing";
             docsData.paymendMode = this.selectedMethod;
-            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+            await setDoc(doc(db, 'Cart', docs.id), docsData)
+
             //console.log(docsData.quantity);
             //console.log(docsData)
           }

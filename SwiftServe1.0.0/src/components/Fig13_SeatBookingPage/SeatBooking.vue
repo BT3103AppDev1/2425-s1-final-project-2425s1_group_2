@@ -489,6 +489,33 @@ export default {
                         SeatsChosen: newSeatsChosen,
                         NumSeats: numSeats
                     })
+                    let allOrders = await getDocs(collection(db, 'Cart'))
+
+                    for (const docs of allOrders.docs) {
+                        let docsData = docs.data();
+                        let docUserID = docsData.userId;
+                        let seatList = '';
+
+                        if (docUserID === this.user.uid) {
+                            if (this.seatsChosen.length == 1) {
+                                seatList += this.seatsChosen[0];
+                                //console.log(seatList);
+                            } else {
+                                for (const key in this.seatsChosen) {
+                                    if (key == 0) {
+                                        seatList += this.seatsChosen[0];
+                                    } else {
+                                        seatList = seatList + ', ' + this.seatsChosen[key];
+                                        //console.log(seatList);
+                                    }
+                                }
+                            }
+                            
+                            docsData.seats = seatList;
+                            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+                            await deleteDoc(doc(db, 'Cart', docs.id));
+                        }
+                    }
                     alert("Your seat has been reserved.");
                         //location.reload();
                                             
