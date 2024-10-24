@@ -253,10 +253,6 @@ button {
   margin-bottom: 1vh;
 }
 
-.preparing-order-btn:hover {
-  background-color: #9f9e9e;
-}
-
 .order-ready-btn:hover {
   background-color: #3cb516; /* Darker version for hover */
 }
