@@ -8,7 +8,7 @@
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, where, limit } from 'firebase/firestore'
   //import { currentOrders } from './currentOrders.js';
   //import { past5Orders } from './pastOrders.js';
 
@@ -21,7 +21,7 @@ import { collection, getDocs } from 'firebase/firestore'
       return {
         user: false,
         currentOrders: [],  // Reference to currentOrders data imported
-        //past5Orders,    // Reference to past5Orders data imported
+        past5Orders: [],    // Reference to past5Orders data imported
       };
     },
   
@@ -31,6 +31,7 @@ import { collection, getDocs } from 'firebase/firestore'
         this.user = auth.currentUser.uid;
       }
       this.getCurrentOrders(this.user);
+      this.getPastOrders(this.user);
     },
   
     methods: {
@@ -60,6 +61,39 @@ import { collection, getDocs } from 'firebase/firestore'
         console.log(`Fetching current orders for user: ${userId}`);
         // Simulate fetching data (replace with actual API request logic)
         await new Promise((resolve) => setTimeout(resolve, 1000));
+      },
+      async getPastOrders(userId) {
+        let ordersQuery = query(
+          collection(db, 'PlacedCustOrders'),
+          where('userId', '==', userId),
+          where('collected', '==', true),
+          orderBy('dateCreated', 'desc'), 
+          limit(5)
+        )
+
+        let allOrders = await getDocs(ordersQuery)
+
+        for (const docs of allOrders.docs) {
+          let docsData = docs.data();
+          let temp = {};
+          //push what is needed to create new order in order cart!!!!!!!!!!!!!!
+          //temp['quantityFoodItem'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
+          temp['OrderNum'] = docsData.OrderNum; //change to better OrderNum
+          temp['addOns'] = docsData.addOns;
+          temp['foodItemId'] = docsData.foodItemId;
+          temp['foodItemName'] = docsData.foodItemName;
+          temp['foodItemPrice'] = docsData.foodItemPrice; //change to current food item price
+          temp['hawkerCentre'] = docsData.hawkerCentre;
+          temp['merchantId'] = docsData.merchantId;
+          temp['merchantName'] = docsData.merchantName;
+          temp['quantity'] = docsData.quantity;
+          temp['specialInstructions'] = docsData.specialInstructions;
+          temp['userId'] = docsData.userId;
+          console.log(this.past5Orders)
+
+
+          this.past5Orders.push(temp);
+        }
       },
   
       scrollLeft() {
@@ -130,8 +164,12 @@ import { collection, getDocs } from 'firebase/firestore'
       <h2>Past Orders</h2> 
       <div class="past-orders-container">
         <div v-for="(order, index) in past5Orders" :key="index" class="past-order-box">
-          <img :src="order.image" :alt="order.restaurant" class="past-order-image" />
-          <p class="past-order-restaurant">{{ order.restaurant }}</p>
+          <img :src="order.image" :alt="order.hawkerCentre" class="past-order-image" />
+          <p class="past-order-restaurant">{{ order.hawkerCentre }}</p>
+          <h6 class="past-order-details">{{ order.merchantName }}</h6>
+          <h6 class="past-order-details">{{ String(order.quantity + 'x ' + order.foodItemName) }}</h6>
+          <h6 class="past-order-details">{{ "Add ons???" }}</h6>
+          <h6 class="past-order-details">{{ "Special Instructions???" }}</h6>
           <button @click="quickOrder(order)" class="quick-order-btn">Quick Order</button>
         </div>
       </div>
@@ -356,7 +394,8 @@ button {
 
 .past-orders-container {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
+  gap: 2vw;
   height: 100%;
 }
 
@@ -383,6 +422,13 @@ button {
 .past-order-restaurant {
   font-size: 0.8vw; /* Reduced font size by 20% */
   font-weight: bold;
+  margin: 0.4vw 0; /* Reduced margin by 20% */
+  text-align: center;
+}
+
+.past-order-details {
+  font-size: 0.8vw; /* Reduced font size by 20% */
+  font-weight: normal;
   margin: 0.4vw 0; /* Reduced margin by 20% */
   text-align: center;
 }
