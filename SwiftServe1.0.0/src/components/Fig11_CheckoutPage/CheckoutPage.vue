@@ -151,7 +151,7 @@ export default {
             docsData.collected = false;
             docsData.diningStatus = this.dineOption;
             docsData.diningTime = this.diningTime;
-            docsData.orderStatus = "Preparing";
+            docsData.orderStatus = 0;
             docsData.paymendMode = this.selectedMethod;
             await setDoc(doc(db, 'Cart', docs.id), docsData)
           }
