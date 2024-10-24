@@ -146,7 +146,9 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
             </div>
           </div>
         </div>
-        <button class="scroll-button right" @click="scrollRight">&gt;</button>
+        <div id="right-scroll">
+          <button class="scroll-button right" @click="scrollRight">&gt;</button>
+        </div>
       </div>
     </div>
     <!--<div class="new-order">
@@ -219,6 +221,7 @@ h2 {
   height: 100%;
   padding: 0 1vw; 
   margin-left: 5vw;
+  width: 59vw;
 }
 
 .order-box {
@@ -342,7 +345,7 @@ button {
 .new-order {
   position: absolute;
   top: 2.5vw; 
-  left: 81vw;
+  right: 8vw;
   width: 14vw;
   height: 17vw;
   background-color: #00ADB5;

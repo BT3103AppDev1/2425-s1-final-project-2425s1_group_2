@@ -79,7 +79,7 @@ export default {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
-  width: 100%;
+  max-width: 70%;
 }
 
 .order-cart h2 {

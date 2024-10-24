@@ -122,7 +122,7 @@ h1 {
 
 .welcomeCust {
   position: relative;
-  left: 15vw;
+  left: 13vw;
   font-size: 3vh;
 }
 
