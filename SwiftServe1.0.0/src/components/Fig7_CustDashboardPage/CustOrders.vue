@@ -341,10 +341,10 @@ button {
 
 .new-order {
   position: absolute;
-  top: 3vw; 
-  left: 80vw;
-  width: 12vw;
-  height: 15vw;
+  top: 2.5vw; 
+  left: 81vw;
+  width: 14vw;
+  height: 17vw;
   background-color: #00ADB5;
   border-radius: 1vw;
   display: flex;

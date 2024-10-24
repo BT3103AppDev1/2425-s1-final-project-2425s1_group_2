@@ -7,7 +7,6 @@
     <div class="welcomeCust">
       <h2>Welcome {{ this.user.displayName }}!</h2>
     </div>
-
     <img
       src="/dashboardButton.png"
       alt="DashboardButton"
@@ -113,6 +112,7 @@ img {
   margin-left: 1vw;
 }
 
+
 h1 {
   color: #00adb5;
   font-weight: bold;
@@ -121,8 +121,8 @@ h1 {
 }
 
 .welcomeCust {
-  position: absolute;
-  left: 35vw;
+  position: relative;
+  left: 15vw;
   font-size: 3vh;
 }
 
@@ -132,17 +132,17 @@ h1 {
 
 #dButton {
   position: absolute;
-  left: 83vw;
+  left: 78vw;
 }
 
 #sButton {
   position: absolute;
-  left: 89vw;
+  left: 84vw;
 }
 
 #lButton {
   position: absolute;
-  left: 95vw;
+  left: 90vw;
 }
 
 /* Modal styling */
