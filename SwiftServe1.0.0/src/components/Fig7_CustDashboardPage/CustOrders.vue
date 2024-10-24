@@ -8,7 +8,7 @@
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, where, limit } from 'firebase/firestore'
   //import { currentOrders } from './currentOrders.js';
   //import { past5Orders } from './pastOrders.js';
 
@@ -21,7 +21,7 @@ import { collection, getDocs } from 'firebase/firestore'
       return {
         user: false,
         currentOrders: [],  // Reference to currentOrders data imported
-        //past5Orders,    // Reference to past5Orders data imported
+        past5Orders: [],    // Reference to past5Orders data imported
       };
     },
   
@@ -31,6 +31,7 @@ import { collection, getDocs } from 'firebase/firestore'
         this.user = auth.currentUser.uid;
       }
       this.getCurrentOrders(this.user);
+      this.getPastOrders(this.user);
     },
   
     methods: {
@@ -60,6 +61,27 @@ import { collection, getDocs } from 'firebase/firestore'
         console.log(`Fetching current orders for user: ${userId}`);
         // Simulate fetching data (replace with actual API request logic)
         await new Promise((resolve) => setTimeout(resolve, 1000));
+      },
+      async getPastOrders(userId) {
+        let ordersQuery = query(
+          collection(db, 'PlacedCustOrders'),
+          where('userId', '==', userId),
+          where('collected', '==', true),
+          orderBy('dateCreated', 'desc'), 
+          limit(5)
+        )
+
+        let allOrders = await getDocs(ordersQuery)
+
+        for (const docs of allOrders.docs) {
+          let docsData = docs.data();
+          let temp = {};
+          //push what is needed to create new order in order cart!!!!!!!!!!!!!!
+          temp['restaurant'] = docsData.hawkerCentre;
+          temp['dish'] = docsData.merchantName;
+          temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
+          this.past5Orders.push(temp);
+        }
       },
   
       scrollLeft() {
@@ -356,7 +378,8 @@ button {
 
 .past-orders-container {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
+  gap: 2vw;
   height: 100%;
 }
 
