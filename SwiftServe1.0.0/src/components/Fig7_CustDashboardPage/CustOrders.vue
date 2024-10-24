@@ -9,8 +9,6 @@ import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
 import { collection, getDocs, query, orderBy, where, limit } from 'firebase/firestore'
-  //import { currentOrders } from './currentOrders.js';
-  //import { past5Orders } from './pastOrders.js';
 
   const db = getFirestore(firebaseApp)
   
@@ -22,6 +20,8 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         user: false,
         currentOrders: [],  // Reference to currentOrders data imported
         past5Orders: [],    // Reference to past5Orders data imported
+        showQuickOrderPopup: false,
+        selectedOrder: null,
       };
     },
   
@@ -94,12 +94,46 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
 
           this.past5Orders.push(temp);
         }
+
+        // //javier: for testing purposes and overriding blanks
+        // for (let i = 0; i <10; i++) {
+        //   this.past5Orders.push({'OrderNum': 0, 
+        //     'addOns': 0,
+        //     'foodItemId': 0,
+        //     'foodItemName': 0,
+        //     'foodItemPrice': 1,
+        //     'hawkerCentre': 2,
+        //     'merchantId': 1,
+        //     'merchantName': 1,
+        //     'quantity': 1,
+        //     'specialInstructions': 1,
+        //     'userId': 1});
+        //   }
       },
+
+      quickOrder(order) {
+        this.selectedOrder = order;
+        this.showQuickOrderPopup = true;
+      },
+
+      closePopup() {
+        this.showQuickOrderPopup = false;
+        this.selectedOrder = null;
+      },
+
+      continueOrder() {
+        if (this.selectedOrder) {
+          const foodItemId = this.selectedOrder.foodItemId;
+          const userId = this.selectedOrder.userId;
+          this.$router.push(`/food-item/${foodItemId}?/${userId}`);
+        }
+      },
+
   
       scrollLeft() {
         if (this.$refs.ordersScroll) {
           this.$refs.ordersScroll.scrollBy({
-            left: -this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5, // Move by 1.5 cards' width
+            left: -this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
             behavior: 'smooth',
           });
         }
@@ -108,7 +142,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
       scrollRight() {
         if (this.$refs.ordersScroll) {
           this.$refs.ordersScroll.scrollBy({
-            left: this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5, // Move by 1.5 cards' width
+            left: this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
             behavior: 'smooth',
           });
         }
@@ -173,6 +207,23 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
           <h6 class="past-order-details">{{ "Add ons???" }}</h6>
           <h6 class="past-order-details">{{ "Special Instructions???" }}</h6>
           <button @click="quickOrder(order)" class="quick-order-btn">Quick Order</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Order Popup -->
+    <div v-if="showQuickOrderPopup" class="quick-order-popup">
+      <div class="popup-content">
+        <h3>Order Details</h3>
+        <p><strong>Order Number:</strong> {{ selectedOrder.OrderNum }}</p>
+        <p><strong>Food Item:</strong> {{ selectedOrder.foodItemName }}</p>
+        <p><strong>Price:</strong> {{ selectedOrder.foodItemPrice }}</p>
+        <p><strong>Quantity:</strong> {{ selectedOrder.quantity }}</p>
+        <p><strong>Add Ons:</strong> {{ selectedOrder.addOns }}</p>
+        <p><strong>Special Instructions:</strong> {{ selectedOrder.specialInstructions }}</p>
+        <div class="popup-buttons">
+          <button @click="continueOrder" class="continue-btn">Continue</button>
+          <button @click="closePopup" class="back-btn">Back</button>
         </div>
       </div>
     </div>
@@ -244,10 +295,10 @@ h2 {
 }
 
 .order-image {
-  width: 3.34vw; /* Reduced width by 20% */
-  height: 3.34vw; /* Reduced height by 20% */
+  width: 3.34vw;
+  height: 3.34vw;
   object-fit: cover;
-  border-radius: 0.21vw; /* Reduced radius by 20% */
+  border-radius: 0.21vw;
 }
 
 .order-details {
@@ -256,16 +307,16 @@ h2 {
 
 .order-details p {
   margin: 0.083vw 0;
-  font-size: 0.5vw; /* Reduced font size by 20% */
+  font-size: 0.5vw;
 }
 
 button {
   border: none;
-  border-radius: 0.21vw; /* Reduced radius by 20% */
-  padding: 0.21vw 0.42vw; /* Reduced padding by 20% */
+  border-radius: 0.21vw;
+  padding: 0.21vw 0.42vw;
   margin-top: 0.21vw;
   cursor: pointer;
-  font-size: 0.5vw; /* Reduced font size by 20% */
+  font-size: 0.5vw;
   color: #FFFFFF;
 }
 
@@ -286,7 +337,7 @@ button {
 }
 
 .order-ready-btn:hover {
-  background-color: #3cb516; /* Darker version for hover */
+  background-color: #3cb516;
 }
 
 .preparing-order-btn {
@@ -300,7 +351,7 @@ button {
 }
 
 .order-ready-btn:hover {
-  background-color: #3cb516; /* Darker version for hover */
+  background-color: #3cb516;
 }
 
 .view-order-btn {
@@ -315,7 +366,7 @@ button {
 }
 
 .view-order-btn:hover {
-  background-color: #014346; /* Darker version for hover */
+  background-color: #014346;
 }
 
 .scroll-button {
@@ -386,7 +437,6 @@ button {
   background-color: #007A80;
 }
 
-/* Past Orders Styles */
 .past-orders {
   position: absolute;
   top: 22vw;
@@ -397,7 +447,6 @@ button {
 
 .past-orders-container {
   display: flex;
-  /*justify-content: space-between;*/
   gap: 2vw;
   height: 100%;
 }
@@ -411,28 +460,28 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 0.8vw; /* Reduced padding by 20% */
-  box-shadow: 0 0.16vw 0.32vw rgba(0, 0, 0, 0.1); /* Reduced shadow dimensions by 20% */
+  padding: 0.8vw;
+  box-shadow: 0 0.16vw 0.32vw rgba(0, 0, 0, 0.1);
 }
 
 .past-order-image {
-  width: 12.8vw; /* Reduced width by 20% */
-  height: 8vw; /* Reduced height by 20% */
+  width: 12.8vw;
+  height: 8vw;
   object-fit: cover;
-  border-radius: 0.32vw; /* Reduced radius by 20% */
+  border-radius: 0.32vw;
 }
 
 .past-order-restaurant {
-  font-size: 0.8vw; /* Reduced font size by 20% */
+  font-size: 0.8vw;
   font-weight: bold;
-  margin: 0.4vw 0; /* Reduced margin by 20% */
+  margin: 0.4vw 0;
   text-align: center;
 }
 
 .past-order-details {
-  font-size: 0.8vw; /* Reduced font size by 20% */
+  font-size: 0.8vw;
   font-weight: normal;
-  margin: 0.4vw 0; /* Reduced margin by 20% */
+  margin: 0.4vw 0;
   text-align: center;
 }
 
@@ -440,14 +489,71 @@ button {
   background-color: #00ADB5;
   color: #FFFFFF;
   border: none;
-  border-radius: 0.32vw; /* Reduced border radius by 20% */
-  padding: 0.4vw 0.8vw; /* Reduced padding by 20% */
-  font-size: 0.64vw; /* Reduced font size by 20% */
+  border-radius: 0.32vw;
+  padding: 0.4vw 0.8vw;
+  font-size: 0.64vw;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .quick-order-btn:hover {
   background-color: #007A80;
+}
+
+/* for quick order pop up */
+.quick-order-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: #ffffff;
+  padding: 2vw;
+  border-radius: 0.5vw;
+  font-size: 1vw;
+  width: 30vw;
+  text-align: center;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2vw;
+}
+
+.continue-btn {
+  background-color: #51e51c;
+  color: #000000;
+  padding: 1vw 2vw;
+  font-size: 2vw;
+  font-family: 'Inria Sans', sans-serif;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn {
+  background-color: #e51c1c;
+  color: #ffffff;
+  padding: 1vw 2vw;
+  font-size: 2vw;
+  font-family: 'Inria Sans', sans-serif;
+  border: none;
+  cursor: pointer;
+}
+
+.continue-btn:hover {
+  background-color: #6cff3a;
+}
+
+.back-btn:hover {
+  background-color: #b51515;
 }
 </style>
