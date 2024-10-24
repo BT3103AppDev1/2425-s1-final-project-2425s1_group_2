@@ -512,6 +512,7 @@ export default {
                             }
                             
                             docsData.seats = seatList;
+                            docsData.dateCreated = new Date().toISOString();
                             await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
                             await deleteDoc(doc(db, 'Cart', docs.id));
                         }

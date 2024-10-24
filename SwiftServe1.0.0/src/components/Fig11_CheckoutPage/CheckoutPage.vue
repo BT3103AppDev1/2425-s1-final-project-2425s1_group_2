@@ -151,13 +151,14 @@ export default {
             docsData.collected = false;
             docsData.diningStatus = this.dineOption;
             docsData.diningTime = this.diningTime;
-            docsData.orderStatus = 0;
+            docsData.orderStatus = false;
             docsData.paymendMode = this.selectedMethod;
             await setDoc(doc(db, 'Cart', docs.id), docsData)
           }
           if (this.dineOption === "Dine in") {
             this.$router.push('/paymentSuccess');
           } else {
+            docsData.dateCreated = new Date().toISOString();
             await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
             await deleteDoc(doc(db, 'Cart', docs.id));
             this.$router.push('/takeawaySuccess');

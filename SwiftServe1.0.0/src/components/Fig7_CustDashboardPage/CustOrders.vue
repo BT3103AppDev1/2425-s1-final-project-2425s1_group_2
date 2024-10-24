@@ -45,7 +45,7 @@ import { collection, getDocs } from 'firebase/firestore'
           let docsData = docs.data();
           let docUserID = docsData.userId;
 
-          if (docUserID === this.user) {
+          if (docUserID === this.user && !docsData.collected) {
             let temp = {};
             temp['restaurant'] = docsData.hawkerCentre;
             temp['dish'] = docsData.merchantName;
@@ -115,12 +115,17 @@ import { collection, getDocs } from 'firebase/firestore'
         <button class="scroll-button right" @click="scrollRight">&gt;</button>
       </div>
     </div>
-    <div class="new-order">
+    <!--<div class="new-order">
       <div class="new-order-circle">
         <span class="plus-sign">+</span>
       </div>
       <p>New Order</p>
+    </div>-->
+    <div>
+      <img src="/NewOrderButton.png" alt="NewOrderButton" class="new-order" @click="goToDiningOptions" />
     </div>
+
+    <!-- pull from backend past order [there are 2 that are collected already.]-->
     <div class="past-orders">
       <h2>Past Orders</h2> 
       <div class="past-orders-container">
