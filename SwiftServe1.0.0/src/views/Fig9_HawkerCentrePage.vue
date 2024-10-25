@@ -135,7 +135,10 @@
     methods: {
       async fetchStalls() {
         try {
-          const querySnapshot = await db.collection('UserProfile').where('profileType', '==', 'Merchant').get();
+          const querySnapshot = await db.collection('UserProfile')
+                                  .where('profileType', '==', 'Merchant')
+                                  .where('open', '==', true) // Check if the stall is open; if not open do not render on display
+                                  .get();
           this.stalls = querySnapshot.docs.map(doc => ({
             ...doc.data(),
             uid: doc.id,
@@ -149,8 +152,12 @@
         try {
           const querySnapshot = await db.collection('FoodItem').get();
           this.items = querySnapshot.docs.map(doc => ({
-            ...doc.data(),
+            // ...doc.data(),
             id: doc.id,
+            foodItemName: doc.data().foodItemName,
+            available: doc.data().available,
+            merchantId: doc.data().merchantId,  
+            // foodItemImage: doc.data().foodItemImage,
           }));
           //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
@@ -205,16 +212,18 @@
         return this.stalls.find(stall => stall.uid === merchantId);
       },
       viewFoodItem(item) {
-        console.log(this.HCName)
-        this.$router.push({
-          name: 'foodItemPage',
-          params: {
-            id: item.id,  // Pass the food item ID
-          },
-          query: {
-            HCName: this.HCName 
-          }
-        });
+        if (item.available) {
+          console.log(this.HCName)
+          this.$router.push({
+            name: 'foodItemPage',
+            params: {
+              id: item.id,  // Pass the food item ID
+            },
+            query: {
+              HCName: this.HCName 
+            }
+          });
+        }
       },
       editCartItem(item) {
         this.$router.push({
