@@ -1,10 +1,10 @@
 <template>
   <div class="food-item-page">
     <HeaderTag />
-    <div class="food-item-details" v-if="(foodItem || cartItem) && merchant">
+    <div class="food-item-details" v-if="(foodItem || cartItem || quickOrderItem) && merchant">
       <LeftColumn
         :merchant="merchant"
-        :foodItem="cartItem ? cartItem : foodItem"
+        :foodItem="cartItem || foodItem || quickOrderItem"
         :quantity="quantity"
         :totalPrice="totalPrice"
         @increaseQuantity="increaseQuantity"
@@ -81,10 +81,10 @@ export default {
       totalPrice: 0,
       hawkerCentre: false,
       showAddToCartModal: false,
-
-      quickOrder: false,
-      quickOrderQuantity: 0,
-      quickOrderAddOns: []
+      quickOrderItem: null,
+      // quickOrder: false,
+      // quickOrderQuantity: 0,
+      // quickOrderAddOns: []
     };
   },
   async mounted() {
@@ -102,25 +102,29 @@ export default {
   async created() {
     const foodItemId = this.$route.params.id || null;
     this.cartItemId = this.$route.params.cartItemId || null;
-    
-    this.quickOrder = this.$route.query.quickOrder || false;
-    this.quickOrderQuantity = this.$route.query.quantity || 0;
+    this.quickOrderId = this.$route.params.orderId || null;
+    console.log(this.quickOrderId);
+    // this.quickOrder = this.$route.query.quickOrder || false;
+    // this.quickOrderQuantity = this.$route.query.quantity || 0;
     //this.addOns = JSON.parse(this.$route.query.addOns) || [];
     //this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
 
-    if (this.quickOrder) {
-      this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
-      //console.log(this.addOns);
+    // if (this.quickOrder) {
+    //   this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
+    //   //console.log(this.addOns);
 
-      console.log("quickOrder");
-      //console.log(this.addOns);
-      await this.fetchQuickOrderItem(foodItemId, this.quickOrderQuantity);//, this.quickOrderAddOns);
-    } else if (this.cartItemId) {
+    //   console.log("quickOrder");
+    //   //console.log(this.addOns);
+    //   await this.fetchQuickOrderItem(foodItemId, this.quickOrderQuantity);//, this.quickOrderAddOns);
+    if (this.cartItemId) {
       console.log("cartOrder");
       await this.fetchCartItem(this.cartItemId);
     } else if (foodItemId) {
       console.log("foodItem");
       await this.fetchFoodItem(foodItemId);
+    } else if (this.quickOrderId) {
+      console.log("quickOrder");
+      await this.fetchQuickOrderItem(this.quickOrderId);
     }
   },
   watch: {
@@ -163,6 +167,12 @@ export default {
           const foodItem = foodItemDoc.data();
           basePrice = foodItem.foodItemPrice; 
         }
+      } else if (this.quickOrderItem) {
+        const foodItemDoc = await db.collection('FoodItem').doc(this.quickOrderItem.foodItemId).get();
+        if (foodItemDoc.exists) {
+          const foodItem = foodItemDoc.data();
+          basePrice = foodItem.foodItemPrice; 
+        }
       }
 
       return (basePrice + addOnTotal) * this.quantity;
@@ -170,42 +180,107 @@ export default {
     async updateTotalPrice() {
       this.totalPrice = await this.calculateTotalPrice();
     },
-    async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
-      //console.log(quickOrderAddOns);
+    async fetchQuickOrderItem(quickOrderId) {
       try {
-        const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
-        if (foodItemDoc.exists) {
-          this.foodItem = {
-            id: foodItemDoc.id, 
-            ...foodItemDoc.data()
-          };
-          //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
-          await this.fetchMerchant(this.foodItem.merchantId);
-          /*console.log(this.quickOrderAddOns);
-          console.log(this.foodItem);
-          for (const item in this.foodItem) {
-            console.log(this.quickOrderAddOns[item]);
-          }*/
+        console.log(quickOrderId);
+        const quickOrderItemDoc = await db.collection('PlacedCustOrders').doc(quickOrderId).get();
+        if (quickOrderItemDoc.exists) {
+          const quickOrderItem = quickOrderItemDoc.data();
+          console.log('Fetched quick order item:', quickOrderItem); // Log the fetched cart item
 
-          this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
-            name: key,
-            price: this.foodItem.addOn[key],
-            quantity: 0
-          })) : [];
-          //console.log(this.addOns);
+          // Extract the foodItemId from the cart item
+          const foodItemId = quickOrderItem.foodItemId;
 
-          for (let i = 0; i < quickOrderQuantity - 1; i++) {
-            this.increaseQuantity();
+          // Fetch the original food item from FoodItem collection using the foodItemId
+          const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+          let originalAddOns = [];
+          if (foodItemDoc.exists) {
+            const foodItem = foodItemDoc.data();
+            originalAddOns = foodItem.addOn ? Object.keys(foodItem.addOn).map(key => ({
+              name: key,
+              price: foodItem.addOn[key],
+              quantity: 0
+            })) : [];
+          } else {
+            console.error('No such food item!');
           }
-          //this.updateAddOn(quickOrderAddOns);
 
+          // Merge the original add-ons and the ones from the cart
+          const mergedAddOns = originalAddOns.map(originalAddOn => {
+            const quickOrderAddOn = quickOrderItem.addOns.find(addOn => addOn.name === originalAddOn.name);
+            return {
+              ...originalAddOn,
+              quantity: quickOrderAddOn ? quickOrderAddOn.quantity : 0 // Use cart quantity if available
+            };
+          });
+
+          // Update cartItem object
+
+          this.quickOrderItem = {
+            userId: quickOrderItem.userId,
+            foodItemName: quickOrderItem.foodItemName,
+            foodItemPrice: quickOrderItem.foodItemPrice,
+            foodItemId: quickOrderItem.foodItemId,
+            quantity: quickOrderItem.quantity,
+            addOns: mergedAddOns,
+            specialInstructions: quickOrderItem.specialInstructions,
+            merchantName: quickOrderItem.merchantName,
+            merchantId: quickOrderItem.merchantId
+          };
+
+          // Update addOns and specialInstructions
+          this.quantity = this.quickOrderItem.quantity;
+          this.addOns = this.quickOrderItem.addOns;
+          this.specialInstructions = this.quickOrderItem.specialInstructions;
+
+          // Fetch the merchant details
+          await this.fetchMerchant(quickOrderItem.merchantId);
+
+          this.totalPrice = this.quickOrderItem.foodItemPrice; // Set total price
+          console.log(this.totalPrice)
         } else {
-          console.error('No such food item!');
+          console.error('No such quick order item!');
         }
       } catch (error) {
-        console.error('Error fetching food item:', error);
+        console.error('Error fetching quick order item:', error);
       }
     },
+    // async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
+    //   //console.log(quickOrderAddOns);
+    //   try {
+    //     const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+    //     if (foodItemDoc.exists) {
+    //       this.foodItem = {
+    //         id: foodItemDoc.id, 
+    //         ...foodItemDoc.data()
+    //       };
+    //       //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
+    //       await this.fetchMerchant(this.foodItem.merchantId);
+    //       /*console.log(this.quickOrderAddOns);
+    //       console.log(this.foodItem);
+    //       for (const item in this.foodItem) {
+    //         console.log(this.quickOrderAddOns[item]);
+    //       }*/
+
+    //       this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
+    //         name: key,
+    //         price: this.foodItem.addOn[key],
+    //         quantity: 0
+    //       })) : [];
+    //       //console.log(this.addOns);
+
+    //       for (let i = 0; i < quickOrderQuantity - 1; i++) {
+    //         this.increaseQuantity();
+    //       }
+    //       //this.updateAddOn(quickOrderAddOns);
+
+    //     } else {
+    //       console.error('No such food item!');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching food item:', error);
+    //   }
+    // },
 
     async fetchFoodItem(foodItemId) {
       try {
@@ -330,9 +405,9 @@ export default {
       //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
       const cartItem = {
         userId: this.user.uid,
-        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
+        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem ? this.cartItem.foodItemName : this.quickOrderItem.foodItemName,
         foodItemPrice: this.totalPrice,
-        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
+        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem ? this.cartItem.foodItemId : this.quickOrderItem.foodItemId,
         quantity: this.quantity,
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
         specialInstructions: this.specialInstructions,
