@@ -26,8 +26,25 @@
           addOn.quantity--;
           this.$emit('updateAddOn', addOn);
         }
+      },
+      /*initialDisplay() {
+        console.log(this.addOns);
+        for (const addOn in this.addOns) {
+          //console.log(addOn);
+          //console.log(this.addOns[addOn]);
+          let quantity = this.addOns[addOn]['quantity'];
+          console.log(quantity)
+          for (let i = 0; i < quantity; i++) {
+            this.increaseQuantity(this.addOns[addOn]);
+          }
+          //console.log(this.addOns[addOn]['quantity']);
+        }
+      }*/
+    },
+    mounted() {
+        console.log(this.addOns)
       }
-    }
+
   };
   </script>
   

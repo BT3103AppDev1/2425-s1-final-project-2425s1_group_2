@@ -126,9 +126,15 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         if (this.selectedOrder) {
           const foodItemId = this.selectedOrder.foodItemId;
           const userId = this.selectedOrder.userId;
+          console.log(this.selectedOrder.addOns)
           this.$router.push({
             path: `/food-item/${foodItemId}?/${userId}`,
-            query: {HCName: this.selectedOrder.hawkerCentre}
+            query: {
+              HCName: this.selectedOrder.hawkerCentre,
+              quickOrder: true,
+              quantity: this.selectedOrder.quantity,
+              addOns: JSON.stringify(this.selectedOrder.addOns)
+            }
           });
         }
       },
