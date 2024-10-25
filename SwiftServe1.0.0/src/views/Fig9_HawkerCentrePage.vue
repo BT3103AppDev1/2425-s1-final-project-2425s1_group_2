@@ -149,8 +149,12 @@
         try {
           const querySnapshot = await db.collection('FoodItem').get();
           this.items = querySnapshot.docs.map(doc => ({
-            ...doc.data(),
+            // ...doc.data(),
             id: doc.id,
+            foodItemName: doc.data().foodItemName,
+            available: doc.data().available,
+            merchantId: doc.data().merchantId,  
+            // foodItemImage: doc.data().foodItemImage,
           }));
           //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
