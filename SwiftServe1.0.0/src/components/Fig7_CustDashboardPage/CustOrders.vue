@@ -48,6 +48,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
 
           if (docUserID === this.user && !docsData.collected) {
             let temp = {};
+            temp['id'] = docs.id;
             temp['restaurant'] = docsData.hawkerCentre;
             temp['dish'] = docsData.merchantName;
             temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName)
@@ -78,6 +79,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
           let temp = {};
           //push what is needed to create new order in order cart!!!!!!!!!!!!!!
           //temp['quantityFoodItem'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
+          temp['id'] = docs.id;
           temp['orderNum'] = docsData.orderNum; //change to better OrderNum
           temp['addOns'] = docsData.addOns;
           temp['foodItemId'] = docsData.foodItemId;
@@ -124,20 +126,36 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
 
       continueOrder() {
         if (this.selectedOrder) {
-          const foodItemId = this.selectedOrder.foodItemId;
-          const userId = this.selectedOrder.userId;
-          console.log(this.selectedOrder.addOns)
+          const orderId = this.selectedOrder.id;
+          // const foodItemId = this.selectedOrder.foodItemId;
+          // const userId = this.selectedOrder.userId;
+          console.log(this.selectedOrder.addOns);
+          console.log(orderId);
+          // this.$router.push({
+          //   path: `/food-item/${foodItemId}?/${userId}`,
+          //   query: {
+          //     HCName: this.selectedOrder.hawkerCentre,
+          //     quickOrder: true,
+          //     quantity: this.selectedOrder.quantity,
+          //     addOns: JSON.stringify(this.selectedOrder.addOns)
+          //   }
+          // });
           this.$router.push({
-            path: `/food-item/${foodItemId}?/${userId}`,
-            query: {
-              HCName: this.selectedOrder.hawkerCentre,
-              quickOrder: true,
-              quantity: this.selectedOrder.quantity,
-              addOns: JSON.stringify(this.selectedOrder.addOns)
-            }
+          name: 'foodItemPage',
+          params: {
+            orderId: orderId,  // Pass the cart item ID
+          },
+          query: {
+            HCName: this.selectedOrder.hawkerCentre
+          }
           });
-        }
-      },
+        //   this.$router.push({
+        //     path: `/food-item/${orderId}`,
+        //     query: {
+        //       HCName: this.selectedOrder.hawkerCentre
+        //     }
+        // });
+   }},
 
   
       scrollLeft() {
