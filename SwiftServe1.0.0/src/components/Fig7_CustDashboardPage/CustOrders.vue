@@ -78,7 +78,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
           let temp = {};
           //push what is needed to create new order in order cart!!!!!!!!!!!!!!
           //temp['quantityFoodItem'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
-          temp['OrderNum'] = docsData.OrderNum; //change to better OrderNum
+          temp['orderNum'] = docsData.orderNum; //change to better OrderNum
           temp['addOns'] = docsData.addOns;
           temp['foodItemId'] = docsData.foodItemId;
           temp['foodItemName'] = docsData.foodItemName;
@@ -114,6 +114,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
       quickOrder(order) {
         this.selectedOrder = order;
         this.showQuickOrderPopup = true;
+        console.log(this.selectedOrder);
       },
 
       closePopup() {
@@ -125,7 +126,16 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         if (this.selectedOrder) {
           const foodItemId = this.selectedOrder.foodItemId;
           const userId = this.selectedOrder.userId;
-          this.$router.push(`/food-item/${foodItemId}?/${userId}`);
+          console.log(this.selectedOrder.addOns)
+          this.$router.push({
+            path: `/food-item/${foodItemId}?/${userId}`,
+            query: {
+              HCName: this.selectedOrder.hawkerCentre,
+              quickOrder: true,
+              quantity: this.selectedOrder.quantity,
+              addOns: JSON.stringify(this.selectedOrder.addOns)
+            }
+          });
         }
       },
 
@@ -202,10 +212,10 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         <div v-for="(order, index) in past5Orders" :key="index" class="past-order-box">
           <img :src="order.image" :alt="order.hawkerCentre" class="past-order-image" />
           <p class="past-order-restaurant">{{ order.hawkerCentre }}</p>
-          <h6 class="past-order-details">{{ order.merchantName }}</h6>
+          <!--<h6 class="past-order-details">{{ order.merchantName }}</h6>
           <h6 class="past-order-details">{{ String(order.quantity + 'x ' + order.foodItemName) }}</h6>
           <h6 class="past-order-details">{{ "Add ons???" }}</h6>
-          <h6 class="past-order-details">{{ "Special Instructions???" }}</h6>
+          <h6 class="past-order-details">{{ "Special Instructions???" }}</h6>-->
           <button @click="quickOrder(order)" class="quick-order-btn">Quick Order</button>
         </div>
       </div>
@@ -215,12 +225,18 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
     <div v-if="showQuickOrderPopup" class="quick-order-popup">
       <div class="popup-content">
         <h3>Order Details</h3>
-        <p><strong>Order Number:</strong> {{ selectedOrder.OrderNum }}</p>
+        <!--<p><strong>Order Number:</strong> {{ selectedOrder.orderNum }}</p>-->
+        <p><strong>Hawker Centre:</strong> {{ selectedOrder.hawkerCentre }}</p>
+        <p><strong>Merchant Name:</strong> {{ selectedOrder.merchantName }}</p>
         <p><strong>Food Item:</strong> {{ selectedOrder.foodItemName }}</p>
-        <p><strong>Price:</strong> {{ selectedOrder.foodItemPrice }}</p>
         <p><strong>Quantity:</strong> {{ selectedOrder.quantity }}</p>
-        <p><strong>Add Ons:</strong> {{ selectedOrder.addOns }}</p>
+        <strong>Add Ons:</strong>
+        <p v-for="(addOn, index) in selectedOrder.addOns" :key="index">
+          {{ addOn.quantity }}x {{ addOn.name }} - ${{ addOn.quantity * addOn.price.toFixed(2) }}
+        </p>
+        <!--<p><strong>Add Ons:</strong> {{ selectedOrder.addOns }}</p>-->
         <p><strong>Special Instructions:</strong> {{ selectedOrder.specialInstructions }}</p>
+        <p><strong>Price:</strong> ${{ selectedOrder.foodItemPrice.toFixed(2) }}</p>
         <div class="popup-buttons">
           <button @click="continueOrder" class="continue-btn">Continue</button>
           <button @click="closePopup" class="back-btn">Back</button>

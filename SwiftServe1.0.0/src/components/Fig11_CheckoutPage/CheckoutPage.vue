@@ -148,6 +148,7 @@ export default {
           let docUserID = docsData.userId;
 
           if (docUserID === this.user) {
+            docsData.orderNum = String(docUserID.substring(0, 3) + Date.now());
             docsData.collected = false;
             docsData.diningStatus = this.dineOption;
             docsData.diningTime = this.diningTime;

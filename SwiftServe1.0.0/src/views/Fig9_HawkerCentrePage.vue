@@ -230,6 +230,9 @@
           name: 'foodItemPage',
           params: {
             cartItemId: item.id,  // Pass the cart item ID
+          },
+          query: {
+            HCName: this.HCName
           }
         });
       }
