@@ -56,6 +56,19 @@
     <!--<router-link to = "/payment">-->
     <button class="confirm-button" @click="goPaymentSuccess">Confirm and Pay</button>
     <!--</router-link>-->
+
+        <!-- Custom Modal for No Payment Selected -->
+        <div v-if="showDeleteModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-text">
+          <h2>Notification</h2>
+          <p>No Payment Method Selected. Please select one before proceeding</p>
+          <div class="modal-actions">
+            <button @click="closeDeleteModal">Go back</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -79,36 +92,7 @@ export default {
         { src: '/paynow.png', alt: 'PayNow' },
         { src: '/paylah.png', alt: 'PayLah!' }
       ],
-      /*orders: [
-        {
-          hawker: 'Bukit Canberra Hawker Centre',
-          stall: 'Chin Lee Chicken Rice',
-          quantity: 1,
-          dish: 'Chicken Rice Set',
-          price: 6.99
-        },
-        {
-          hawker: 'Bukit Canberra Hawker Centre',
-          stall: 'Wang Dao Kolo Mee',
-          quantity: 1,
-          dish: 'Kolo Mee Set',
-          price: 3.61
-        },
-        {
-          hawker: 'Bukit Canberra Hawker Centre',
-          stall: 'Wang Dao Kolo Mee',
-          quantity: 1,
-          dish: 'Kolo Mee Set',
-          price: 3.61
-        },
-        {
-          hawker: 'Bukit Canberra Hawker Centre',
-          stall: 'Wang Dao Kolo Mee',
-          quantity: 1,
-          dish: 'Kolo Mee Set',
-          price: 3.61
-        }
-      ]*/
+      showDeleteModal: false,
       orders: [],
       dineOption: 'Dine in',
       diningTime: '12:00pm - 12:30pm',
@@ -136,7 +120,7 @@ export default {
       async goPaymentSuccess() {
 
         if (this.selectedMethod == null) {
-          alert("No Payment Method Selected.")
+          this.showDeleteModal = true;
           return;
         }
 
@@ -168,6 +152,9 @@ export default {
 
         //add method to clear cart in hawker centre page
       },
+      closeDeleteModal() {
+      this.showDeleteModal = false;
+    },
 
       goHawkerCentre() {
         //this.$router.push('/hawkerCentre')
@@ -339,5 +326,85 @@ select {
   font-size: 3vh;
   border-radius: 5px;
   width: 100%;
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.modal-actions button:last-child {
+  margin-bottom: 0;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
 }
 </style>
