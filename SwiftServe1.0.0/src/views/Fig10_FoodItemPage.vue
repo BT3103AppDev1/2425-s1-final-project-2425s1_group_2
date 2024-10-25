@@ -282,7 +282,7 @@ export default {
         merchantId: this.merchant.uid,
         hawkerCentre: this.hawkerCentre
       };
-      cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);
+      /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
       try {
         if (this.cartItemId) {
           await db.collection('Cart').doc(this.cartItemId).update(cartItem);
