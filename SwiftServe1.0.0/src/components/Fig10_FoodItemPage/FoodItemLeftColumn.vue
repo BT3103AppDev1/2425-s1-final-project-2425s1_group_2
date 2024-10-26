@@ -83,7 +83,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #00A895;
+    background-color: #00ADB5;
     border: none;
     color: white;
     font-size: 18px;
@@ -99,7 +99,7 @@
   
   .separator {
     border: none;
-    border-top: 5px solid black;
+    border-top: 5px solid #000000;
     margin: 10px 0;
   }
 </style>
