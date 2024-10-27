@@ -142,7 +142,7 @@ export default {
   border-radius: 50%;
   background-color: #00adb5;
   border: none;
-  color: white;
+  color: #ffffff;
   font-size: 0.94vw;
   cursor: pointer;
   margin-left: 2.08vw;
