@@ -249,6 +249,8 @@
   margin-right: auto;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 /* 2xl */

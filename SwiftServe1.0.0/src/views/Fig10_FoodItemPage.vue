@@ -448,6 +448,8 @@ export default {
   margin-right: auto;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 /* 2xl */
@@ -496,6 +498,7 @@ export default {
   display: flex;
   background-color: white;
   padding: 0.9375rem;
+  flex-wrap: wrap;
 }
 
 .right-column {
