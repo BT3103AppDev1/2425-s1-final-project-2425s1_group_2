@@ -28,6 +28,8 @@
         <div class="dineOP">{{ dineOption }}</div>
         <p>Dining Time</p>
         <div class="dineTime">{{ diningTime }}</div>
+        <p>Seats</p>
+        <div class="seatsDetail">{{ seats }}</div>
       </div>
 
       <button class="collect-button" 
@@ -59,6 +61,7 @@ export default {
     dineOption: String,
     diningTime: String,
     addons: Array,
+    seats: Array,
     buttonDisabled: Boolean,
     updateOrder: Function
   },
@@ -144,11 +147,12 @@ select {
   background-color: #51E51C;
   color: black;
   border: none;
-  padding: 10px;
-  font-size: 2.5vh;
+  padding: 0.5vw;
+  font-size: 1.25vw;
   border-radius: 1vw;
   width: 100%;
   font-family: 'Inria Sans', sans-serif;
+  margin-top: auto;
 }
 
 .collect-button:not([disabled]):hover{
@@ -161,14 +165,14 @@ select {
 }
 
 .dine-details {
-    border-top: 2px solid black;
+  border-top: 2px solid black;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 5px;
-  row-gap: 5px;
+  grid-template-columns: 1fr 1.2fr;
+  grid-gap: 0.25vw;
+  row-gap: 0.25vw;
   align-items: center;
-  padding-top: 1.5vw;
-  margin-bottom: 1.5vw;
+  padding-top: 1vw;
+  margin-bottom: 1vw;
 }
 
 .dine-details p {
@@ -176,13 +180,14 @@ select {
   margin: 0.5vw;
 }
 
-.dineOP, .dineTime {
+.dineOP, .dineTime, .seatsDetail {
   text-align: left;
   background-color: #00adb5;
   margin-right: 2.5vw;
   border-radius:0.75vw;
   color: white;
   padding: 0.5vw;
+  min-height: 1vw;
 }
 
 #special-instruction {
