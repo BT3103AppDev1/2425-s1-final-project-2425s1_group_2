@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
       <h2>Create New Food Item</h2>
       <FoodItemForm @submit="handleSubmit" />
     </div>
@@ -21,4 +21,15 @@
     }
   };
   </script>
+
+  <style scoped>
+  .container {
+    font-family: 'Inria Sans', sans-serif;
+  }
+
+  h2 {
+    text-align: center;
+  }
+  </style>
+
   

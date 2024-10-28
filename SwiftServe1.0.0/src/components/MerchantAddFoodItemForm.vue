@@ -2,12 +2,15 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="foodItemName">Food Item Name:</label>
-        <input id="foodItemName" v-model="foodItemName" type="text" required />
+        <input id="foodItemName" v-model="foodItemName" type="text" @blur="capitalizeFoodItemName" required />
       </div>
   
       <div class="form-group">
         <label for="foodItemImage">Food Item Image:</label>
         <input id="foodItemImage" type="file" @change="uploadImage" accept="image/*" />
+        <div v-if="foodItemImageUrl">
+          <img :src="foodItemImageUrl" alt="Image Preview" class="image-preview" />
+        </div>
       </div>
   
       <div class="form-group">
@@ -19,7 +22,7 @@
         <h3>Add-On {{ index + 1 }}</h3>
         <div class="form-group">
           <label for="addOnName">Add-On Name:</label>
-          <input :id="addOnName" v-model="addOn.addOnName" type="text" required />
+          <input :id="addOnName" v-model="addOn.addOnName" type="text" @blur="capitalizeAddOnName(index)" required />
         </div>
         <div class="form-group">
           <label for="addOnPrice">Add-On Price:</label>
@@ -34,6 +37,7 @@
         Add Add-On
       </button>
       <button type="submit" class="submit-button">Save Food Item</button>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </form>
   </template>
   
@@ -51,13 +55,24 @@
         merchantId: 'VScvqRThQSKVCihILf9v',
         merchantName: 'Chin Lee Chicken Rice',
         addOns: [],
+        errorMessage: '',
       };
     },
     methods: {
+      capitalizeWords(text) {
+        return text.replace(/\b\w/g, (char) => char.toUpperCase());
+      },
+      capitalizeFoodItemName() {
+        this.foodItemName = this.capitalizeWords(this.foodItemName);
+      },
+      capitalizeAddOnName(index) {
+        this.addOns[index].addOnName = this.capitalizeWords(this.addOns[index].addOnName);
+      },
       async uploadImage(event) {
         const file = event.target.files[0];
         if (file) {
-          // Assuming Firebase storage instance is set up as `this.$fire.storage`
+          this.foodItemImageUrl = URL.createObjectURL(file); // Local preview
+
           const storageRef = storage.ref(`images/${file.name}`);
           const snapshot = await storageRef.put(file);
           this.foodItemImageUrl = await snapshot.ref.getDownloadURL();
@@ -69,7 +84,31 @@
       removeAddOn(index) {
         this.addOns.splice(index, 1);
       },
+      validateForm() {
+        if (!this.foodItemName.trim()) {
+          this.errorMessage = "Food Item Name cannot be empty.";
+          return false;
+        }
+        if (!this.foodItemPrice) {
+          this.errorMessage = "Price cannot be empty.";
+          return false;
+        }
+        if (!this.foodItemImageUrl) {
+          this.errorMessage = "Image cannot be empty.";
+          return false;
+        }
+        for (const addOn of this.addOns) {
+          if (!addOn.addOnName.trim() || addOn.addOnPrice === null) {
+            this.errorMessage = "All add-on fields must be filled out.";
+            return false;
+          }
+        }
+        this.errorMessage = ''; // Clear any previous error message
+        return true;
+      },
       submitForm() {
+        if (!this.validateForm()) return; 
+
         const foodItemData = {
           foodItemName: this.foodItemName,
           available: this.available,
@@ -101,7 +140,14 @@ form {
   flex-direction: column;
   width: 50%;
   margin: 0 auto;
-  font-family: sans-serif;
+  font-family: 'Inria Sans', sans-serif;
+  overflow-y: auto;
+  height: 600px;
+  padding-bottom: 20px;
+}
+
+.submit-button {
+  margin-bottom: 20px; /* To prevent being cut off */
 }
 
 .form-group {
@@ -111,6 +157,7 @@ form {
 label {
   margin-bottom: 5px;
   font-weight: bold;
+  display: block;
 }
 
 input[type='text'],
@@ -119,6 +166,7 @@ input[type='file'] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-top: 5px;
 }
 
 .add-on-section {
@@ -130,7 +178,7 @@ input[type='file'] {
 
 .add-button,
 .submit-button {
-  background-color: #00AB85;
+  background-color: #00A895;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -148,6 +196,21 @@ input[type='file'] {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  max-width: 400px;
+  max-height: 400px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 0.9em;
 }
 </style>
   
