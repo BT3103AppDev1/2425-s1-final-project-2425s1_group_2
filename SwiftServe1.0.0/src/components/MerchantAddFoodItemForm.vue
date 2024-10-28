@@ -83,6 +83,13 @@
           }), {})
         };
         this.$emit('submit', foodItemData);
+
+        this.foodItemName = '';
+        this.available = true;
+        this.foodItemImage = null;
+        this.foodItemImageUrl = '';
+        this.foodItemPrice = 0;
+        this.addOns = [];
       }
     }
   };
@@ -123,7 +130,7 @@ input[type='file'] {
 
 .add-button,
 .submit-button {
-  background-color: #4caf50;
+  background-color: #00AB85;
   color: white;
   padding: 10px 15px;
   border: none;
