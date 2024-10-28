@@ -124,6 +124,7 @@ h1 {
   position: relative;
   left: 13vw;
   font-size: 3vh;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .headerButtons {
