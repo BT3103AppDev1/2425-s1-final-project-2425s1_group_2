@@ -8,7 +8,7 @@
   // import HomeScreen from "@/components/Fig3_WelcomePage/HomeScreen.vue";
   
   import OrdersPage from '@/components/Fig17_MerchantOrdersPage/OrdersPage.vue'
-  import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
+  import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue'
 //   import MReceipt from '@/components/Fig17_MerchantOrdersPage/MReceipt.vue'
   
   export default {
