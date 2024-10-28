@@ -1,6 +1,4 @@
 <template>
-    <div class = "title-merchant"><strong>Orders Page</strong></div>
-
     <div id ="page">
         <div id="merchantdashboard">
             <button class= "clickable" id="merchantFoodAvail" @click="goToMerchantToggleAvailability">
