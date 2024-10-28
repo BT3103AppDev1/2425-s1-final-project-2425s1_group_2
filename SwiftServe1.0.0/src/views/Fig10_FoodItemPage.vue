@@ -1,6 +1,6 @@
 <template>
-  <div class="food-item-page">
-    <HeaderTag />
+  <div class="container">
+    <HeaderScreen />
     <div class="food-item-details" v-if="(foodItem || cartItem || quickOrderItem) && merchant">
       <LeftColumn
         :merchant="merchant"
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import HeaderTag from '../components/AppHeader.vue';
+import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
 import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
 import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
@@ -63,7 +63,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth"
 
 export default {
   components: {
-    HeaderTag,
+    HeaderScreen,
     AddOn,
     SpecialInstructions,
     LeftColumn 
@@ -441,46 +441,91 @@ export default {
 </script>
 
 <style scoped>
-.food-item-page {
-  font-family: Arial, sans-serif;
-  max-width: 95%;
-  margin: 0 auto;
+.container {
+  font-family: Inria Sans, sans-serif;
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* 2xl */
+@media (max-width: 1536px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  .container {
+    max-width: 475px;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  .container {
+    width: 100%;
+  }
 }
 
 .food-item-details {
   display: flex;
   background-color: white;
-  padding: 15px;
+  padding: 0.9375rem;
 }
 
 .right-column {
   flex: 1;
-  padding-left: 15px;
+  padding-left: 0.9375rem;
 }
 
 .green-box {
   background-color: #e6f7f5;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
+  border-radius: 0.5rem;
+  padding: 0.9375rem;
+  margin-bottom: 1.25rem;
 }
 
 .add-ons, .special-instructions {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: flex-end;
 }
 
 .add-to-cart, .cancel-order {
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 5px;
   border: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   width: 25%;
   display: flex;
@@ -497,13 +542,13 @@ export default {
 }
 
 .cart-icon, .cancel-icon, .cancel-order, .add-to-cart {
-  margin-right: 5px;
+  margin-right: 0.3125rem;
 }
 
 .separator { 
   border: none; 
   border-top: 5px solid black;
-  margin: 10px 0; 
+  margin: 0.625rem 0; 
 }
 
 /* Modal styling */
