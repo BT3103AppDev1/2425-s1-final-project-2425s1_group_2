@@ -1,6 +1,6 @@
 <template>
 
-  <div id="app">
+  <div class="container">
     <!--<AppHeader />-->
     <HeaderScreen />
     <FilterButtons 
@@ -242,16 +242,62 @@
 </script>
 
 <style>
-#app {
-  font-family: 'Arial', sans-serif;  
-  width: 95%;
-  margin: 0 auto;
-  padding: 20px;
+.container {
+  font-family: 'Inria Sans', sans-serif;  
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* 2xl */
+@media (max-width: 1536px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  .container {
+    max-width: 475px;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  .container {
+    width: 100%;
+  }
 }
 
 .main-content {
   display: flex; 
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .food-area {
@@ -260,15 +306,15 @@
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+  gap: 1.25rem;
 }
 
 /* Order Cart Styles */
 .order-cart {
   border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 20px;
+  padding: 0.625rem;
+  margin-top: 1.25rem;
 }
 
 .order-cart h2 {
@@ -300,8 +346,8 @@
 
 .no-stalls-message {
   text-align: center;
-  font-size: 25px;
-  margin-top: 10px;
+  font-size: 1.5625rem;
+  margin-top: 0.625rem;
   font-weight: bold;
 }
 </style>

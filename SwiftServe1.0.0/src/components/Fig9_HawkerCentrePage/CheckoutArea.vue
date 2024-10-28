@@ -1,8 +1,10 @@
 <template>
     <div class="checkout-area">
       <p class="totalAmount">Total Amount: ${{ totalAmount }}</p>
-      <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
-      <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
+      <div class="button-container">
+        <button @click="checkout"><span class="cart-icon">🛒</span>Checkout</button>
+        <button @click="cancelOrder"><span class="cancel-icon">❌</span>Cancel Order</button>
+      </div>
     </div>
   </template>
   
@@ -41,31 +43,37 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding: 20px;
   }
   
   .totalAmount {
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 1.125rem;
+    margin-bottom: 0.625rem;
     font-weight: bold;
-    text-align: right; /* Ensure text is right-aligned */
-    width: 100%; /* Ensure it takes the full width of the container */
+    text-align: right; 
+    width: 100%;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    width: 100%; 
   }
   
   button {
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0.3125rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
     cursor: pointer;
     border: none;
-    border-radius: 5px;
+    border-radius: 0.3125rem;
     background-color: #00ADB5;
     color: white;
     width: 100%;
-    max-width: 180px; 
+    max-width: 11.25rem; 
   }
   
-  button span {
-    margin-right: 10px;
-  }
   </style>

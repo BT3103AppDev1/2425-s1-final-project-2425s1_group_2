@@ -19,8 +19,9 @@ const auth = firebase.auth()
 const onAuthStateChanged = auth.onAuthStateChanged.bind(auth)
 
 const db = firebase.firestore()
+const storage = firebase.storage()
 const GoogleProvider = new firebase.auth.GoogleAuthProvider()
 const EmailProvider = new firebase.auth.EmailAuthProvider()
 
-export { firebaseApp, firebase, auth, db, GoogleProvider, EmailProvider, onAuthStateChanged }
+export { firebaseApp, firebase, auth, db, storage, GoogleProvider, EmailProvider, onAuthStateChanged }
 export default firebaseApp
