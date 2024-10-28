@@ -95,17 +95,17 @@ export default {
     border: none;
     
     display: flex;
-    flex-direction: column; /* Arrange icon and text vertically */
-    justify-content: center; /* Centers items within button */
+    flex-direction: column;
+    justify-content: center; 
     align-items: center;
-    position: relative; /* Allows absolute positioning of text */
+    position: relative;
 }
 
 .iconspan {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1; /* Takes up available space, centering icon in button */
+    flex-grow: 1;
 }
 
 .icon {
@@ -119,7 +119,7 @@ export default {
 
 .text {
     position: absolute;
-    bottom: 0.5vw; /* Position text at the bottom */
+    bottom: 0.5vw;
     text-align: center;
     margin-bottom: 0.75vw;
 }
@@ -140,6 +140,7 @@ export default {
   padding: 2vw;
   border-radius: 1vw;
   justify-items: center;
+  align-items: center;
 }
 
 #merchantFoodAvail {
