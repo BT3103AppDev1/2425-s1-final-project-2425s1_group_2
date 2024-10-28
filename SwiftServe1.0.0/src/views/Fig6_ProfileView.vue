@@ -2,8 +2,8 @@
   <HeaderScreen />
 
   <div class = 'container'>
-    <ProfileComponent />
-    <UpdateSettings />
+    <ProfileComponent ref = "profileComponent"/>
+    <UpdateSettings @updateProfile = "refreshProfileComponent" />
     <!--<div class="profile-page">
       <div class="profile-left">
         <ProfileComponent />
@@ -26,6 +26,11 @@ export default {
     HeaderScreen,
     ProfileComponent,
     UpdateSettings
+  },
+  methods: {
+    refreshProfileComponent() {
+      this.$refs.profileComponent.setProfile();
+    }
   }
 }
 </script>

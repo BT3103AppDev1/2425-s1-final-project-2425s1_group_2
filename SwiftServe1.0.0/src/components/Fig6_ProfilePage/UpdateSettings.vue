@@ -46,9 +46,10 @@ export default {
       user: false,
       showCustomModal: false,
       modalMessage: '', // To store the message for the modal
-      nextstep: null,
+      nextstep: null
     }
   },
+  emits: ["updateProfile"],
   mounted() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -84,6 +85,7 @@ export default {
           // Update displayName in Firestore
           const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust path to your Firestore collection
           await updateDoc(userDocRef, { displayName: username });
+          this.$emit('updateProfile');
           // Show the username change modal and define the next step to handle password validation
           this.openModal("Username successfully changed!", this.validatePasswords);
         } else {
