@@ -33,18 +33,19 @@
   nav ul {
     list-style: none;
     padding: 0;
-    margin: 10px 0;
+    margin: 0.625rem 0;
     display: flex;
-    gap: 15px;
-    border-bottom: 3px solid black; 
+    gap: 0.9375rem;
+    border-bottom: 0.1875rem solid black; 
+    flex-wrap: wrap;
   }
   
   nav li {
-    padding: 8px 12px;
+    padding: 0.5rem 0.75rem;
     cursor: pointer;
     font-weight: bold;
-    border-bottom: 2px solid transparent; 
-    font-size: 22px;
+    border-bottom: 0.125rem solid transparent; 
+    font-size: 1.375rem;
   }
   
   nav li.active {

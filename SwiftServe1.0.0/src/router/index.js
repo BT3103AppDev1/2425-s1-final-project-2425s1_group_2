@@ -124,6 +124,14 @@ const router = createRouter({
       component: () => import('../views/Fig17_MerchantOrdersView.vue')
     },
     {
+      path: '/merchantFoodItemForm',
+      name: 'merchantAddOrderPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/MerchantAddOrderPage.vue')
+    },
+    {
       path: '/merchantDashboard',
       name: 'merchantDashboardPage',
       // route level code-splitting

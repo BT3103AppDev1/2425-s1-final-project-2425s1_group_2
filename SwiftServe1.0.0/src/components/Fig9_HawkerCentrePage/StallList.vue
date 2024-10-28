@@ -35,6 +35,7 @@
   .stall-list {
     overflow-y: auto;
     width: 200px;
+    height: 300px;
     border-right: 1px solid #ccc;
     margin-right: 20px; 
   }
@@ -52,6 +53,8 @@
     font-weight: bold;
   }
   </style>
+  
+
   
   
   

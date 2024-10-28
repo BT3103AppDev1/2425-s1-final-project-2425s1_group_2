@@ -1,5 +1,5 @@
 <template>
-  <div class="merchant-toggle">
+  <div class="container">
 
     <HeaderScreen/>
     <h2 class="pageText">Food Availability Toggle Menu</h2>
@@ -118,12 +118,55 @@
   
  
 <style scoped>
-.merchant-toggle {
-  font-family: Arial, sans-serif;
-  width: 95%;
-  margin: 0 auto;
-  padding: 20px;
-  align-items: center;
+.container {
+  font-family: Inria Sans, sans-serif;
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* 2xl */
+@media (max-width: 1536px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  .container {
+    max-width: 475px;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  .container {
+    width: 100%;
+  }
 }
 
 .pageText {
@@ -148,6 +191,7 @@ h1, h2, h3 {
   border: 1px solid #00ADB5;
   border-radius: 20px;
   padding: 10px;
+  flex-wrap: wrap;
 }
 
 .instruction {
