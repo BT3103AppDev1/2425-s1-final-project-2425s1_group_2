@@ -20,13 +20,13 @@ export default {
     name: "DashboardHeader",
     data() {
         return {
-            selectedPeriod: 'week',
+            selectedPeriod: null,
         };
     },
     methods: {
         selectPeriod(period) {
             this.selectedPeriod = period;
-            //this.$emit("period-selected", period);
+            this.$emit("period-selected", period);
             console.log(this.selectedPeriod);
         },
     }
