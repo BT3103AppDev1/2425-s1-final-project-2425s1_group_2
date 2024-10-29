@@ -13,14 +13,14 @@
       @category-selected="updateActiveCategory" 
       :activeCategory="activeCategory"
     />
-    <div class="main-content">
+    <div v-if="filteredStalls.length > 0" class="main-content">
       <StallList 
         :stalls="filteredStalls" 
         :activeStall="activeStall" 
         @stall-selected="updateActiveStall" 
       />
       <div class="food-area">
-        <div v-if="filteredStalls.length > 0" class="food-grid">
+        <div class="food-grid">
         <FoodItem 
           v-for="item in filteredItems"
           :key="item.id"
@@ -29,9 +29,9 @@
           @click="viewFoodItem(item)"
         />
       </div>
-      <div v-else class="no-stalls-message">No stalls found</div> 
       </div>
     </div>
+    <div v-else class="no-stalls-message">No stalls found</div> 
     <div class="cart-and-checkout">
       <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" /> 
       <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
@@ -64,7 +64,7 @@
     },
     data() {
       return {
-        activeCategory: 'Chinese',
+        activeCategory: 'All',
         activeStall: null, 
         stalls: [],
         items: [],
@@ -312,13 +312,10 @@
 
 /* Order Cart Styles */
 .order-cart {
-  border: 1px solid #ccc;
-  padding: 0.625rem;
-  margin-top: 1.25rem;
-}
-
-.order-cart h2 {
-  margin-top: 0;
+  flex: 4;
+  margin-right: 20px;
+  /* padding: 0.625rem; */
+  /* margin-top: 1.25rem; */
 }
 
 .active {
@@ -331,11 +328,6 @@
     width: 100%;
     margin-top: 20px;
   }
-
-.order-cart {
-  flex: 4;
-  margin-right: 20px;
-}
 
 .checkout-area {
   flex: 1;

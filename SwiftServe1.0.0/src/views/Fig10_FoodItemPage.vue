@@ -79,7 +79,7 @@ export default {
       cartItemId: null,
       cartItem: null,
       totalPrice: 0,
-      hawkerCentre: false,
+      hawkerCentre: null,
       showAddToCartModal: false,
       quickOrderItem: null,
       // quickOrder: false,
@@ -413,7 +413,8 @@ export default {
         specialInstructions: this.specialInstructions,
         merchantName: this.merchant.displayName,
         merchantId: this.merchant.uid,
-        hawkerCentre: this.hawkerCentre
+        hawkerCentre: this.merchant.hawkerCentre,
+        foodItemImage: this.foodItem ? this.foodItem.foodItemImage : this.cartItem ? this.cartItem.foodItemImage : this.quickOrderItem.foodItemImage
       };
       /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
       try {
