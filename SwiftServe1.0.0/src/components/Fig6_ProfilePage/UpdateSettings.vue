@@ -46,7 +46,7 @@ export default {
       user: false,
       showCustomModal: false,
       modalMessage: '', // To store the message for the modal
-      nextstep: null
+      nextStep: null
     }
   },
   emits: ["updateProfile"],
@@ -85,9 +85,9 @@ export default {
           // Update displayName in Firestore
           const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust path to your Firestore collection
           await updateDoc(userDocRef, { displayName: username });
-          this.$emit('updateProfile');
           // Show the username change modal and define the next step to handle password validation
           this.openModal("Username successfully changed!", this.validatePasswords);
+          this.$emit('updateProfile');
         } else {
           // If no username change, directly proceed to password validation
           this.validatePasswords();
@@ -100,9 +100,9 @@ export default {
       async validatePasswords() {
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
-
         if (!password || !cPassword) {
       this.openModal("Please fill in both password fields!");
+      document.getElementById('userForm').reset();
     } else if (password === cPassword) {
       try {
         // Reauthenticate the user using their email and current password
@@ -115,7 +115,8 @@ export default {
         console.error("Error updating password: ", error);
         this.openModal(`Error: ${error.message}`);
       }
-    } else {
+    }
+    else {
       this.openModal("Passwords do not match!");
       document.getElementById('userForm').reset();
     }
