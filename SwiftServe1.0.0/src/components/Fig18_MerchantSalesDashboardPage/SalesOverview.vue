@@ -1,7 +1,7 @@
 <template>
   <div class="sales-overview">
     <div class="sales-text">Total Sales Amount</div>
-    <div class="sales-amount">${{ totalSalesAmount }}</div>
+    <div class="sales-amount">${{ totalSalesAmount.toFixed(2) }}</div>
     <div class="orders-text">Orders Completed</div>
     <div class="orders-count">{{ ordersCompleted }}</div>
   </div>
@@ -36,9 +36,12 @@ export default {
       }
     })
   },
+  watch: {
+        selectedPeriod: "fetchOrders"
+    },
   methods: {
     async fetchOrders() {
-      const db = getFirestore();
+      const db = await getFirestore();
       const ordersQuery = query(
         collection(db, "PlacedCustOrders"),
         where("merchantId", "==", this.user.uid)
@@ -49,6 +52,7 @@ export default {
           ...doc.data(),
           dateCreated: new Date(doc.data().dateCreated),
         }));
+        console.log(this.orders)
         this.calculateSales();
       } catch (error) {
         console.error("Error fetching orders: ", error);
@@ -63,15 +67,14 @@ export default {
       if (this.selectedPeriod === 'day') {
         startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       } else if (this.selectedPeriod === 'week') {
-        // Calculate Monday of the current week
-        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
-        const daysFromMonday = (dayOfWeek + 6) % 7; // Adjust so Monday is the start of the week
+        // Calculate the most recent Sunday
         startDate = new Date(today);
-        startDate.setDate(today.getDate() - daysFromMonday);
+        startDate.setDate(today.getDate() - today.getDay()); // Sunday as day 0
       } else if (this.selectedPeriod === 'month') {
         startDate = new Date(today.getFullYear(), today.getMonth(), 1); // First day of the month
       }
 
+      // Filter orders by startDate
       const filteredOrders = this.orders.filter(order => order.dateCreated >= startDate);
 
       this.totalSalesAmount = filteredOrders.reduce((sum, order) => {

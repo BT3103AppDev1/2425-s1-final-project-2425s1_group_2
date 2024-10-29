@@ -4,7 +4,7 @@
       <DashboardHeader @period-selected="updatePeriod" />
       <div class="sales-section">
         <h2>Sales</h2>
-        <SalesOverview :salesAmount="salesAmount" :ordersCompleted="ordersCompleted" />
+        <SalesOverview :selectedPeriod = "selectedPeriod" />
       </div>
       <div class="popular-items-section">
         <PopularItems :items="popularItems" />
@@ -24,6 +24,16 @@ export default {
         HeaderScreen,
         SalesOverview,
         PopularItems
+    },
+    data() {
+        return {
+            selectedPeriod: 'day', // Default to 'day'
+        };
+    },
+    methods: {
+        updatePeriod(period) {
+            this.selectedPeriod = period;
+        }
     }
 }
 </script>
