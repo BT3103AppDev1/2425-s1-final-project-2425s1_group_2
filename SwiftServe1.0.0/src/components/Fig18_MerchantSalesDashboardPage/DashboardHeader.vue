@@ -38,7 +38,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     font-family: 'Inria Sans', sans-serif;
 }
 

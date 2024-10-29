@@ -1,4 +1,7 @@
 <template>
+  <div class = "sales-chart">
+    <SalesChart :orders = "orders" :selectedPeriod = "selectedPeriod" />
+  </div>
   <div class="sales-overview">
     <div class="sales-item">
       <div class="sales-text">Total Sales Amount</div>
@@ -15,9 +18,13 @@
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import SalesChart from "./SalesChart.vue";
 
 export default {
   name: "SalesOverview",
+  components: {
+    SalesChart
+  },
   props: {
     selectedPeriod: {
       type: String,
