@@ -306,7 +306,7 @@
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 15.625rem));
   gap: 1.25rem;
 }
 

@@ -52,8 +52,8 @@
         foodItemImage: null,
         foodItemImageUrl: '',
         foodItemPrice: 0,
-        merchantId: 'VScvqRThQSKVCihILf9v',
-        merchantName: 'Chin Lee Chicken Rice',
+        merchantId: 'LqcM3PR8jKPD8My632J9',
+        merchantName: 'Octopus Drinks',
         addOns: [],
         errorMessage: '',
       };
