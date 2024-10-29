@@ -6,7 +6,7 @@
         <SalesOverview :selectedPeriod = "selectedPeriod" />
       </div>
       <div class="popular-items-section">
-        <PopularItems :items="popularItems" />
+        <PopularItems :selectedPeriod = "selectedPeriod" />
       </div>
     </div>
   </template>
