@@ -3,7 +3,6 @@
     <div class="sales-dashboard">
       <DashboardHeader @period-selected="updatePeriod" />
       <div class="sales-section">
-        <!--<h2>Sales</h2>-->
         <SalesOverview :selectedPeriod = "selectedPeriod" />
       </div>
       <div class="popular-items-section">
@@ -16,7 +15,6 @@ import DashboardHeader from '@/components/Fig18_MerchantSalesDashboardPage/Dashb
 import SalesOverview from '@/components/Fig18_MerchantSalesDashboardPage/SalesOverview.vue';
 import PopularItems from '@/components/Fig18_MerchantSalesDashboardPage/PopularItems.vue';
 import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue';
-//import SalesChart from '@/components/Fig18_MerchantSalesDashboardPage/SalesChart.vue';
 
 export default {
     name: "SalesDashboard",
@@ -25,7 +23,6 @@ export default {
         HeaderScreen,
         SalesOverview,
         PopularItems
-        //,SalesChart
     },
     data() {
         return {

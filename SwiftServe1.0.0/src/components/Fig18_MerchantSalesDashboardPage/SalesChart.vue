@@ -1,7 +1,7 @@
 <template>
     <div class="sales-chart">
         <h2>Revenue Chart</h2>
-        <line-chart :data="chartData" :discrete="true"  height = "180px" />
+        <line-chart :data="chartData" :discrete="true"  height = "180px" :colors="['#00adb5']"/>
     </div>
 </template>
 
