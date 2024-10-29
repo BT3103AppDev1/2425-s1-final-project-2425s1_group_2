@@ -11,8 +11,10 @@
             ✕
           </button>
           <div class="cart-item-details">
+            <img :src="item.foodItemImage" :alt="item.foodItemName" />
+            <h3>{{ item.hawkerCentre }}</h3>
             <h3>{{ item.merchantName }}</h3>
-            <p class="food-item-name">{{ item.foodItemName }} x {{ item.quantity }}</p>
+            <p class="food-item-name">{{ item.quantity }} x {{ item.foodItemName }}</p>
             <p class="food-item-price">${{ item.foodItemPrice.toFixed(2) }}</p>
           </div>
         </div>
@@ -74,9 +76,7 @@ export default {
 </script>
 
 <style scoped>
-/* Original Order Cart CSS */
 .order-cart {
-  background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
   max-width: 70%;
@@ -91,6 +91,9 @@ export default {
 .cart-items-container {
   display: flex;
   flex-direction: column;
+  border: 2px solid #00ADB5;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .cart-items-row {
@@ -120,7 +123,7 @@ export default {
 }
 
 .cart-item-details {
-  text-align: left;
+  text-align: center;
   width: 100%;
   margin-top: 15px;
 }
@@ -129,9 +132,16 @@ export default {
   font-size: 1rem;
   margin: 0 0 10px 0;
   color: white;
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.cart-item-details img {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .cart-item-details p {

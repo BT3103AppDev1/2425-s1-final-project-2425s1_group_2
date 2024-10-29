@@ -26,7 +26,7 @@
       foodItem: Object,
       merchant: Object,
       quantity: Number,
-      totalPrice: Number
+      totalPrice: Number,
     },
     methods: {
       increaseQuantity() {
