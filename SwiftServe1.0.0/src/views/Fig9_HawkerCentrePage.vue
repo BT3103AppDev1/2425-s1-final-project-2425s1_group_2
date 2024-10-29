@@ -157,7 +157,7 @@
             foodItemName: doc.data().foodItemName,
             available: doc.data().available,
             merchantId: doc.data().merchantId,  
-            // foodItemImage: doc.data().foodItemImage,
+            foodItemImage: doc.data().foodItemImage,
           }));
           //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
@@ -306,7 +306,7 @@
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 15.625rem));
   gap: 1.25rem;
 }
 
