@@ -1,9 +1,13 @@
 <template>
   <div class="sales-overview">
-    <div class="sales-text">Total Sales Amount</div>
-    <div class="sales-amount">${{ totalSalesAmount.toFixed(2) }}</div>
-    <div class="orders-text">Orders Completed</div>
-    <div class="orders-count">{{ ordersCompleted }}</div>
+    <div class="sales-item">
+      <div class="sales-text">Total Sales Amount</div>
+      <div class="sales-amount">${{ totalSalesAmount.toFixed(2) }}</div>
+    </div>
+    <div class="sales-item">
+      <div class="orders-text">Orders Completed</div>
+      <div class="orders-count">{{ ordersCompleted }}</div>
+    </div>
   </div>
 </template>
 
@@ -93,7 +97,28 @@ export default {
   padding: 20px;
   color: white;
   font-size: 1.5rem;
-  text-align: center;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.sales-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sales-text,
+.orders-text {
+  font-size: 1.8rem;
+  padding-left: 30px;
+}
+
+.sales-amount,
+.orders-count {
+  font-size: 1.5rem;
+  padding-right: 100px;
 }
 </style>

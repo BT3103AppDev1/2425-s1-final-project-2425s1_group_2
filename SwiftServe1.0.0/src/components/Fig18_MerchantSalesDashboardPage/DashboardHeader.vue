@@ -39,7 +39,9 @@ export default {
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+    font-family: 'Inria Sans', sans-serif;
 }
+
 
 .title {
     font-size: 2rem;
