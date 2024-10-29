@@ -56,6 +56,7 @@
         merchantName: 'Octopus Drinks',
         addOns: [],
         errorMessage: '',
+        hawkerCentre: 'Yuhua Village Market and Food Centre',
       };
     },
     methods: {
@@ -119,7 +120,8 @@
           addOn: this.addOns.reduce((obj, item) => ({
             ...obj,
             [item.addOnName]: item.addOnPrice,
-          }), {})
+          }), {}),
+          hawkerCentre: this.hawkerCentre,
         };
         this.$emit('submit', foodItemData);
 

@@ -4,7 +4,7 @@
       :class="{ 'unavailable': !item.available }"
       @click="handleClick"
     >
-      <img class="foodItemImage" :src="item.foodItemImage" :alt="item.foodItemName" />
+      <img :src="item.foodItemImage" :alt="item.foodItemName" />
       <h3>{{ item.foodItemName }}</h3>
     </div>
   </template>
@@ -38,6 +38,7 @@
     height: 150px;
     object-fit: cover;
     margin-bottom: 10px;
+    border-radius: 10px;
   }
   
   .food-item h3 {
