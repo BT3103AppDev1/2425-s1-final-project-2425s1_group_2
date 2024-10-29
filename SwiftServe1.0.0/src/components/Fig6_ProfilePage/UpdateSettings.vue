@@ -6,10 +6,10 @@
           <h2 class="inputTitles">Username:</h2>
           <input type="text" class="inputBoxes" id="username1" required=""> <br>
 
-          <h2 class="inputTitles">Password:</h2>
+          <h2 class="inputTitles">Current Password:</h2>
           <input type="text" class="inputBoxes" id="password1" required=""> <br>
 
-          <h2 class="inputTitles">Confirm password:</h2>
+          <h2 class="inputTitles">Confirm new password:</h2>
           <input type="text" class="inputBoxes" id="cPassword1" required=""> <br><br>
         </div>
       </div>
@@ -100,17 +100,17 @@ export default {
       async validatePasswords() {
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
+        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,20}$/
+        //let testResult = !passwordRegex.test(password)
         if (!password || !cPassword) {
       this.openModal("Please fill in both password fields!");
-      document.getElementById('userForm').reset();
-    } else if (password === cPassword) {
+    } else if (password === cPassword ) {
       try {
         // Reauthenticate the user using their email and current password
         const credential = EmailAuthProvider.credential(this.user.email, password);
         await reauthenticateWithCredential(this.user, credential);
         await updatePassword(this.user, password);
         this.openModal('Password updated successfully!');
-        document.getElementById('userForm').reset();
       } catch (error) {
         console.error("Error updating password: ", error);
         this.openModal(`Error: ${error.message}`);
@@ -118,8 +118,8 @@ export default {
     }
     else {
       this.openModal("Passwords do not match!");
-      document.getElementById('userForm').reset();
     }
+    document.getElementById('userForm').reset();
   }
 }
 }

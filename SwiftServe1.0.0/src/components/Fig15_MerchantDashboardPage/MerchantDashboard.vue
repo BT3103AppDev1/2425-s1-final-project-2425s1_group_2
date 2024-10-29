@@ -70,8 +70,7 @@ export default {
             this.$router.push('/merchantOrders');
         },
         goToMerchantSalesDashboard(){
-            // this.$router.push('/merchantToggleAvailability')
-            alert("go to sales dashboard");
+            this.$router.push('/merchantSales');
         }
     }
 }
