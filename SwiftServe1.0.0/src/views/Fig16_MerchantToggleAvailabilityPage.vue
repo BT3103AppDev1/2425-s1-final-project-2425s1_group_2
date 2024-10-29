@@ -73,7 +73,7 @@
               id: doc.id,
               foodItemName: doc.data().foodItemName,
               available: doc.data().available,
-              // foodItemImage: doc.data().foodItemImage,
+              foodItemImage: doc.data().foodItemImage,
             }));
             console.log(JSON.stringify(this.foodItems));
         } else {
@@ -102,7 +102,7 @@
             const userProfileRef = db.collection('UserProfile').doc(this.merchantId);
 
             await userProfileRef.update({
-            open: this.isStallOpen
+              open: this.isStallOpen
             });
         } catch (error) {
             console.error('Error updating stall availability:', error);

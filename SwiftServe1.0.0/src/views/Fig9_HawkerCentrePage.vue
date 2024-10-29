@@ -157,7 +157,7 @@
             foodItemName: doc.data().foodItemName,
             available: doc.data().available,
             merchantId: doc.data().merchantId,  
-            // foodItemImage: doc.data().foodItemImage,
+            foodItemImage: doc.data().foodItemImage,
           }));
           //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
