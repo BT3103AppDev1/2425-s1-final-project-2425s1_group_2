@@ -1,7 +1,8 @@
 <template>
+  <HeaderScreen/>
   <div class="container">
 
-    <HeaderScreen/>
+
     <h2 class="pageText">Food Availability Toggle Menu</h2>
 
     <div class="food-items-header">
