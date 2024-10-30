@@ -5,7 +5,7 @@
       </div>
   
       <div class="welcomeCust">
-        <h2>Welcome merchant {{ this.user.displayName}}!</h2>
+        <h2>Welcome merchant {{ this.name }}!</h2>
       </div>
       <img
         src="/dashboardButton.png"
@@ -46,7 +46,12 @@
   </template>
   
   <script>
+  import firebaseApp from '@/firebase.js';
   import { getAuth, signOut, onAuthStateChanged } from "firebase/auth"
+  import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+  const db = getFirestore(firebaseApp);
+
   export default {
     name: 'UniversalHeader',
   
@@ -54,6 +59,7 @@
       return {
         user: false,
         showLogoutModal: false, // Control the modal visibility
+        name: ''
       }
     },
   
@@ -62,17 +68,31 @@
       onAuthStateChanged(auth, (user) => {
         if (user) {
           this.user = user;
+          this.setProfile();
         }
       });
     },
   
     methods: {
+      async setProfile() {
+        const userProfileDocRef = doc(db, "UserProfile", this.user.uid);
+        const userProfileDoc = await getDoc(userProfileDocRef);
+        console.log(userProfileDoc)
+        if (userProfileDoc.exists) {
+            const userData = userProfileDoc.data();
+            this.name = userData.displayName;
+            
+        } else {
+          alert("Error: Merchant Profile not Created Yet!")
+        }
+      },
+
       MDashClick() {
         this.$router.push('/merchantDashboard');
       },
   
       SettingsClick() {
-        this.$router.push('/profile');
+        this.$router.push('/merchantProfile');
       },
   
       openLogoutModal() {
