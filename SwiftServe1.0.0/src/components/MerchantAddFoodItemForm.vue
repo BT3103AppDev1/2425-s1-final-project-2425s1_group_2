@@ -58,7 +58,7 @@
         user: null,
         addOns: [],
         errorMessage: '',
-        hawkerCentre: 'Yuhua Village Market and Food Centre',
+        hawkerCentre: 'Yuhua Village Market and Food Centre', //make particular to merchant [hard coded]
       };
     },
     async mounted() {
@@ -120,7 +120,6 @@
       },
       submitForm() {
         if (!this.validateForm()) return; 
-
         const foodItemData = {
           foodItemName: this.foodItemName,
           available: this.available,

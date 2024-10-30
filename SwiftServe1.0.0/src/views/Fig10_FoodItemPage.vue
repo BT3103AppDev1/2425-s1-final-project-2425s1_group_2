@@ -402,8 +402,11 @@ export default {
       }
     },
     async addToCartHandler() {
+
       //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
+      //console.log(this.hawkerCentre);
       const cartItem = {
+        
         userId: this.user.uid,
         foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem ? this.cartItem.foodItemName : this.quickOrderItem.foodItemName,
         foodItemPrice: this.totalPrice,
@@ -413,9 +416,15 @@ export default {
         specialInstructions: this.specialInstructions,
         merchantName: this.merchant.displayName,
         merchantId: this.merchant.uid,
-        hawkerCentre: this.merchant.hawkerCentre,
+        hawkerCentre: this.hawkerCentre,
         foodItemImage: this.foodItem ? this.foodItem.foodItemImage : this.cartItem ? this.cartItem.foodItemImage : this.quickOrderItem.foodItemImage
       };
+      /*console.log(cartItem);
+      for (const key in cartItem) {
+            if (cartItem[key] === undefined) {
+                throw new Error(`Field ${key} is undefined. Please provide a valid value.`);
+            }
+        }*/
       /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
       try {
         if (this.cartItemId) {

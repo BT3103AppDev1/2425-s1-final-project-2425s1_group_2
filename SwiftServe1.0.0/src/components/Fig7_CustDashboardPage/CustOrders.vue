@@ -53,7 +53,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
             temp['dish'] = docsData.merchantName;
             temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName)
             temp['readyForCollection'] = docsData.orderStatus ? 1 : 0;
-            temp['preparingOrder'] = docsData.orderStatus;
+            temp['preparingOrder'] = !docsData.orderStatus;
             this.currentOrders.push(temp);
           }
         }
@@ -193,7 +193,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
               <p>{{ order.dish }}</p>
               <p>{{ order.quantity }}</p>
               <button 
-                v-if="order.readyForCollection === 0" 
+                v-if="order.readyForCollection === 1" 
                 class="order-ready-btn"
               >
                 Order Ready Collection
@@ -204,7 +204,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
               >
                 Preparing Order
               </button>
-              <button v-if="order.readyForCollection === 0" class="view-order-btn">View Order Number</button>
+              <button v-if="order.readyForCollection === 1" class="view-order-btn">View Order Number</button>
             </div>
           </div>
         </div>
