@@ -96,7 +96,13 @@
     computed: {
       filteredItems() {
         let filtered = this.items;
-        if (this.activeCategory === 'Halal') {
+        if (this.activeCategory === 'All') {
+          filtered = filtered.filter(item => {
+            const stall = this.stalls.find(stall => stall.uid === item.merchantId);
+            return stall;
+          });
+        }
+        else if (this.activeCategory === 'Halal') {
           filtered = filtered.filter(item => {
             const stall = this.stalls.find(stall => stall.uid === item.merchantId && stall.halal);
             return stall;

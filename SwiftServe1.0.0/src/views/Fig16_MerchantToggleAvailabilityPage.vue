@@ -71,6 +71,7 @@
             if (merchantDoc.exists) {
             this.merchant = merchantDoc.data();
             this.isStallOpen = this.merchant.open;
+            console.log('current state of open:', this.isStallOpen);
             } else {
             console.error('No such merchant!');
             }
@@ -113,11 +114,15 @@
       },
       async toggleStallAvailability() {
         try {
-            const userProfileRef = db.collection('UserProfile').doc(this.merchantId);
+            const userProfileRef = db.collection('UserProfile').doc(this.user.uid);
 
             await userProfileRef.update({
-              open: this.isStallOpen
+              open: !this.isStallOpen
             });
+
+            console.log('Stall availability updated:', this.isStallOpen);
+
+            this.isStallOpen = !this.isStallOpen;
         } catch (error) {
             console.error('Error updating stall availability:', error);
         }
