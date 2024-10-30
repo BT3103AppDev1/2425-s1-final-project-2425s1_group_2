@@ -26,10 +26,11 @@
 
   
   <script>
-  import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
+  import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue';
   import FoodItem from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleFoodItemAvailability.vue';
   import ToggleSwitch from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleSwitch.vue';
   import { db } from '../firebase.js';
+  import { getAuth, onAuthStateChanged } from "firebase/auth"
   
   export default {
     components: {
@@ -39,16 +40,28 @@
     },
     data() {
       return {
-        merchantId: 'VScvqRThQSKVCihILf9v', // hardcoded for now using Chin Lee Chicken Rice
-        merchantName: '',
+        // merchantId: 'VScvqRThQSKVCihILf9v', 
+        // merchantName: '',
         isStallOpen: false,
         foodItems: null,
         merchant: null,
+        user: null,
       };
     },
     async mounted() {
-      await this.fetchMerchant(this.merchantId);
-      await this.fetchFoodItems(this.merchantId);
+      const auth = getAuth();
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user;
+
+          // Fetch merchant details and food items
+          this.fetchMerchant(this.user.uid);
+          this.fetchFoodItems(this.user.uid);
+        } 
+      });
+      // await this.fetchMerchant(this.merchantId);
+      // await this.fetchFoodItems(this.merchantId);
     },
     methods: {
       async fetchMerchant(merchantId) {

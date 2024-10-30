@@ -49,7 +49,7 @@
 
 <script>
 import * as firebaseui from 'firebaseui'
-import { auth, GoogleProvider, EmailProvider} from '@/firebase.js'
+import { auth, GoogleProvider, EmailProvider, db} from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
 import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider} from 'firebase/auth'
 export default {
@@ -75,8 +75,24 @@ export default {
         // Log user data for verification purposes
         console.log('Login successful:', user)
 
+        const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get();
+
+        if (userProfileDoc.exists) {
+          const userData = userProfileDoc.data();
+          const profileType = userData.profileType;
+
+          // Redirect based on profileType
+          if (profileType === 'Merchant') {
+            this.$router.push('/merchantDashboard'); // Replace with the actual route for merchant home page
+          } else {
+            this.$router.push('/custD'); // Customer dashboard route
+          }
+        } else {
+          alert('User profile data not found.');
+        }
+
         // Redirect to the customer dashboard after successful login
-        this.$router.push('/custD')
+        // this.$router.push('/custD')
       } catch (error) {
         // Handle authentication errors
         alert('Error during login: ' + error.message)
