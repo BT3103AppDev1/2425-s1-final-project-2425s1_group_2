@@ -1,4 +1,5 @@
 <template>
+    <HeaderScreen />
     <div class="container">
       <h2>Create New Food Item</h2>
       <FoodItemForm @submit="handleSubmit" />
@@ -6,11 +7,12 @@
   </template>
   
   <script>
-  import FoodItemForm from '../components/MerchantAddFoodItemForm.vue';
+import FoodItemForm from '../components/MerchantAddFoodItemForm.vue';
   import {db} from '../firebase.js';
+  import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue';
   
   export default {
-    components: { FoodItemForm },
+    components: { FoodItemForm, HeaderScreen },
     methods: {
       async handleSubmit(foodItemData) {
         // Assuming `db` is your Firestore instance

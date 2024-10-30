@@ -43,6 +43,7 @@
   
   <script>
   import { storage } from '../firebase.js';
+  import { getAuth, onAuthStateChanged } from "firebase/auth"
 
   export default {
     data() {
@@ -52,12 +53,22 @@
         foodItemImage: null,
         foodItemImageUrl: '',
         foodItemPrice: 0,
-        merchantId: 'LqcM3PR8jKPD8My632J9',
-        merchantName: 'Octopus Drinks',
+        // merchantId: 'LqcM3PR8jKPD8My632J9',
+        // merchantName: 'Octopus Drinks',
+        user: null,
         addOns: [],
         errorMessage: '',
         hawkerCentre: 'Yuhua Village Market and Food Centre',
       };
+    },
+    async mounted() {
+      const auth = getAuth();
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user;  
+        } 
+      });
     },
     methods: {
       capitalizeWords(text) {
@@ -115,8 +126,8 @@
           available: this.available,
           foodItemImage: this.foodItemImageUrl,
           foodItemPrice: parseFloat(this.foodItemPrice),
-          merchantId: this.merchantId,
-          merchantName: this.merchantName,
+          merchantId: this.user.uid,
+          merchantName: this.user.displayName,
           addOn: this.addOns.reduce((obj, item) => ({
             ...obj,
             [item.addOnName]: item.addOnPrice,
@@ -180,7 +191,7 @@ input[type='file'] {
 
 .add-button,
 .submit-button {
-  background-color: #00A895;
+  background-color: #00Adb5;
   color: white;
   padding: 10px 15px;
   border: none;
