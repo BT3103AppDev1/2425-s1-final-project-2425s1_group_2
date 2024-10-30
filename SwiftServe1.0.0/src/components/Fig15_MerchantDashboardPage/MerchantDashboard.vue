@@ -25,6 +25,12 @@
                     Sales Dashboard
                 </span>
             </button>
+            <button class="clickable" id="createFoodItem" @click="goToCreateFoodItem">
+                <span class="iconspan">
+                    <!-- <img src="/createfood_icon.png" alt="create" class="icon"> -->
+                </span>
+                <span class="text">Add Food Item</span>
+            </button>
         </div>
     </div>
 
@@ -35,7 +41,7 @@
 </style>
 
 <script>
-import firebaseApp from '@/firebase.js';
+// import firebaseApp from '@/firebase.js';
 // import { getFirestore, getDocs, collection, doc, updateDoc } from 'firebase/firestore';
 import { getAuth} from "firebase/auth";
 // const db = getFirestore(firebaseApp);
@@ -46,7 +52,7 @@ export default {
   data() {
     return {
       user: false,
-      merchantId: '',
+    //   merchantId: '',
       orderData: [],
       orderNumMap: {}
     };
@@ -57,7 +63,7 @@ export default {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.user = user;
-        this.merchantId = "6CrzYngTYekKWIkSmohR"; //to replace with user id
+        // this.merchantId = "6CrzYngTYekKWIkSmohR"; //to replace with user id
       }
     });
     },
@@ -71,6 +77,9 @@ export default {
         },
         goToMerchantSalesDashboard(){
             this.$router.push('/merchantSales');
+        },
+        goToCreateFoodItem() {
+            this.$router.push('/merchantFoodItemForm');
         }
     }
 }
@@ -84,7 +93,7 @@ export default {
     margin-bottom: 1vw;
 }
 
-#merchantOrders, #merchantFoodAvail, #merchantSales {
+#merchantOrders, #merchantFoodAvail, #merchantSales, #createFoodItem {
     background-color: #00adb5;
     color: white;
     height: 12vw;
@@ -144,14 +153,22 @@ export default {
 
 #merchantFoodAvail {
   grid-column: 1;
+  grid-row: 1;
 }
 
 #merchantOrders {
   grid-column: 2;
+  grid-row: 1;
 }
 
 #merchantSales {
-  grid-column: 1 / -1;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+#createFoodItem {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 #merchantOrders:hover,
