@@ -34,6 +34,14 @@ const router = createRouter({
       component: () => import('../views/Fig6_ProfileView.vue')
     },
     {
+      path: '/merchantprofile',
+      name: 'merchantProfilePage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig6_MerchantProfileView.vue')
+    },
+    {
       path: '/custD',
       name: 'customerDashboard',
       // route level code-splitting
