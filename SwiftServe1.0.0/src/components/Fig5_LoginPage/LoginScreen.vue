@@ -1,10 +1,3 @@
-<!-- not done yet -->
-<!-- validation function -->
-<!-- alignment and static -->
-<!-- underline -->
-<!-- routing -->
-<!-- eye problems -->
-
 <template>
   <div class="login-page">
     <form @submit.prevent="handleLogin">
@@ -26,7 +19,7 @@
 
       <div class="form-actions">
         <a href="#" class="forgot-password" @click.prevent="handleForgotPassword"
-          >Forgot Password?</a
+          ><u>Forgot Password?</u></a
         >
         <div class="show-password">
           <input type="checkbox" id="showPassword" v-model="showPassword" />
@@ -37,9 +30,8 @@
       <button type="submit" class="login-button">Login</button>
     </form>
     <!-- Add Google Sign-In Button -->
-    <button class="google-login-button" @click="handleGoogleSignIn">Sign in with
-    Google</button>
-    
+    <button class="google-login-button" @click="handleGoogleSignIn">Sign in with Google</button>
+
     <!-- Firebase UI Auth Container -->
     <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
     <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button>
@@ -49,9 +41,9 @@
 
 <script>
 import * as firebaseui from 'firebaseui'
-import { auth, GoogleProvider, EmailProvider, db} from '@/firebase.js'
+import { auth, GoogleProvider, EmailProvider, db } from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
-import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider} from 'firebase/auth'
+import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider } from 'firebase/auth'
 export default {
   name: 'LoginPage',
   data() {
@@ -75,20 +67,20 @@ export default {
         // Log user data for verification purposes
         console.log('Login successful:', user)
 
-        const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get();
+        const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get()
 
         if (userProfileDoc.exists) {
-          const userData = userProfileDoc.data();
-          const profileType = userData.profileType;
+          const userData = userProfileDoc.data()
+          const profileType = userData.profileType
 
           // Redirect based on profileType
           if (profileType === 'Merchant') {
-            this.$router.push('/merchantDashboard'); // Replace with the actual route for merchant home page
+            this.$router.push('/merchantDashboard') // Replace with the actual route for merchant home page
           } else {
-            this.$router.push('/custD'); // Customer dashboard route
+            this.$router.push('/custD') // Customer dashboard route
           }
         } else {
-          alert('User profile data not found.');
+          alert('User profile data not found.')
         }
 
         // Redirect to the customer dashboard after successful login
@@ -100,18 +92,19 @@ export default {
     },
     handleForgotPassword() {
       // Password reset logic
-      if (this.email) {
-        auth
-          .sendPasswordResetEmail(this.email)
-          .then(() => {
-            alert('Password reset email sent! Check your inbox.');
-          })
-          .catch((error) => {
-            alert('Error sending password reset email: ' + error.message);
-          });
-      } else {
-        alert('Please enter your email address to reset your password.');
-      }
+      this.$router.push('/resetPassword')
+      // if (this.email) {
+      //   auth
+      //     .sendPasswordResetEmail(this.email)
+      //     .then(() => {
+      //       alert('Password reset email sent! Check your inbox.');
+      //     })
+      //     .catch((error) => {
+      //       alert('Error sending password reset email: ' + error.message);
+      //     });
+      // } else {
+      //   alert('Please enter your email address to reset your password.');
+      // }
     },
     toggleLoginMethod() {
       // Toggle between showing manual login and FirebaseUI-based login
