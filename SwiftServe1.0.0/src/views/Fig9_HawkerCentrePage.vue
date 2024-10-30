@@ -1,6 +1,6 @@
 <template>
 
-  <div id="app">
+  <div class="container">
     <!--<AppHeader />-->
     <HeaderScreen />
     <FilterButtons 
@@ -13,14 +13,14 @@
       @category-selected="updateActiveCategory" 
       :activeCategory="activeCategory"
     />
-    <div class="main-content">
+    <div v-if="filteredStalls.length > 0" class="main-content">
       <StallList 
         :stalls="filteredStalls" 
         :activeStall="activeStall" 
         @stall-selected="updateActiveStall" 
       />
       <div class="food-area">
-        <div v-if="filteredStalls.length > 0" class="food-grid">
+        <div class="food-grid">
         <FoodItem 
           v-for="item in filteredItems"
           :key="item.id"
@@ -29,9 +29,9 @@
           @click="viewFoodItem(item)"
         />
       </div>
-      <div v-else class="no-stalls-message">No stalls found</div> 
       </div>
     </div>
+    <div v-else class="no-stalls-message">No stalls found</div> 
     <div class="cart-and-checkout">
       <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" /> 
       <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
@@ -64,7 +64,7 @@
     },
     data() {
       return {
-        activeCategory: 'Chinese',
+        activeCategory: 'All',
         activeStall: null, 
         stalls: [],
         items: [],
@@ -157,7 +157,7 @@
             foodItemName: doc.data().foodItemName,
             available: doc.data().available,
             merchantId: doc.data().merchantId,  
-            // foodItemImage: doc.data().foodItemImage,
+            foodItemImage: doc.data().foodItemImage,
           }));
           //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
         } catch (error) {
@@ -242,16 +242,62 @@
 </script>
 
 <style>
-#app {
-  font-family: 'Arial', sans-serif;  
-  width: 95%;
-  margin: 0 auto;
-  padding: 20px;
+.container {
+  font-family: 'Inria Sans', sans-serif;  
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* 2xl */
+@media (max-width: 1536px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  .container {
+    max-width: 475px;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  .container {
+    width: 100%;
+  }
 }
 
 .main-content {
   display: flex; 
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .food-area {
@@ -260,19 +306,16 @@
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 15.625rem));
+  gap: 1.25rem;
 }
 
 /* Order Cart Styles */
 .order-cart {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 20px;
-}
-
-.order-cart h2 {
-  margin-top: 0;
+  flex: 4;
+  margin-right: 20px;
+  /* padding: 0.625rem; */
+  /* margin-top: 1.25rem; */
 }
 
 .active {
@@ -286,11 +329,6 @@
     margin-top: 20px;
   }
 
-.order-cart {
-  flex: 4;
-  margin-right: 20px;
-}
-
 .checkout-area {
   flex: 1;
   display: flex;
@@ -300,8 +338,8 @@
 
 .no-stalls-message {
   text-align: center;
-  font-size: 25px;
-  margin-top: 10px;
+  font-size: 1.5625rem;
+  margin-top: 0.625rem;
   font-weight: bold;
 }
 </style>

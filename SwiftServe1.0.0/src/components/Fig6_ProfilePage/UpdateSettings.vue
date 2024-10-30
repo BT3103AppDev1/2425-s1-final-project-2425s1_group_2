@@ -6,10 +6,10 @@
           <h2 class="inputTitles">Username:</h2>
           <input type="text" class="inputBoxes" id="username1" required=""> <br>
 
-          <h2 class="inputTitles">Password:</h2>
+          <h2 class="inputTitles">Current Password:</h2>
           <input type="text" class="inputBoxes" id="password1" required=""> <br>
 
-          <h2 class="inputTitles">Confirm password:</h2>
+          <h2 class="inputTitles">Confirm new password:</h2>
           <input type="text" class="inputBoxes" id="cPassword1" required=""> <br><br>
         </div>
       </div>
@@ -46,9 +46,10 @@ export default {
       user: false,
       showCustomModal: false,
       modalMessage: '', // To store the message for the modal
-      nextstep: null,
+      nextStep: null
     }
   },
+  emits: ["updateProfile"],
   mounted() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -86,6 +87,7 @@ export default {
           await updateDoc(userDocRef, { displayName: username });
           // Show the username change modal and define the next step to handle password validation
           this.openModal("Username successfully changed!", this.validatePasswords);
+          this.$emit('updateProfile');
         } else {
           // If no username change, directly proceed to password validation
           this.validatePasswords();
@@ -98,25 +100,26 @@ export default {
       async validatePasswords() {
         let password = document.getElementById("password1").value;
         let cPassword = document.getElementById("cPassword1").value;
-
+        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,20}$/
+        //let testResult = !passwordRegex.test(password)
         if (!password || !cPassword) {
       this.openModal("Please fill in both password fields!");
-    } else if (password === cPassword) {
+    } else if (password === cPassword ) {
       try {
         // Reauthenticate the user using their email and current password
         const credential = EmailAuthProvider.credential(this.user.email, password);
         await reauthenticateWithCredential(this.user, credential);
         await updatePassword(this.user, password);
         this.openModal('Password updated successfully!');
-        document.getElementById('userForm').reset();
       } catch (error) {
         console.error("Error updating password: ", error);
         this.openModal(`Error: ${error.message}`);
       }
-    } else {
-      this.openModal("Passwords do not match!");
-      document.getElementById('userForm').reset();
     }
+    else {
+      this.openModal("Passwords do not match!");
+    }
+    document.getElementById('userForm').reset();
   }
 }
 }

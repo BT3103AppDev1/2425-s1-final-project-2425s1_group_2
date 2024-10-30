@@ -1,10 +1,10 @@
 <template>
-  <div class="food-item-page">
-    <HeaderTag />
-    <div class="food-item-details" v-if="(foodItem || cartItem) && merchant">
+  <div class="container">
+    <HeaderScreen />
+    <div class="food-item-details" v-if="(foodItem || cartItem || quickOrderItem) && merchant">
       <LeftColumn
         :merchant="merchant"
-        :foodItem="cartItem ? cartItem : foodItem"
+        :foodItem="cartItem || foodItem || quickOrderItem"
         :quantity="quantity"
         :totalPrice="totalPrice"
         @increaseQuantity="increaseQuantity"
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import HeaderTag from '../components/AppHeader.vue';
+import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
 import AddOn from '../components/Fig10_FoodItemPage/AddOn.vue';
 import SpecialInstructions from '../components/Fig10_FoodItemPage/SpecialInstructions.vue';
 import LeftColumn from '../components/Fig10_FoodItemPage/FoodItemLeftColumn.vue'; 
@@ -63,7 +63,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth"
 
 export default {
   components: {
-    HeaderTag,
+    HeaderScreen,
     AddOn,
     SpecialInstructions,
     LeftColumn 
@@ -79,12 +79,12 @@ export default {
       cartItemId: null,
       cartItem: null,
       totalPrice: 0,
-      hawkerCentre: false,
+      hawkerCentre: null,
       showAddToCartModal: false,
-
-      quickOrder: false,
-      quickOrderQuantity: 0,
-      quickOrderAddOns: []
+      quickOrderItem: null,
+      // quickOrder: false,
+      // quickOrderQuantity: 0,
+      // quickOrderAddOns: []
     };
   },
   async mounted() {
@@ -102,25 +102,29 @@ export default {
   async created() {
     const foodItemId = this.$route.params.id || null;
     this.cartItemId = this.$route.params.cartItemId || null;
-    
-    this.quickOrder = this.$route.query.quickOrder || false;
-    this.quickOrderQuantity = this.$route.query.quantity || 0;
+    this.quickOrderId = this.$route.params.orderId || null;
+    console.log(this.quickOrderId);
+    // this.quickOrder = this.$route.query.quickOrder || false;
+    // this.quickOrderQuantity = this.$route.query.quantity || 0;
     //this.addOns = JSON.parse(this.$route.query.addOns) || [];
     //this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
 
-    if (this.quickOrder) {
-      this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
-      //console.log(this.addOns);
+    // if (this.quickOrder) {
+    //   this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
+    //   //console.log(this.addOns);
 
-      console.log("quickOrder");
-      //console.log(this.addOns);
-      await this.fetchQuickOrderItem(foodItemId, this.quickOrderQuantity);//, this.quickOrderAddOns);
-    } else if (this.cartItemId) {
+    //   console.log("quickOrder");
+    //   //console.log(this.addOns);
+    //   await this.fetchQuickOrderItem(foodItemId, this.quickOrderQuantity);//, this.quickOrderAddOns);
+    if (this.cartItemId) {
       console.log("cartOrder");
       await this.fetchCartItem(this.cartItemId);
     } else if (foodItemId) {
       console.log("foodItem");
       await this.fetchFoodItem(foodItemId);
+    } else if (this.quickOrderId) {
+      console.log("quickOrder");
+      await this.fetchQuickOrderItem(this.quickOrderId);
     }
   },
   watch: {
@@ -163,6 +167,12 @@ export default {
           const foodItem = foodItemDoc.data();
           basePrice = foodItem.foodItemPrice; 
         }
+      } else if (this.quickOrderItem) {
+        const foodItemDoc = await db.collection('FoodItem').doc(this.quickOrderItem.foodItemId).get();
+        if (foodItemDoc.exists) {
+          const foodItem = foodItemDoc.data();
+          basePrice = foodItem.foodItemPrice; 
+        }
       }
 
       return (basePrice + addOnTotal) * this.quantity;
@@ -170,42 +180,107 @@ export default {
     async updateTotalPrice() {
       this.totalPrice = await this.calculateTotalPrice();
     },
-    async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
-      //console.log(quickOrderAddOns);
+    async fetchQuickOrderItem(quickOrderId) {
       try {
-        const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
-        if (foodItemDoc.exists) {
-          this.foodItem = {
-            id: foodItemDoc.id, 
-            ...foodItemDoc.data()
-          };
-          //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
-          await this.fetchMerchant(this.foodItem.merchantId);
-          /*console.log(this.quickOrderAddOns);
-          console.log(this.foodItem);
-          for (const item in this.foodItem) {
-            console.log(this.quickOrderAddOns[item]);
-          }*/
+        console.log(quickOrderId);
+        const quickOrderItemDoc = await db.collection('PlacedCustOrders').doc(quickOrderId).get();
+        if (quickOrderItemDoc.exists) {
+          const quickOrderItem = quickOrderItemDoc.data();
+          console.log('Fetched quick order item:', quickOrderItem); // Log the fetched cart item
 
-          this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
-            name: key,
-            price: this.foodItem.addOn[key],
-            quantity: 0
-          })) : [];
-          //console.log(this.addOns);
+          // Extract the foodItemId from the cart item
+          const foodItemId = quickOrderItem.foodItemId;
 
-          for (let i = 0; i < quickOrderQuantity - 1; i++) {
-            this.increaseQuantity();
+          // Fetch the original food item from FoodItem collection using the foodItemId
+          const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+          let originalAddOns = [];
+          if (foodItemDoc.exists) {
+            const foodItem = foodItemDoc.data();
+            originalAddOns = foodItem.addOn ? Object.keys(foodItem.addOn).map(key => ({
+              name: key,
+              price: foodItem.addOn[key],
+              quantity: 0
+            })) : [];
+          } else {
+            console.error('No such food item!');
           }
-          //this.updateAddOn(quickOrderAddOns);
 
+          // Merge the original add-ons and the ones from the cart
+          const mergedAddOns = originalAddOns.map(originalAddOn => {
+            const quickOrderAddOn = quickOrderItem.addOns.find(addOn => addOn.name === originalAddOn.name);
+            return {
+              ...originalAddOn,
+              quantity: quickOrderAddOn ? quickOrderAddOn.quantity : 0 // Use cart quantity if available
+            };
+          });
+
+          // Update cartItem object
+
+          this.quickOrderItem = {
+            userId: quickOrderItem.userId,
+            foodItemName: quickOrderItem.foodItemName,
+            foodItemPrice: quickOrderItem.foodItemPrice,
+            foodItemId: quickOrderItem.foodItemId,
+            quantity: quickOrderItem.quantity,
+            addOns: mergedAddOns,
+            specialInstructions: quickOrderItem.specialInstructions,
+            merchantName: quickOrderItem.merchantName,
+            merchantId: quickOrderItem.merchantId
+          };
+
+          // Update addOns and specialInstructions
+          this.quantity = this.quickOrderItem.quantity;
+          this.addOns = this.quickOrderItem.addOns;
+          this.specialInstructions = this.quickOrderItem.specialInstructions;
+
+          // Fetch the merchant details
+          await this.fetchMerchant(quickOrderItem.merchantId);
+
+          this.totalPrice = this.quickOrderItem.foodItemPrice; // Set total price
+          console.log(this.totalPrice)
         } else {
-          console.error('No such food item!');
+          console.error('No such quick order item!');
         }
       } catch (error) {
-        console.error('Error fetching food item:', error);
+        console.error('Error fetching quick order item:', error);
       }
     },
+    // async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
+    //   //console.log(quickOrderAddOns);
+    //   try {
+    //     const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
+    //     if (foodItemDoc.exists) {
+    //       this.foodItem = {
+    //         id: foodItemDoc.id, 
+    //         ...foodItemDoc.data()
+    //       };
+    //       //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
+    //       await this.fetchMerchant(this.foodItem.merchantId);
+    //       /*console.log(this.quickOrderAddOns);
+    //       console.log(this.foodItem);
+    //       for (const item in this.foodItem) {
+    //         console.log(this.quickOrderAddOns[item]);
+    //       }*/
+
+    //       this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
+    //         name: key,
+    //         price: this.foodItem.addOn[key],
+    //         quantity: 0
+    //       })) : [];
+    //       //console.log(this.addOns);
+
+    //       for (let i = 0; i < quickOrderQuantity - 1; i++) {
+    //         this.increaseQuantity();
+    //       }
+    //       //this.updateAddOn(quickOrderAddOns);
+
+    //     } else {
+    //       console.error('No such food item!');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching food item:', error);
+    //   }
+    // },
 
     async fetchFoodItem(foodItemId) {
       try {
@@ -330,15 +405,16 @@ export default {
       //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
       const cartItem = {
         userId: this.user.uid,
-        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem.foodItemName,
+        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem ? this.cartItem.foodItemName : this.quickOrderItem.foodItemName,
         foodItemPrice: this.totalPrice,
-        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem.foodItemId,
+        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem ? this.cartItem.foodItemId : this.quickOrderItem.foodItemId,
         quantity: this.quantity,
         addOns: this.addOns.filter(addOn => addOn.quantity > 0),
         specialInstructions: this.specialInstructions,
         merchantName: this.merchant.displayName,
         merchantId: this.merchant.uid,
-        hawkerCentre: this.hawkerCentre
+        hawkerCentre: this.merchant.hawkerCentre,
+        foodItemImage: this.foodItem ? this.foodItem.foodItemImage : this.cartItem ? this.cartItem.foodItemImage : this.quickOrderItem.foodItemImage
       };
       /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
       try {
@@ -366,46 +442,94 @@ export default {
 </script>
 
 <style scoped>
-.food-item-page {
-  font-family: Arial, sans-serif;
-  max-width: 95%;
-  margin: 0 auto;
+.container {
+  font-family: Inria Sans, sans-serif;
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* 2xl */
+@media (max-width: 1536px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  .container {
+    max-width: 475px;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  .container {
+    width: 100%;
+  }
 }
 
 .food-item-details {
   display: flex;
   background-color: white;
-  padding: 15px;
+  padding: 0.9375rem;
+  flex-wrap: wrap;
 }
 
 .right-column {
   flex: 1;
-  padding-left: 15px;
+  padding-left: 0.9375rem;
 }
 
 .green-box {
   background-color: #e6f7f5;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
+  border-radius: 0.5rem;
+  padding: 0.9375rem;
+  margin-bottom: 1.25rem;
 }
 
 .add-ons, .special-instructions {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: flex-end;
 }
 
 .add-to-cart, .cancel-order {
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 5px;
   border: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   width: 25%;
   display: flex;
@@ -422,13 +546,13 @@ export default {
 }
 
 .cart-icon, .cancel-icon, .cancel-order, .add-to-cart {
-  margin-right: 5px;
+  margin-right: 0.3125rem;
 }
 
 .separator { 
   border: none; 
   border-top: 5px solid black;
-  margin: 10px 0; 
+  margin: 0.625rem 0; 
 }
 
 /* Modal styling */

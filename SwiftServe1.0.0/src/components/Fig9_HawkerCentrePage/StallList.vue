@@ -1,4 +1,5 @@
-<template>
+
+  <template>
     <div class="stall-list">
       <div 
         v-for="stall in stalls" 
@@ -6,7 +7,10 @@
         :class="{ 'stall-item': true, active: stall === activeStall }" 
         @click="selectStall(stall)"
       >
-        {{ stall.displayName }}
+        <div class="stall-thumbnail-container" :class="{ 'active-thumbnail': stall === activeStall }">
+          <img :src="stall.profilePicture" :alt="stall.displayName" class="stall-thumbnail">
+        </div>
+        <span class="stall-name">{{ stall.displayName }}</span>
       </div>
     </div>
   </template>
@@ -34,24 +38,57 @@
   <style scoped>
   .stall-list {
     overflow-y: auto;
-    width: 200px;
-    border-right: 1px solid #ccc;
-    margin-right: 20px; 
+    width: 100px;
+    height: 300px;
+    background-color: #e6f7f5; /* Light green background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-right: 10px;
   }
   
-  /* Base stall item styling */
   .stall-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column; /* Stack image and name vertically */
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
+    transition: background-color 0.2s ease;
   }
   
-  /* Styling for active stall */
+  .stall-item:last-child {
+    border-bottom: none;
+  }
+  
   .stall-item.active {
-    background-color: #f0f0f0; /* Greyed-out background for active stall */
+    background-color: #e8f0fe;
+  }
+  
+  .stall-thumbnail-container {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    margin-bottom: 8px;
+  }
+  
+  .stall-thumbnail-container.active-thumbnail {
+    border: 2px solid #333333; /* Dark grey border for active thumbnail */
+    padding: 6px; /* Increased padding for dark grey border */
+    box-sizing: content-box; /* Ensures padding is outside the border */
+  }
+  
+  .stall-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .stall-name {
+    font-size: 16px;
+    color: #333333;
     font-weight: bold;
   }
   </style>
-  
-  
   

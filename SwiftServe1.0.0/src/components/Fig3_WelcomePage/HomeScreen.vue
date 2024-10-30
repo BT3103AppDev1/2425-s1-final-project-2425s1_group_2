@@ -14,17 +14,29 @@
       </h3>
 
       <h3 id="guest">
-        <router-link to="/custD" class="Link" id="guest">Continue as Guest</router-link>
+        <span class="Link" id="guest" @click="signInAnonymously">Continue as Guest</span>
       </h3>
     </div>
   </div>
 </template>
 
 <script>
+import { signInAnonymously } from 'firebase/auth'
+import { auth } from '@/firebase.js'
+
 export default {
   methods: {
     LGSClick() {
       this.$router.push('/signup')
+    },
+    signInAnonymously() {
+      signInAnonymously(auth)
+        .then(() => {
+          this.$router.push('/custD')
+        })
+        .catch((error) => {
+          console.error('Error signing in anonymously:', error)
+        })
     }
   }
 }
@@ -105,7 +117,12 @@ button::before {
   left: -150%;
   width: 150%;
   height: 100%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1)
+  );
   z-index: 0;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;

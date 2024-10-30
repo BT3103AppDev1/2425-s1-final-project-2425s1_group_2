@@ -30,17 +30,17 @@
   .filter-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
   }
   
   .filter-buttons button {
     background-color: #ccc;
     border: none;
-    padding: 8px 12px;
+    padding: 0.5rem 0.75rem;
     border-radius: 20px;
     cursor: pointer;
-    width: 150px;
+    width: 9.375rem;
     font-weight: bold;
   }
   

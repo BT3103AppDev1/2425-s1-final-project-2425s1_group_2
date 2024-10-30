@@ -1,0 +1,218 @@
+<template>
+    <form @submit.prevent="submitForm">
+      <div class="form-group">
+        <label for="foodItemName">Food Item Name:</label>
+        <input id="foodItemName" v-model="foodItemName" type="text" @blur="capitalizeFoodItemName" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="foodItemImage">Food Item Image:</label>
+        <input id="foodItemImage" type="file" @change="uploadImage" accept="image/*" />
+        <div v-if="foodItemImageUrl">
+          <img :src="foodItemImageUrl" alt="Image Preview" class="image-preview" />
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="foodItemPrice">Price:</label>
+        <input id="foodItemPrice" v-model="foodItemPrice" type="number" step="0.10" required />
+      </div>
+  
+      <div v-for="(addOn, index) in addOns" :key="index" class="add-on-section">
+        <h3>Add-On {{ index + 1 }}</h3>
+        <div class="form-group">
+          <label for="addOnName">Add-On Name:</label>
+          <input :id="addOnName" v-model="addOn.addOnName" type="text" @blur="capitalizeAddOnName(index)" required />
+        </div>
+        <div class="form-group">
+          <label for="addOnPrice">Add-On Price:</label>
+          <input :id="addOnPrice" v-model="addOn.addOnPrice" type="number" step="0.1" required />
+        </div>
+        <button type="button" @click="removeAddOn(index)" class="remove-button">
+          Remove Add-On
+        </button>
+      </div>
+  
+      <button type="button" @click="addEmptyAddOn" class="add-button">
+        Add Add-On
+      </button>
+      <button type="submit" class="submit-button">Save Food Item</button>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </form>
+  </template>
+  
+  <script>
+  import { storage } from '../firebase.js';
+
+  export default {
+    data() {
+      return {
+        foodItemName: '',
+        available: true,
+        foodItemImage: null,
+        foodItemImageUrl: '',
+        foodItemPrice: 0,
+        merchantId: 'LqcM3PR8jKPD8My632J9',
+        merchantName: 'Octopus Drinks',
+        addOns: [],
+        errorMessage: '',
+        hawkerCentre: 'Yuhua Village Market and Food Centre',
+      };
+    },
+    methods: {
+      capitalizeWords(text) {
+        return text.replace(/\b\w/g, (char) => char.toUpperCase());
+      },
+      capitalizeFoodItemName() {
+        this.foodItemName = this.capitalizeWords(this.foodItemName);
+      },
+      capitalizeAddOnName(index) {
+        this.addOns[index].addOnName = this.capitalizeWords(this.addOns[index].addOnName);
+      },
+      async uploadImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+          this.foodItemImageUrl = URL.createObjectURL(file); // Local preview
+
+          const storageRef = storage.ref(`images/${file.name}`);
+          const snapshot = await storageRef.put(file);
+          this.foodItemImageUrl = await snapshot.ref.getDownloadURL();
+        }
+      },
+      addEmptyAddOn() {
+        this.addOns.push({ addOnName: '', addOnPrice: 0 });
+      },
+      removeAddOn(index) {
+        this.addOns.splice(index, 1);
+      },
+      validateForm() {
+        if (!this.foodItemName.trim()) {
+          this.errorMessage = "Food Item Name cannot be empty.";
+          return false;
+        }
+        if (!this.foodItemPrice) {
+          this.errorMessage = "Price cannot be empty.";
+          return false;
+        }
+        if (!this.foodItemImageUrl) {
+          this.errorMessage = "Image cannot be empty.";
+          return false;
+        }
+        for (const addOn of this.addOns) {
+          if (!addOn.addOnName.trim() || addOn.addOnPrice === null) {
+            this.errorMessage = "All add-on fields must be filled out.";
+            return false;
+          }
+        }
+        this.errorMessage = ''; // Clear any previous error message
+        return true;
+      },
+      submitForm() {
+        if (!this.validateForm()) return; 
+
+        const foodItemData = {
+          foodItemName: this.foodItemName,
+          available: this.available,
+          foodItemImage: this.foodItemImageUrl,
+          foodItemPrice: parseFloat(this.foodItemPrice),
+          merchantId: this.merchantId,
+          merchantName: this.merchantName,
+          addOn: this.addOns.reduce((obj, item) => ({
+            ...obj,
+            [item.addOnName]: item.addOnPrice,
+          }), {}),
+          hawkerCentre: this.hawkerCentre,
+        };
+        this.$emit('submit', foodItemData);
+
+        this.foodItemName = '';
+        this.available = true;
+        this.foodItemImage = null;
+        this.foodItemImageUrl = '';
+        this.foodItemPrice = 0;
+        this.addOns = [];
+      }
+    }
+  };
+  </script>
+  
+  <style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
+  font-family: 'Inria Sans', sans-serif;
+  overflow-y: auto;
+  height: 600px;
+  padding-bottom: 20px;
+}
+
+.submit-button {
+  margin-bottom: 20px; /* To prevent being cut off */
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  display: block;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='file'] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.add-on-section {
+  border: 1px solid #eee;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.add-button,
+.submit-button {
+  background-color: #00A895;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;  
+
+}
+
+.remove-button {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  max-width: 400px;
+  max-height: 400px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+</style>
+  
