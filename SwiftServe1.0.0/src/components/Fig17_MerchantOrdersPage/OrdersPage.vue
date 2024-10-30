@@ -46,7 +46,8 @@ export default {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.user = user;
-        this.merchantId = "6CrzYngTYekKWIkSmohR"; //to replace with user id
+        //console.log(this.user.uid);
+        this.merchantId = this.user.uid;//"6CrzYngTYekKWIkSmohR"; //to replace with user id
       }
     });
 
