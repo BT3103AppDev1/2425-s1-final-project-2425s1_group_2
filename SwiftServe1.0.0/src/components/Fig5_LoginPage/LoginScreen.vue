@@ -1,10 +1,3 @@
-<!-- not done yet -->
-<!-- validation function -->
-<!-- alignment and static -->
-<!-- underline -->
-<!-- routing -->
-<!-- eye problems -->
-
 <template>
   <div class="login-page">
     <form @submit.prevent="handleLogin">
@@ -26,7 +19,7 @@
 
       <div class="form-actions">
         <a href="#" class="forgot-password" @click.prevent="handleForgotPassword"
-          >Forgot Password?</a
+          ><u>Forgot Password?</u></a
         >
         <div class="show-password">
           <input type="checkbox" id="showPassword" v-model="showPassword" />

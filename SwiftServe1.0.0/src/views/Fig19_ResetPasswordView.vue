@@ -1,16 +1,16 @@
 <template>
-  <LoginHeader />
-  <LoginScreen />
+  <SignUpHeader />
+  <ResetPassword />
 </template>
 
 <script>
-import LoginHeader from '@/components/FigX_UniversalHeader/LoginHeader.vue'
+import SignUpHeader from '@/components/FigX_UniversalHeader/SignUpHeader.vue'
 import ResetPassword from '@/components/Fig19_ResetPasswordPage/ResetPassword.vue'
 
 export default {
-  name: 'LoginView',
+  name: 'resetPassword',
   components: {
-    LoginHeader,
+    SignUpHeader,
     ResetPassword
   },
 
