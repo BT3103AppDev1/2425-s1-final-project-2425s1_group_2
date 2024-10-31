@@ -33,8 +33,7 @@
       </div>
 
       <button class="collect-button" 
-      :class="{ 'disabled-button': buttonDisabled }"
-      :disabled="buttonDisabled"
+      :class="{ 'collectable-button': this.clicked === true }"
       @click="collectOrder">
       <strong>{{ collectionState }}</strong>
     </button>
@@ -63,15 +62,34 @@ export default {
     addons: Array,
     seats: Array,
     buttonDisabled: Boolean,
-    updateOrder: Function
+    updateOrder: Function,
+    clicked: Boolean,
   },
 
   methods: {
 
+      // collectOrder() {
+      //   this.updateOrder(this.orderID, "Customer Incoming");
+      //   // document.getElementById("collect-button").disabled = true;
+      // },
+
       collectOrder() {
-        this.updateOrder(this.orderID, "Customer Incoming", true);
-        // document.getElementById("collect-button").disabled = true;
-      }
+        let newState = "";
+        let newClickedState = !this.clicked;
+
+        // this.$emit('update-clicked', this.orderID, newClickedState);
+
+        if (newClickedState) {
+          newState = "Customer Incoming"
+        } else {
+          newState = "Order Ready Collection"
+        }
+
+        this.$emit('update-clicked', this.orderID, newClickedState, newState);
+
+        // this.updateOrder(this.orderID, newState);
+      },
+
   }
 }
 </script>
@@ -159,7 +177,7 @@ select {
     background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
 }
 
-.collect-button.disabled-button {
+.collect-button.collectable-button {
   background-color: #FF2505;
   color: white;
 }

@@ -1,8 +1,8 @@
 <template>
     <div class="stall-toggle">
-      <h3 class="closeStallText">{{ value ? "Click to close stall" : "Click to open stall" }}</h3>
+      <h3 class="closeStallText">Click to open / close stall</h3>
       <label class="switch">
-        <input type="checkbox" :checked="value" @change="$emit('input', $event.target.checked)">
+        <input type="checkbox" :checked="value" @change="$emit('update:value', $event.target.checked)">
         <span class="slider round"></span>
       </label>
     </div>
