@@ -87,9 +87,12 @@
           this.HCName = this.$route.query.HCName;
           console.log(this.HCName);
 
-          this.fetchStalls();
-          this.fetchFoodItems();
-          this.fetchCartItems();
+          // this.fetchStalls();
+          // this.fetchFoodItems();
+          // this.fetchCartItems();
+          this.setupStallListener();
+          this.setupFoodItemsListener();
+          this.setupCartListener();
         } 
       });
     },
@@ -139,47 +142,117 @@
       }
     },
     methods: {
-      async fetchStalls() {
-        try {
-          const querySnapshot = await db.collection('UserProfile')
-                                  .where('profileType', '==', 'Merchant')
-                                  .where('open', '==', true) // Check if the stall is open; if not open do not render on display
-                                  .get();
-          this.stalls = querySnapshot.docs.map(doc => ({
-            ...doc.data(),
-            uid: doc.id,
-          }));
-          //('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
-        } catch (error) {
-          console.error('Error fetching stalls: ', error);
-        }
+      // async fetchStalls() {
+      //   try {
+      //     const querySnapshot = await db.collection('UserProfile')
+      //                             .where('profileType', '==', 'Merchant')
+      //                             .where('open', '==', true) // Check if the stall is open; if not open do not render on display
+      //                             .get();
+      //     this.stalls = querySnapshot.docs.map(doc => ({
+      //       ...doc.data(),
+      //       uid: doc.id,
+      //     }));
+      //     //('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
+      //   } catch (error) {
+      //     console.error('Error fetching stalls: ', error);
+      //   }
+      // },
+      // async fetchFoodItems() {
+      //   try {
+      //     const querySnapshot = await db.collection('FoodItem').get();
+      //     this.items = querySnapshot.docs.map(doc => ({
+      //       // ...doc.data(),
+      //       id: doc.id,
+      //       foodItemName: doc.data().foodItemName,
+      //       available: doc.data().available,
+      //       merchantId: doc.data().merchantId,  
+      //       foodItemImage: doc.data().foodItemImagef,
+      //     }));
+      //     //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
+      //   } catch (error) {
+      //     console.error('Error fetching items: ', error);
+      //   }
+      // },
+      setupStallListener() {
+        db.collection('UserProfile')
+        .where('profileType', '==', 'Merchant')
+        .onSnapshot((querySnapshot) => {
+          this.stalls = querySnapshot.docs
+            .filter(doc => doc.data().open) // Only include open stalls
+            .map(doc => ({
+              ...doc.data(),
+              uid: doc.id,
+            }));
+          console.log('Stalls updated:', this.stalls);
+          this.cartItems.forEach(cartItem => this.checkAndRemoveItem(cartItem));
+        }, (error) => {
+          console.error('Error listening to stalls updates:', error);
+        });
       },
-      async fetchFoodItems() {
-        try {
-          const querySnapshot = await db.collection('FoodItem').get();
-          this.items = querySnapshot.docs.map(doc => ({
-            // ...doc.data(),
-            id: doc.id,
-            foodItemName: doc.data().foodItemName,
-            available: doc.data().available,
-            merchantId: doc.data().merchantId,  
-            foodItemImage: doc.data().foodItemImage,
-          }));
-          //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
-        } catch (error) {
-          console.error('Error fetching items: ', error);
-        }
+      setupFoodItemsListener() {
+        db.collection('FoodItem')
+          .onSnapshot((querySnapshot) => {
+            this.items = querySnapshot.docs.map(doc => ({
+              id: doc.id,
+              foodItemName: doc.data().foodItemName,
+              available: doc.data().available,
+              merchantId: doc.data().merchantId,  
+              foodItemImage: doc.data().foodItemImage,
+            }));
+            console.log('Food items updated:', this.items);
+            this.cartItems.forEach(cartItem => this.checkAndRemoveItem(cartItem));
+          }, (error) => {
+            console.error('Error listening to food items updates:', error);
+          });
       },
-      async fetchCartItems() {
-        try {
-          const querySnapshot = await db.collection('Cart').where('userId', '==', this.user.uid).get();
-          this.cartItems = querySnapshot.docs.map(doc => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          //console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
-        } catch (error) {
-          console.error('Error fetching cart items: ', error);
+      // async fetchCartItems() {
+      //   try {
+      //     const querySnapshot = await db.collection('Cart').where('userId', '==', this.user.uid).get();
+      //     this.cartItems = querySnapshot.docs.map(doc => ({
+      //       ...doc.data(),
+      //       id: doc.id,
+      //     }));
+      //     //console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
+      //   } catch (error) {
+      //     console.error('Error fetching cart items: ', error);
+      //   }
+      // },
+      setupCartListener() {
+        db.collection('Cart')
+          .where('userId', '==', this.user.uid)
+          .onSnapshot((querySnapshot) => {
+            this.cartItems = querySnapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            console.log('Cart items updated:', this.cartItems);
+
+            // Check for unavailable items or closed stalls
+            this.cartItems.forEach(cartItem => this.checkAndRemoveItem(cartItem));
+          }, (error) => {
+            console.error('Error listening to cart updates:', error);
+          });
+      },
+      async checkAndRemoveItem(cartItem) {
+        const foodItemRef = db.collection('FoodItem').doc(cartItem.foodItemId);
+        const foodItemSnapshot = await foodItemRef.get();
+
+        if (foodItemSnapshot.exists) {
+          const foodItemData = foodItemSnapshot.data();
+
+          // Check if the food item is unavailable
+          if (!foodItemData.available) {
+            await this.removeItemFromCart(cartItem.id);
+            return;
+          }
+
+          // Check if the stall is closed
+          const stallRef = db.collection('UserProfile').doc(foodItemData.merchantId);
+          const stallSnapshot = await stallRef.get();
+
+          if (stallSnapshot.exists && !stallSnapshot.data().open) {
+            await this.removeItemFromCart(cartItem.id);
+          }
         }
       },
       async removeItemFromCart(itemId) {
