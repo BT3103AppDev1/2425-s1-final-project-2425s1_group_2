@@ -27,7 +27,7 @@
             </button>
             <button class="clickable" id="createFoodItem" @click="goToCreateFoodItem">
                 <span class="iconspan">
-                    <!-- <img src="/createfood_icon.png" alt="create" class="icon"> -->
+                    <img src="/burger_icon.png" alt="create" class="icon">
                 </span>
                 <span class="text">Add Food Item</span>
             </button>
@@ -173,7 +173,8 @@ export default {
 
 #merchantOrders:hover,
 #merchantFoodAvail:hover,
-#merchantSales:hover {
+#merchantSales:hover,
+#createFoodItem:hover {
     background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
 }
 </style>

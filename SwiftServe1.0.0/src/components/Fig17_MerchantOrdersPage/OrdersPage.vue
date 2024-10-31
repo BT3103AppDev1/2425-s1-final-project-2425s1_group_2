@@ -13,6 +13,8 @@
             :seats="order.seats"
             :buttonDisabled="order.buttonDisabled"
             :updateOrder="updateOrder"
+            :clicked ="order.clicked"
+            @update-clicked="handleClickedUpdate"
         />
     </div>
 </div>
@@ -21,7 +23,7 @@
 
 <script>
 import firebaseApp from '@/firebase.js';
-import { getFirestore, getDocs, collection, doc, updateDoc } from 'firebase/firestore';
+import { getFirestore, getDocs, collection, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { getAuth} from "firebase/auth";
 const db = getFirestore(firebaseApp);
 
@@ -55,24 +57,42 @@ export default {
   },
 
   methods: {
-    async updateOrder(orderID, newState, disabled) {
+    async updateOrder(orderID, newState) {
       const order = this.orderData.find(o => o.orderID === orderID);
       if (order) {
         order.collectionState = newState;
-        order.buttonDisabled = disabled;
+        // order.buttonDisabled = disabled;
 
-        await this.updateCollected(orderID);
+        await this.updateCollectable(orderID);
       }
     },
 
-    async updateCollected(orderID) {
+    async updateCollectable(orderID) {
       const docIDs = this.orderNumMap[orderID];
       
       if (docIDs && docIDs.length > 0) {
-        docIDs.map(docID => {
+        docIDs.map(async (docID) => {
           const orderRef = doc(db, 'PlacedCustOrders', docID);
-          return updateDoc(orderRef, { orderStatus: true });
+          let currentOrderStatus = await getDoc(orderRef);
+          let status = currentOrderStatus.data().orderStatus;
+          return updateDoc(orderRef, { orderStatus: !status });
         });
+      }
+    },
+
+    async handleClickedUpdate(orderID, newClickedState, newState) {
+      const docIDs = this.orderNumMap[orderID];
+      if (docIDs && docIDs.length > 0) {
+        docIDs.map(async (docID) => {
+          const orderRef = doc(db, 'PlacedCustOrders', docID);
+          await updateDoc(orderRef, { orderStatus: newClickedState });
+        });
+      }
+
+      const order = this.orderData.find(o => o.orderID === orderID);
+      if (order) {
+        order.clicked = newClickedState;
+        order.collectionState = newState;
       }
     },
 
@@ -108,7 +128,8 @@ export default {
                 diningTime: ord.diningTime,
                 buttonDisabled: ord.orderStatus,
                 seats: ord.seats,
-                orders: [foodItem]
+                orders: [foodItem],
+                clicked: ord.orderStatus,
                 };
 
                 myOrders.push(formattedOrder);
