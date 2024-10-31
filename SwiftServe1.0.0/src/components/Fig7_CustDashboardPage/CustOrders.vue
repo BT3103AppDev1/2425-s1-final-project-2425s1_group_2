@@ -256,8 +256,8 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         <p><strong>Special Instructions:</strong> {{ selectedOrder.specialInstructions }}</p>
         <p><strong>Price:</strong> ${{ selectedOrder.foodItemPrice.toFixed(2) }}</p>
         <div class="popup-buttons">
-          <button @click="continueOrder" class="continue-btn">Continue</button>
           <button @click="closePopup" class="back-btn">Back</button>
+          <button @click="continueOrder" class="continue-btn">Make New Order</button>
         </div>
       </div>
     </div>
@@ -567,7 +567,7 @@ button {
   background-color: #51e51c;
   color: #000000;
   padding: 1vw 2vw;
-  font-size: 2vw;
+  font-size: 1vw;
   font-family: 'Inria Sans', sans-serif;
   border: none;
   cursor: pointer;
@@ -577,7 +577,7 @@ button {
   background-color: #e51c1c;
   color: #ffffff;
   padding: 1vw 2vw;
-  font-size: 2vw;
+  font-size: 1vw;
   font-family: 'Inria Sans', sans-serif;
   border: none;
   cursor: pointer;
