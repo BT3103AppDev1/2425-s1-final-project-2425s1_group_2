@@ -4,20 +4,47 @@
       <div class="formData">
         <div id="inputForm">
           <h2 class="inputTitles">Username:</h2>
-          <input type="text" class="inputBoxes" id="username1" required=""> <br>
+          <input type="text" class="inputBoxes" id="username1" required />
 
           <h2 class="inputTitles">Current Password:</h2>
-          <input type="text" class="inputBoxes" id="password1" required=""> <br>
+          <div class="password-input">
+            <input
+              :type="'text'"
+              class="inputBoxes"
+              id="password1"
+              v-model="currentPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
+              required
+            />
+          </div>
 
-          <h2 class="inputTitles">Confirm new password:</h2>
-          <input type="text" class="inputBoxes" id="cPassword1" required=""> <br><br>
+          <h2 class="inputTitles">Confirm New Password:</h2>
+          <div class="password-input">
+            <input
+              :type="'text'"
+              class="inputBoxes"
+              id="cPassword1"
+              v-model="confirmPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
+              required
+            />
+            <div class="show-password-wrapper">
+              <label for="showPasswords">Show Password</label>
+              <input
+                type="checkbox"
+                id="showPasswords"
+                v-model="showPasswords"
+                class="custom-checkbox"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="save">
-        <button id="savebutton" type="button" v-on:click="savetoFirestore()">Save Changes</button> <br><br>
+        <button id="savebutton" type="button" @click="savetoFirestore">Save Changes</button>
       </div>
     </form>
-    <!-- Custom Modal for showing alerts -->
+
     <div v-if="showCustomModal" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" @click="closeModal">&times;</button>
@@ -34,10 +61,18 @@
 </template>
 
 <script>
-import firebaseApp from '@/firebase.js';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore';
-import { getAuth, updatePassword, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updateProfile } from 'firebase/auth';
-const db = getFirestore(firebaseApp);
+import firebaseApp from '@/firebase.js'
+import { getFirestore, doc, updateDoc } from 'firebase/firestore'
+import {
+  getAuth,
+  updatePassword,
+  onAuthStateChanged,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateProfile
+} from 'firebase/auth'
+
+const db = getFirestore(firebaseApp)
 
 export default {
   name: 'UpdateSettings',
@@ -45,132 +80,167 @@ export default {
     return {
       user: false,
       showCustomModal: false,
-      modalMessage: '', // To store the message for the modal
-      nextStep: null
+      modalMessage: '',
+      nextStep: null,
+      showPasswords: false,
+      currentPassword: '',
+      confirmPassword: ''
     }
   },
-  emits: ["updateProfile"],
+  emits: ['updateProfile'],
   mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.user = user;
+        this.user = user
       }
     })
   },
   methods: {
-    // Function to open modal with a specific message
     openModal(message, nextStep = null) {
-      this.modalMessage = message;
-      this.showCustomModal = true;
-      this.nextStep = nextStep;  // Store the next step to execute after closing the modal
+      this.modalMessage = message
+      this.showCustomModal = true
+      this.nextStep = nextStep
     },
-
-    // Function to close the modal and proceed to the next step if defined
     closeModal() {
-      this.showCustomModal = false;
-      this.modalMessage = '';
-
-      // If there's a next step, execute it
+      this.showCustomModal = false
+      this.modalMessage = ''
       if (this.nextStep) {
-        this.nextStep();
-        this.nextStep = null;  // Clear the next step
+        this.nextStep()
+        this.nextStep = null
       }
     },
     async savetoFirestore() {
-      let username = document.getElementById("username1").value;
+      let username = document.getElementById('username1').value
       try {
         if (username && username !== this.user.displayName) {
-          await updateProfile(this.user, { displayName: username });
-          // Update displayName in Firestore
-          const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust path to your Firestore collection
-          await updateDoc(userDocRef, { displayName: username });
-          // Show the username change modal and define the next step to handle password validation
-          this.openModal("Username successfully changed!", this.validatePasswords);
-          this.$emit('updateProfile');
+          await updateProfile(this.user, { displayName: username })
+          const userDocRef = doc(db, 'UserProfile', this.user.uid)
+          await updateDoc(userDocRef, { displayName: username })
+          this.openModal('Username successfully changed!', this.validatePasswords)
+          this.$emit('updateProfile')
         } else {
-          // If no username change, directly proceed to password validation
-          this.validatePasswords();
+          this.validatePasswords()
         }
       } catch (error) {
-      console.error("Error updating username: ", error);
-      this.openModal(`Error: ${error.message}`);
-    }
-  },
-      async validatePasswords() {
-        let password = document.getElementById("password1").value;
-        let cPassword = document.getElementById("cPassword1").value;
-        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,20}$/
-        //let testResult = !passwordRegex.test(password)
-        if (!password || !cPassword) {
-      this.openModal("Please fill in both password fields!");
-    } else if (password === cPassword ) {
-      try {
-        // Reauthenticate the user using their email and current password
-        const credential = EmailAuthProvider.credential(this.user.email, password);
-        await reauthenticateWithCredential(this.user, credential);
-        await updatePassword(this.user, password);
-        this.openModal('Password updated successfully!');
-      } catch (error) {
-        console.error("Error updating password: ", error);
-        this.openModal(`Error: ${error.message}`);
+        this.openModal(`Error: ${error.message}`)
       }
+    },
+    async validatePasswords() {
+      let password = this.currentPassword
+      let cPassword = this.confirmPassword
+      if (!password || !cPassword) {
+        this.openModal('Please fill in both password fields!')
+      } else if (password === cPassword) {
+        try {
+          const credential = EmailAuthProvider.credential(this.user.email, password)
+          await reauthenticateWithCredential(this.user, credential)
+          await updatePassword(this.user, password)
+          this.openModal('Password updated successfully!')
+        } catch (error) {
+          this.openModal(`Error: ${error.message}`)
+        }
+      } else {
+        this.openModal('Passwords do not match!')
+      }
+      document.getElementById('userForm').reset()
+      this.currentPassword = ''
+      this.confirmPassword = ''
     }
-    else {
-      this.openModal("Passwords do not match!");
-    }
-    document.getElementById('userForm').reset();
   }
-}
 }
 </script>
 
 <style scoped>
+.container {
+  font-family: 'Inria Sans', sans-serif;
+}
+
 .formData {
   display: flex;
-  margin-left: 10vw;
-  margin-top: 20vh;
+  flex-direction: column;
+  margin: 20vh 10vw;
 }
 
-.save {
-  margin-left: 20vw;
-  border: none;
-  padding: 16px 28px;
-  border-radius: 3px;
-}
-
-/* Make the input boxes a bit longer and taller */
 .inputBoxes {
   width: 50vw;
-  /* Increase the width */
   height: 5vh;
-  /* Increase the height */
   border-radius: 5px;
-  border: 2px solid #00ADB5;
+  border: 2px solid #00adb5;
   font-size: 20px;
+  margin-bottom: 5px;
 }
 
 .inputTitles {
-  color: #00ADB5;
+  color: #00adb5;
   font-size: 2.5vh;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
-/* Make the button bigger in height */
+.password-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.show-password-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.custom-checkbox {
+  margin-left: 10px; /* Space between label and checkbox */
+  width: 20px; /* Adjust width */
+  height: 20px; /* Adjust height */
+  appearance: none;
+  border: 2px solid #00adb5;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: white; /* Default background color */
+}
+
+.custom-checkbox:checked {
+  background-color: #00adb5; /* Background when checked */
+}
+
+.custom-checkbox:checked::after {
+  content: ''; /* Remove the tick */
+}
+
+.show-password-wrapper label {
+  color: #00adb5;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.save {
+  display: flex;
+  justify-content: center;
+  margin-top: -150px;
+}
+
 button {
-  background-color: #00ADB5;
+  background-color: #00adb5;
   font-weight: bold;
   font-size: 3vh;
   color: white;
   border-radius: 5px;
   border: none;
   height: 7vh;
-  /* Increase the height of the button */
   width: 25vw;
-  /* Increase the width of the button */
+  cursor: pointer;
 }
 
-/* Modal styling */
+button:hover {
+  background-color: #007a80;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
