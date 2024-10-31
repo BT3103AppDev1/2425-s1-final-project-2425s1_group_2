@@ -2,10 +2,11 @@
   <div class="reset-password-page">
     <form @submit.prevent="handleResetPassword">
       <div class="form-group">
+        <h1>Reset Password </h1>
         <label for="email">Email:</label>
         <input type="email" id="email" v-model="email" required />
       </div>
-      <button type="submit" class="reset-password-button">Reset Password</button>
+      <button type="submit" class="reset-password-button">Send Email Link</button>
     </form>
   </div>
 </template>
@@ -79,7 +80,7 @@ input[type='email'] {
 }
 
 .reset-password-button {
-  width: 100%;
+  width: 70%;
   background-color: #00adb5;
   color: #ffffff;
   border: none;
@@ -88,9 +89,16 @@ input[type='email'] {
   font-size: 2vw;
   font-weight: bold;
   cursor: pointer;
+  margin-left: 5vw;
+  margin-top: 2vw;
 }
 
 .reset-password-button:hover {
   background-color: #007a80;
+}
+
+h1 {
+  font-size: 3vw;
+  color: #00adb5;
 }
 </style>
