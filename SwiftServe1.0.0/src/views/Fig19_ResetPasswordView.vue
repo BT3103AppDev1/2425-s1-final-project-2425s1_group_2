@@ -1,16 +1,16 @@
 <template>
-  <SignUpHeader />
+  <ResetPasswordHeader />
   <ResetPassword />
 </template>
 
 <script>
-import SignUpHeader from '@/components/FigX_UniversalHeader/SignUpHeader.vue'
+import ResetPasswordHeader from '@/components/FigX_UniversalHeader/ResetPasswordHeader.vue'
 import ResetPassword from '@/components/Fig19_ResetPasswordPage/ResetPassword.vue'
 
 export default {
   name: 'resetPassword',
   components: {
-    SignUpHeader,
+    ResetPasswordHeader,
     ResetPassword
   },
 
