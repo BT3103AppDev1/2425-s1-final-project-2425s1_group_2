@@ -8,7 +8,7 @@
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
-import { collection, getDocs, query, orderBy, where, limit } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getDoc } from 'firebase/firestore'
 
   const db = getFirestore(firebaseApp)
   
@@ -22,6 +22,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
         past5Orders: [],    // Reference to past5Orders data imported
         showQuickOrderPopup: false,
         selectedOrder: null,
+        showCustomModal: false
       };
     },
   
@@ -35,8 +36,35 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
     },
   
     methods: {
+      openModal(message) {
+        this.modalMessage = message;
+        this.showCustomModal = true;
+      },
+      closeModal() {
+        this.showCustomModal = false;
+        this.modalMessage = '';
+      },
+
       goToDiningOptions() {
         this.$router.push('/diningOptions');
+      },
+
+      async updateORC(order) {
+        const orderRef = doc(db, "PlacedCustOrders", order.id);
+        await updateDoc(orderRef, {
+          collected: true
+        });
+        this.currentOrders =  [];
+        this.pastOrders = [];
+        this.getCurrentOrders(this.user);
+        this.getPastOrders(this.user);
+      },
+
+      async updateVON(order) {
+        const orderRef = doc(db, "PlacedCustOrders", order.id);
+        const orderInfo = await getDoc(orderRef);
+        const orderData = orderInfo.data()
+        this.openModal('This Order Number is: ' + String(orderData.orderNum));
       },
   
       async getCurrentOrders(userId) {
@@ -195,6 +223,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
               <button 
                 v-if="order.readyForCollection === 1" 
                 class="order-ready-btn"
+                @click="updateORC(order)"
               >
                 Order Ready. Collected?
               </button>
@@ -204,7 +233,9 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
               >
                 Preparing Order
               </button>
-              <button v-if="order.readyForCollection === 1" class="view-order-btn">View Order Number</button>
+              <button v-if="order.readyForCollection === 1" class="view-order-btn" @click="updateVON(order)">
+                View Order Number
+              </button>
             </div>
           </div>
         </div>
@@ -262,9 +293,97 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
       </div>
     </div>
   </div>
+
+
+  <div v-if="showCustomModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-button" @click="closeModal">&times;</button>
+      <div class="modal-text">
+        <h2>Notification</h2>
+        <p>{{ modalMessage }}</p>
+        <div class="modal-actions">
+          <button @click="closeModal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 35px;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 60%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
 .food-ordering-system {
   position: relative;
   width: 100vw;
