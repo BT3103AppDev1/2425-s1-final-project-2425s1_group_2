@@ -153,7 +153,7 @@ export default {
             await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
             await deleteDoc(doc(db, 'Cart', docs.id));
             this.$router.push('/takeawaySuccess');
-        }
+          }
         }
 
         //add method to clear cart in hawker centre page

@@ -54,8 +54,8 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
         await updateDoc(orderRef, {
           collected: true
         });
-        this.currentOrders =  [];
-        this.pastOrders = [];
+        this.currentOrders = [];
+        this.past5Orders = [];
         this.getCurrentOrders(this.user);
         this.getPastOrders(this.user);
       },
@@ -77,6 +77,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
           if (docUserID === this.user && !docsData.collected) {
             let temp = {};
             temp['id'] = docs.id;
+            temp['image'] = docsData.foodItemImage;
             temp['restaurant'] = docsData.hawkerCentre;
             temp['dish'] = docsData.merchantName;
             temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName)
@@ -111,6 +112,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
           temp['orderNum'] = docsData.orderNum; //change to better OrderNum
           temp['addOns'] = docsData.addOns;
           temp['foodItemId'] = docsData.foodItemId;
+          temp['image'] = docsData.foodItemImage;
           temp['foodItemName'] = docsData.foodItemName;
           temp['foodItemPrice'] = docsData.foodItemPrice; //change to current food item price
           temp['hawkerCentre'] = docsData.hawkerCentre;
