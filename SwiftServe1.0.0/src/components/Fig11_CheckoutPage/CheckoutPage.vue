@@ -133,17 +133,20 @@ export default {
         let allOrders = await getDocs(collection(db, 'Cart'))
 
         //allOrders.forEach((docs) => {
+        const receiptID = Date.now();
         for (const docs of allOrders.docs) {
           let docsData = docs.data();
           let docUserID = docsData.userId;
 
           if (docUserID === this.user) {
+            docsData.receiptId = receiptID;
             docsData.orderNum = String(docUserID.substring(0, 3) + Date.now());
             docsData.collected = false;
             docsData.diningStatus = this.dineOption;
             docsData.diningTime = this.diningTime;
             docsData.orderStatus = false;
             docsData.paymendMode = this.selectedMethod;
+            docsData.seats = "";
             await setDoc(doc(db, 'Cart', docs.id), docsData)
           }
           if (this.dineOption === "Dine in") {
@@ -155,7 +158,6 @@ export default {
             this.$router.push('/takeawaySuccess');
           }
         }
-
         //add method to clear cart in hawker centre page
       },
       closeDeleteModal() {
