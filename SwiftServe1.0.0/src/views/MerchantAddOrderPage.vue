@@ -17,6 +17,7 @@ import FoodItemForm from '../components/MerchantAddFoodItemForm.vue';
       async handleSubmit(foodItemData) {
         // Assuming `db` is your Firestore instance
         const foodItemsRef = db.collection('FoodItem');
+        //console.log("hi");
         await foodItemsRef.add(foodItemData);
         alert("Food item added successfully!");
       }
