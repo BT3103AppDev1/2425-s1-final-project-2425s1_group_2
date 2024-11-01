@@ -44,6 +44,14 @@
     flex: 1;
     padding-right: 15px;
   }
+
+  img {
+    max-width: 20vw;
+    max-height: 18vw;
+    display: block; 
+    margin: 0 auto;
+
+  }
   
   .food-image img {
     width: 100%;

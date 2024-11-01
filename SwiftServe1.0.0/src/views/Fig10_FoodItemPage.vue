@@ -44,7 +44,7 @@
           <h2>Confirm Add to Cart</h2>
           <p>Are you sure you want to add this into your cart?</p>
           <div class="modal-actions">
-            <button @click="addToCartHandler">Yes, proceed to add</button>
+            <button @click="addToCartHandler()">Yes, proceed to add</button>
             <button @click="closeAddToCartModal">No, return back to food item</button>
           </div>
         </div>
@@ -103,7 +103,6 @@ export default {
     const foodItemId = this.$route.params.id || null;
     this.cartItemId = this.$route.params.cartItemId || null;
     this.quickOrderId = this.$route.params.orderId || null;
-    console.log(this.quickOrderId);
     // this.quickOrder = this.$route.query.quickOrder || false;
     // this.quickOrderQuantity = this.$route.query.quantity || 0;
     //this.addOns = JSON.parse(this.$route.query.addOns) || [];
@@ -195,10 +194,11 @@ export default {
           const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
           let originalAddOns = [];
           if (foodItemDoc.exists) {
-            const foodItem = foodItemDoc.data();
-            originalAddOns = foodItem.addOn ? Object.keys(foodItem.addOn).map(key => ({
+            this.foodItem = foodItemDoc.data();
+
+            originalAddOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
               name: key,
-              price: foodItem.addOn[key],
+              price: this.foodItem.addOn[key],
               quantity: 0
             })) : [];
           } else {
@@ -220,7 +220,9 @@ export default {
             userId: quickOrderItem.userId,
             foodItemName: quickOrderItem.foodItemName,
             foodItemPrice: quickOrderItem.foodItemPrice,
+            hawkerCentre: this.hawkerCentre,
             foodItemId: quickOrderItem.foodItemId,
+            foodItemImage: quickOrderItem.foodItemImage,
             quantity: quickOrderItem.quantity,
             addOns: mergedAddOns,
             specialInstructions: quickOrderItem.specialInstructions,
@@ -238,6 +240,11 @@ export default {
 
           this.totalPrice = this.quickOrderItem.foodItemPrice; // Set total price
           console.log(this.totalPrice)
+
+          //console.log(this.quickOrderItem);
+          //const docRef = await db.collection('Cart').add(this.quickOrderItem);
+          //this.cartItemId = docRef.id;
+
         } else {
           console.error('No such quick order item!');
         }
@@ -245,6 +252,25 @@ export default {
         console.error('Error fetching quick order item:', error);
       }
     },
+    
+    /*async fetchQuickOrderItem(quickOrderId) {
+      try {
+        console.log(quickOrderId);
+        const quickOrderItemDoc = await db.collection('PlacedCustOrders').doc(quickOrderId).get();
+        if (quickOrderItemDoc.exists) {
+          const quickOrderItem = quickOrderItemDoc.data();
+          console.log('Fetched quick order item:', quickOrderItem); // Log the fetched cart item
+
+          // Extract the foodItemId from the cart item
+          const foodItemId = quickOrderItem.foodItemId;
+          this.fetchFoodItem(foodItemId);
+          //this.calculateTotalPrice;
+        } 
+      } catch (error) {
+        console.error('Error fetching quick order item:', error);
+      }
+    },*/
+
     // async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
     //   //console.log(quickOrderAddOns);
     //   try {
@@ -349,6 +375,7 @@ export default {
               quantity: cartAddOn ? cartAddOn.quantity : 0 // Use cart quantity if available
             };
           });
+          console.log(cartItem);
 
           // Update cartItem object
 
@@ -357,6 +384,7 @@ export default {
             foodItemName: cartItem.foodItemName,
             foodItemPrice: cartItem.foodItemPrice,
             foodItemId: cartItem.foodItemId,
+            foodItemImage: cartItem.foodItemImage,
             quantity: cartItem.quantity,
             addOns: mergedAddOns,
             specialInstructions: cartItem.specialInstructions,
@@ -402,23 +430,31 @@ export default {
       }
     },
     async addToCartHandler() {
+      console.log()
+      let cartItem = {};
 
       //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
       //console.log(this.hawkerCentre);
-      const cartItem = {
-        
-        userId: this.user.uid,
-        foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem ? this.cartItem.foodItemName : this.quickOrderItem.foodItemName,
-        foodItemPrice: this.totalPrice,
-        foodItemId: this.foodItem ? this.foodItem.id : this.cartItem ? this.cartItem.foodItemId : this.quickOrderItem.foodItemId,
-        quantity: this.quantity,
-        addOns: this.addOns.filter(addOn => addOn.quantity > 0),
-        specialInstructions: this.specialInstructions,
-        merchantName: this.merchant.displayName,
-        merchantId: this.merchant.uid,
-        hawkerCentre: this.hawkerCentre,
-        foodItemImage: this.foodItem ? this.foodItem.foodItemImage : this.cartItem ? this.cartItem.foodItemImage : this.quickOrderItem.foodItemImage
-      };
+      console.log(this.cartItem);
+      if (this.quickOrderItem) {
+        cartItem = this.quickOrderItem;
+      } else {
+        cartItem = {
+          
+          userId: this.user.uid,
+          foodItemName: this.foodItem ? this.foodItem.foodItemName : this.cartItem ? this.cartItem.foodItemName : this.quickOrderItem.foodItemName,
+          foodItemPrice: this.totalPrice,
+          foodItemId: this.foodItem ? this.foodItem.id : this.cartItem ? this.cartItem.foodItemId : this.quickOrderItem.foodItemId,
+          quantity: this.quantity,
+          addOns: this.addOns.filter(addOn => addOn.quantity > 0),
+          specialInstructions: this.specialInstructions,
+          merchantName: this.merchant.displayName,
+          merchantId: this.merchant.uid,
+          hawkerCentre: this.hawkerCentre,
+          foodItemImage: this.foodItem ? this.foodItem.foodItemImage : this.cartItem ? this.cartItem.foodItemImage : this.quickOrderItem.foodItemImage
+        };
+      }
+      this.quickOrderItem = null;
       /*console.log(cartItem);
       for (const key in cartItem) {
             if (cartItem[key] === undefined) {
@@ -426,6 +462,7 @@ export default {
             }
         }*/
       /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
+      console.log(cartItem)
       try {
         if (this.cartItemId) {
           await db.collection('Cart').doc(this.cartItemId).update(cartItem);

@@ -17,6 +17,6 @@ export default {
     //CustHistoryScreen
   },
 
-  data() {}
+  data() {},
 }
 </script>
