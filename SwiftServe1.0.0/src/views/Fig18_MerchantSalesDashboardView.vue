@@ -38,9 +38,4 @@ export default {
 </script>
 
 <style scoped>
-h2 {
-  padding-left: 30px;
-  font-size: 30px;
-  font-family: 'Inria Sans', sans-serif;
-}
 </style>

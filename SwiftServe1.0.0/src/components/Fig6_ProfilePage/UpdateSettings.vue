@@ -8,34 +8,17 @@
 
           <h2 class="inputTitles">Current Password:</h2>
           <div class="password-input">
-            <input
-              :type="'text'"
-              class="inputBoxes"
-              id="password1"
-              v-model="currentPassword"
-              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
-              required
-            />
+            <input :type="'text'" class="inputBoxes" id="password1" v-model="currentPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }" required />
           </div>
 
           <h2 class="inputTitles">Confirm New Password:</h2>
           <div class="password-input">
-            <input
-              :type="'text'"
-              class="inputBoxes"
-              id="cPassword1"
-              v-model="confirmPassword"
-              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
-              required
-            />
+            <input :type="'text'" class="inputBoxes" id="cPassword1" v-model="confirmPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }" required />
             <div class="show-password-wrapper">
               <label for="showPasswords">Show Password</label>
-              <input
-                type="checkbox"
-                id="showPasswords"
-                v-model="showPasswords"
-                class="custom-checkbox"
-              />
+              <input type="checkbox" id="showPasswords" v-model="showPasswords" class="custom-checkbox" />
             </div>
           </div>
         </div>
@@ -119,36 +102,43 @@ export default {
           await updateDoc(userDocRef, { displayName: username })
           this.openModal('Username successfully changed!', this.validatePasswords)
           this.$emit('updateProfile')
+          document.getElementById('userForm').reset()
         } else {
           this.validatePasswords()
+          document.getElementById('userForm').reset()
         }
       } catch (error) {
         this.openModal(`Error: ${error.message}`)
-      }
+      } document.getElementById('userForm').reset()
     },
     async validatePasswords() {
       let password = this.currentPassword
       let cPassword = this.confirmPassword
       if (!password || !cPassword) {
         this.openModal('Please fill in both password fields!')
-      } else if (password === cPassword) {
+      } else {
         try {
           const credential = EmailAuthProvider.credential(this.user.email, password)
           await reauthenticateWithCredential(this.user, credential)
-          await updatePassword(this.user, password)
-          this.openModal('Password updated successfully!')
+          if (password !== cPassword) {
+            await updatePassword(this.user, cPassword)
+            this.openModal('Password updated successfully!')
+          } else if (password === cPassword) {
+            this.openModal('New password is not allowed to be the same as current password!')
+          }
         } catch (error) {
-          this.openModal(`Error: ${error.message}`)
-        }
-      } else {
-        this.openModal('Passwords do not match!')
-      }
-      document.getElementById('userForm').reset()
-      this.currentPassword = ''
-      this.confirmPassword = ''
+          this.openModal(`Provided password is incorrect! Please try again`)
+          document.getElementById('userForm').reset()
+        } finally {
+      // Clear the fields
+      this.currentPassword = '';
+      this.confirmPassword = '';
     }
   }
 }
+  }
+}
+
 </script>
 
 <style scoped>
@@ -194,22 +184,28 @@ export default {
 }
 
 .custom-checkbox {
-  margin-left: 10px; /* Space between label and checkbox */
-  width: 20px; /* Adjust width */
-  height: 20px; /* Adjust height */
+  margin-left: 10px;
+  /* Space between label and checkbox */
+  width: 20px;
+  /* Adjust width */
+  height: 20px;
+  /* Adjust height */
   appearance: none;
   border: 2px solid #00adb5;
   border-radius: 3px;
   cursor: pointer;
-  background-color: white; /* Default background color */
+  background-color: white;
+  /* Default background color */
 }
 
 .custom-checkbox:checked {
-  background-color: #00adb5; /* Background when checked */
+  background-color: #00adb5;
+  /* Background when checked */
 }
 
 .custom-checkbox:checked::after {
-  content: ''; /* Remove the tick */
+  content: '';
+  /* Remove the tick */
 }
 
 .show-password-wrapper label {
