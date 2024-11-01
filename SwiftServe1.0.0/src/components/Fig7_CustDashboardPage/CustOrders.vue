@@ -212,7 +212,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
 <template>
   <div class="food-ordering-system">
     <div class="current-placed-orders">
-      <h2>Current Placed Orders</h2>
+      <h2 id="cpoTitle">Current Placed Orders</h2>
       <div class="orders-container">
         <button class="scroll-button left" @click="scrollLeft">&lt;</button>
         <div class="orders-scroll" ref="ordersScroll">
@@ -258,7 +258,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
 
     <!-- pull from backend past order [there are 2 that are collected already.]-->
     <div class="past-orders">
-      <h2>Past Orders</h2> 
+      <h2 id="past5OrdersTitle">Past 5 Orders</h2> 
       <div class="past-orders-container">
         <div v-for="(order, index) in past5Orders" :key="index" class="past-order-box">
           <img :src="order.image" :alt="order.hawkerCentre" class="past-order-image" />
@@ -400,10 +400,14 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
   left: 3vw;
   width: 70vw;
   height: 20vw; 
-  border: 0.15vw solid #00ADB5;
+  border: 0.15vw;
   border-radius: 0.8vw;
   overflow: hidden; /* Hides the vertical scrollbar */
   font-family: 'Inria Sans', sans-serif;
+}
+
+#cpoTitle {
+  color: black;
 }
 
 h2 {
@@ -433,7 +437,7 @@ h2 {
 .order-box {
   flex: 0 0 auto;
   width: 10vw;
-  height: 18vh;
+  height: 22.5vh;
   margin-right: 0.42vw;
   background-color: #393E46;
   border-radius: 0.42vw;
@@ -450,8 +454,8 @@ h2 {
 }
 
 .order-image {
-  width: 3.34vw;
-  height: 3.34vw;
+  width: 8vw;
+  height: 6vw;
   object-fit: cover;
   border-radius: 0.21vw;
 }
@@ -461,7 +465,7 @@ h2 {
 }
 
 .order-details p {
-  margin: 0.083vw 0;
+  margin: 0.3vw 0;
   font-size: 0.5vw;
 }
 
@@ -483,11 +487,11 @@ button {
 .order-ready-btn {
   background-color: #51e51c;
   color: black;
-  height: 1.5vh;
+  height: 1.7vh;
   width: 8vw;
   font-size: 0.9vh;
   margin-top: 1vh;
-  margin-bottom: 0.5vh;
+  margin-bottom: 0.3vw;
   display: block;
 }
 
@@ -510,9 +514,9 @@ button {
 }
 
 .view-order-btn {
-  background-color: #007A80;
+  background-color: #00ADB5;
   color: #FFFFFF;
-  height: 1.5vh;
+  height: 1.7vh;
   width: 8vw;
   font-size: 0.9vh;
   margin-top: 0;
@@ -521,7 +525,7 @@ button {
 }
 
 .view-order-btn:hover {
-  background-color: #014346;
+  background-color: #007A80;
 }
 
 .scroll-button {
@@ -600,6 +604,10 @@ button {
   height: 16vw;
 }
 
+#past5OrdersTitle {
+  color: black;
+}
+
 .past-orders-container {
   display: flex;
   gap: 2vw;
@@ -616,7 +624,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0.8vw;
-  box-shadow: 0 0.16vw 0.32vw rgba(0, 0, 0, 0.1);
+  /*box-shadow: 0 0.16vw 0.32vw rgba(0, 0, 0, 0.1);*/
 }
 
 .past-order-image {
@@ -644,11 +652,12 @@ button {
   background-color: #00ADB5;
   color: #FFFFFF;
   border: none;
-  border-radius: 0.32vw;
+  border-radius: 5px;
   padding: 0.4vw 0.8vw;
   font-size: 0.64vw;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%;
 }
 
 .quick-order-btn:hover {
