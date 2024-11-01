@@ -104,8 +104,9 @@ export default {
   background-color: #00adb5;
   padding: 20px;
   color: white;
-  font-size: 1.2rem;
   margin-top: 20px;
+  font-family: 'Inria Sans', sans-serif;
+  font-size: 1.2rem;
 }
 
 .popular-items h2 {
