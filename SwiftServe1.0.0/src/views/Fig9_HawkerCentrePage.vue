@@ -305,6 +305,8 @@
         }
       },
       editCartItem(item) {
+        //console.log("hello");
+        //console.log(item.id);
         this.$router.push({
           name: 'foodItemPage',
           params: {

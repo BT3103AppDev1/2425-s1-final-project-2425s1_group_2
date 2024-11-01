@@ -196,7 +196,7 @@ import { collection, getDocs, query, orderBy, where, limit } from 'firebase/fire
                 v-if="order.readyForCollection === 1" 
                 class="order-ready-btn"
               >
-                Order Ready Collection
+                Order Ready. Collected?
               </button>
               <button 
                 v-else-if="order.preparingOrder" 

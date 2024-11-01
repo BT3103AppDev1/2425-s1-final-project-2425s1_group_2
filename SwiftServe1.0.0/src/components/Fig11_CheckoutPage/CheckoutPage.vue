@@ -8,14 +8,20 @@
     </div>
     <div class="order-items">
       <div v-for="(order, index) in orders" :key="index" class="order-item">
-        <h3>Order {{ index + 1 }}</h3>
-        <p>{{ order.hawker }}</p>
-        <p>{{ order.stall }}</p>
-        <p>{{ order.quantity }}x {{ order.dish }}</p>
-        <p>${{ order.price.toFixed(2) }}</p>
-        <!--<button class="edit-button">Edit</button>-->
+        <div class="order-list">
+          <div id="top">
+            <h3>Order {{ index + 1 }}</h3>
+            <p>{{ order.hawker }}</p>
+            <p>{{ order.stall }}</p>
+            <p>{{ order.quantity }}x {{ order.dish }}</p>
+            <p>${{ order.price.toFixed(2) }}</p>
+          </div>
+          <button class="edit-button" @click="goOrdersPage(order)">Edit</button>
+        </div>
       </div>
     </div>
+
+
     <div class="total">
       <h3 id="TotalPrice">Total: ${{ total.toFixed(2) }}</h3>
     </div>
@@ -159,10 +165,24 @@ export default {
       goHawkerCentre() {
         //this.$router.push('/hawkerCentre')
         this.$router.push({
-        path: '/hawkerCentre',
-        query: {HCName: this.HCName}
-      })
+          path: '/hawkerCentre',
+          query: {HCName: this.HCName}
+        })
       },
+
+      goOrdersPage(order) {
+
+        this.$router.push({
+          name: 'foodItemPage',
+          params: {
+            cartItemId: order.id,  // Pass the cart item ID
+          },
+          query: {
+            HCName: this.HCName
+          }
+        });
+      },
+
       selectMethod(method) {
         this.selectedMethod = method; 
       },
@@ -176,6 +196,7 @@ export default {
 
           if (docUserID === userID) {
             let newOrder = {
+              id: docs.id,
               hawker: docsData.hawkerCentre,
               stall: docsData.merchantName,
               quantity: docsData.quantity,
@@ -225,6 +246,7 @@ export default {
 .order-items {
   max-height: 25vh;
   overflow-y: auto;
+  
 }
 
 #TotalPrice {
@@ -240,17 +262,22 @@ export default {
   line-height: 1;
 }
 
-/*.edit-button {
-  position: absolute;
-  right: 10px;
-  top: 50px;
+.order-list {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.edit-button {
   background-color: #00adb5;
   color: white;
   border: none;
-  padding: 12px 28px;
+  padding: 0.5vw 2vw;
   border-radius: 3px;
-  font-size: 24px;
-}*/
+  font-size: 2vw;
+  margin-right: 1vw;
+  margin-top: 3vw;
+}
 
 .total {
   text-align: right;
