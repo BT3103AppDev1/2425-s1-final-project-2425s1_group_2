@@ -2,7 +2,7 @@
   <div class="receipt-container">
     <div class="receipt-scroll">
       <div v-for="receipt in receipts" :key="receipt.orderId" class="receipt">
-        <h2 class="receipt-header">Receipt - Order ID: {{ receipt.orderId }}</h2>
+        <h2 class="receipt-header">Receipt ID: {{ receipt.orderId }}</h2>
         <hr class="divider" />
         <div class="order-scroll">
           <div v-for="(order, index) in receipt.orders" :key="index" class="order">
@@ -35,17 +35,78 @@
 </template>
 
 <script>
-import { receipts } from './receipts.js'
+import firebaseApp from '../../firebase.js'
+import { getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
+//import { receipts } from './receipts.js'
+import { collection, getDocs, orderBy, query } from 'firebase/firestore'
+
+const db = getFirestore(firebaseApp)
+
 export default {
   name: 'ReceiptComponent',
   data() {
     return {
-      receipts: receipts
+      user: false,
+      //receipts: receipts
+      receipts: []
     }
   },
+  mounted() {
+      const auth = getAuth();
+      if (auth.currentUser) {
+        this.user = auth.currentUser.uid;
+      }
+      this.getAllOrders();
+  },
+
   methods: {
     calculateTotal(orders) {
       return orders.reduce((total, order) => total + order.price, 0)
+    },
+
+    async getAllOrders() {
+        const ordersCollection = collection(db, "PlacedCustOrders");
+        const ordersQuery = query(ordersCollection, orderBy("orderNum"));
+        let allOrders = await getDocs(ordersQuery)
+        let manyReceipts = [];
+
+        for (const docs of allOrders.docs) {
+          let docsData = docs.data();
+          let docUserID = docsData.userId;
+
+
+          if (docUserID === this.user) {
+            //console.log(docsData.receiptId);
+            const existingOrder = manyReceipts.find(receipt => receipt.orderId === docsData.receiptId);
+
+            if (existingOrder) {
+              existingOrder.orders.push({
+                restaurant: docsData.hawkerCentre,
+                item: docsData.merchantName,
+                quantity: String(docsData.quantity) + 'x',
+                type: docsData.foodItemName,
+                price: docsData.foodItemPrice
+              })
+            } else {
+              manyReceipts.push({
+                'orderId': docsData.receiptId,
+                'dineIn':  docsData.diningStatus,
+                'diningTime': docsData.diningTime,
+                'seats': docsData.seats,
+                'orders': [{
+                  restaurant: docsData.hawkerCentre,
+                  item: docsData.merchantName,
+                  quantity: String(docsData.quantity) + 'x',
+                  type: docsData.foodItemName,
+                  price: docsData.foodItemPrice
+                }]
+              });
+            }
+          }
+          this.receipts = manyReceipts;
+          console.log(manyReceipts);
+        }
     }
   }
 }
