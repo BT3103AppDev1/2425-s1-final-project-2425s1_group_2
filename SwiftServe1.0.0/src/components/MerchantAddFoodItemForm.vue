@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <form @submit.prevent="submitForm">
 
       <div class="form-group">
@@ -9,7 +9,7 @@
       <div class="form-group">
           <label for="foodItemPrice">Price</label>
           <div class="price-input">
-            <!--<span class="currency-symbol">$</span>-->
+            <span class="currency-symbol">$</span>
             <input 
               id="foodItemPrice" 
               v-model="foodItemPrice" 
@@ -21,19 +21,19 @@
           </div>
         </div>
 
-      <!--<div class="form-group">
+      <div class="form-group">
         <label for="foodItemPrice">Price:</label>
         <input id="foodItemPrice" v-model="foodItemPrice" type="number" step="0.10" required />
-      </div>-->
+      </div>
 
 
-      <!--<div class="form-group">
+      <div class="form-group">
         <label for="foodItemImage">Food Item Image:</label>
         <input id="foodItemImage" type="file" @change="uploadImage" accept="image/*" />
         <div v-if="foodItemImageUrl">
           <img :src="foodItemImageUrl" alt="Image Preview" class="image-preview" />
         </div>
-      </div>-->
+      </div>
 
       <div class="form-group"> 
         <div v-if="!foodItemImageUrl">
@@ -311,10 +311,10 @@ input[type='file'] {
 #foodItemImage {
   display: none;
 }
-</style>
+</style> -->
   
 
-<!-- <template>
+<template>
   <div class="form-container">
     <form @submit.prevent="submitForm" class="food-item-form">
       
@@ -813,4 +813,4 @@ input[type="number"]:focus {
     padding: 1.5rem;
   }
 }
-</style> -->
+</style>
