@@ -108,17 +108,15 @@ export default {
     },
 
     async loadTermsContent() {
-      if (!this.termsContent) {
-        try {
-          const response = await fetch('/termsandconditions.html') // Ensure correct path
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          this.termsContent = await response.text()
-          console.log(this.termsContent)
-        } catch (error) {
-          console.error('Error loading terms content:', error)
+      try {
+        const response = await fetch('/termsandconditions.html')
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
         }
+        this.termsContent = await response.text()
+        console.log('Terms Content:', this.termsContent)
+      } catch (error) {
+        console.error('Error loading terms content:', error)
       }
     },
 
