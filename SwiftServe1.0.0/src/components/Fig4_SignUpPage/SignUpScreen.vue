@@ -27,27 +27,28 @@
           </button> -->
           </div>
           <h2 class="inputTitles">Confirm password:</h2>
-            <input
-              :type="'text'"
-              class="inputBoxes"
-              id="cPassword1"
-              v-model="cPassword"
-              :style="{ '-webkit-text-security': showPassword ? 'none' : 'disc' }"
-              required
-            />
+          <input
+            :type="'text'"
+            class="inputBoxes"
+            id="cPassword1"
+            v-model="cPassword"
+            :style="{ '-webkit-text-security': showPassword ? 'none' : 'disc' }"
+            required
+          />
         </div>
         <div class="show-password-wrapper">
-      <div class="show-password">
-        <input type="checkbox" id="showPassword" v-model="showPassword" />
-        <label for="showPassword">Show Password</label>
-      </div>
-    </div>
+          <div class="show-password">
+            <input type="checkbox" id="showPassword" v-model="showPassword" />
+            <label for="showPassword">Show Password</label>
+          </div>
+        </div>
       </div>
     </form>
     <div class="form-group checkbox">
       <input type="checkbox" id="agreeTerms" v-model="agreeToTerms" required />
       <label for="agreeTerms">
-        By signing up you agree to our <a href="#" class="terms-link" @click.prevent="openTermsModal">Terms of Service</a>
+        By signing up you agree to our
+        <a href="#" class="terms-link" @click.prevent="openTermsModal">Terms of Service</a>
       </label>
     </div>
 
@@ -61,67 +62,11 @@
       <a href="mailto:nusdeck@gmail.com" class="email-link">nusdeck@gmail.com</a>
     </p>
 
-
     <div v-if="showTermsModal" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" @click="closeTermsModal">&times;</button>
-        <div class="terms-text">
-          <h2>
-            Terms and Conditions for SwiftServe
-          </h2>
-          <p>
-            Welcome to SwiftServe! By using our digital platform to order food, you agree to these Terms and Conditions. If you do not agree with these terms, please do not use our services.
-          </p>
-          <h3>1. Acceptance of Terms</h3>
-          <p>By accessing or using the SwiftServe platform, you accept and agree to be bound by these Terms and Conditions. If you are using the service on behalf of an organization, you represent that you have the authority to bind that organization to these Terms.</p>
-
-          <h3>2. User Accounts</h3>
-          <p>SwiftServe allows users to place orders without requiring an account. Users can choose to create an account for convenience but are not obligated to do so.</p>
-
-          <h3>3. Age Restrictions</h3>
-          <p>There are no age restrictions for using the SwiftServe platform.</p>
-
-          <h3>4. Order Management</h3>
-          <p>
-            <strong>Cancellation and Refund Policy:</strong> All orders placed through the SwiftServe platform are final. No cancellations or refunds will be processed once an order is confirmed.
-            <br>
-            <strong>Third-Party Delivery Failures:</strong> SwiftServe shall not be liable for any failures or delays caused by third-party delivery services. Users accept that any issues arising from delivery failures are their own responsibility.
-          </p>
-
-          <h3>5. Food Quality and Liability</h3>
-          <p>SwiftServe does not assume any liability for the quality of food provided by the partnered hawker centres. All food quality concerns must be directed to the respective hawker centre.</p>
-
-          <h3>6. Payment Options</h3>
-          <p>SwiftServe does not offer cash-on-delivery options. All orders must be paid for through the platform’s online payment system. There are no subscription or delivery fees associated with using the SwiftServe platform.</p>
-
-          <h3>7. Promotions and Discounts</h3>
-          <p>SwiftServe may offer promotions, vouchers, or loyalty points. These offers are non-refundable and final. The total cost of the order after applying any promotions must exceed SGD 0.05.</p>
-
-          <h3>8. Data Protection and Privacy</h3>
-          <p>SwiftServe is committed to protecting your personal data in accordance with the Personal Data Protection Act (PDPA) of Singapore. We may share your data with partners for marketing purposes. By using our services, you consent to this data sharing.</p>
-
-          <h3>9. Dispute Resolution</h3>
-          <p>Any disputes arising out of or relating to these Terms shall be resolved through mandatory arbitration in Singapore, in accordance with the rules of the Singapore International Arbitration Centre (SIAC).</p>
-
-          <h3>10. Governing Law</h3>
-          <p>These Terms shall be governed by and construed in accordance with the laws of Singapore.</p>
-
-          <h3>11. Delivery Times and Responsibilities</h3>
-          <p>SwiftServe does not guarantee specific delivery times. The partnered hawker centres are responsible for their own delivery schedules.</p>
-
-          <h3>12. Modification of Services</h3>
-          <p>SwiftServe reserves the right to modify, suspend, or discontinue any service or feature of the platform at any time without prior notice.</p>
-
-          <h3>13. Partnerships</h3>
-          <p>The SwiftServe platform exclusively serves partnered hawker centres in Singapore. User-generated menus or home kitchens are not permitted.</p>
-
-          <h3>14. Contact Information</h3>
-          <p>For any questions or concerns regarding these Terms and Conditions, please contact us at:</p>
-          <p>Email: nusdeck@gmail.com <br> Phone: +65 6235 3535</p>
-
-          <p>By using SwiftServe, you acknowledge that you have <u>read, understood, and agree</u> to these Terms and Conditions.</p>
-
-          </div>
+        <div class="terms-text" v-html="termsContent"></div>
+        <button class="bottom-button" @click="closeTermsModal">Got it!</button>
       </div>
     </div>
   </div>
@@ -144,8 +89,13 @@ export default {
       showPassword: false,
       agreeToTerms: false,
       showTermsModal: false,
+      termsContent: ''
     }
   },
+  async created() {
+    await this.loadTermsContent()
+  },
+
   methods: {
     togglePassword() {
       this.showPassword = !this.showPassword
@@ -155,6 +105,21 @@ export default {
     },
     closeTermsModal() {
       this.showTermsModal = false
+    },
+
+    async loadTermsContent() {
+      if (!this.termsContent) {
+        try {
+          const response = await fetch('/termsandconditions.html') // Ensure correct path
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          this.termsContent = await response.text()
+          console.log(this.termsContent)
+        } catch (error) {
+          console.error('Error loading terms content:', error)
+        }
+      }
     },
 
     async savetoFirestore() {
@@ -217,24 +182,20 @@ export default {
   height: 100vh;
 }
 
-.formData {
-  position: relative;
-  width: 100%;
-}
-
 .inputBoxes {
-  width: calc(100% - 20px);
-  border-radius: 5px;
-  border: 2px solid #00adb5;
-  padding: 10px;
-  font-size: 2.5vmin;
+  width: calc(100% - 20vw);
+  border-radius: 0.25vw;
+  font-family: 'Inria Sans', sans-serif;
+  border: 0.1vw solid #00adb5;
+  padding: 0.5vw;
+  font-size: 1.5vw;
 }
 
 .inputTitles {
   color: #00adb5;
-  font-size: 2.5vmin;
+  font-size: 1.5vw;
   font-weight: bold;
-  margin: 10px 0 5px;
+  margin: 0.5vw 0 0.5vw;
 }
 
 .password-input {
@@ -243,7 +204,7 @@ export default {
 }
 
 .toggle-password {
-  margin-left: 15px;
+  margin-left: 0.8vw;
   background: none;
   border: none;
   color: #00adb5;
@@ -268,13 +229,13 @@ export default {
 
 .inputBoxes {
   width: 40vw;
-  border-radius: 5px;
+  border-radius: 0.25vw;
   border: 2px solid #00adb5;
 }
 
 .inputTitles {
   color: #00adb5;
-  font-size: 18px;
+  font-size: 1.2vw;
   font-weight: bold;
 }
 
@@ -282,7 +243,7 @@ button {
   background-color: #00adb5;
   font-weight: bold;
   font-size: 3vh;
-  color: white;
+  color: #ffffff;
   border-radius: 5px;
   border: none;
   height: 7vh;
@@ -404,14 +365,15 @@ button:hover {
 /* Show password wrapper to align below and adjust properly */
 .show-password-wrapper {
   position: absolute;
-  top: calc(100% + 15px); /* Places the show password checkbox 10px below the confirm password input */
+  top: calc(
+    100% + 15px
+  ); /* Places the show password checkbox 10px below the confirm password input */
   right: -25px; /* Align to the right edge of the input fields */
   display: flex;
   align-items: center;
 }
 
-
-.show-password{
+.show-password {
   color: #00adb5;
   font-size: 18px;
   font-weight: bold;
@@ -505,10 +467,49 @@ button:hover {
   background-color: #007a80;
 }
 
+.bottom-button {
+  bottom: 15px;
+  right: 15px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 120px;
+  height: 50px;
+  font-size: 23px;
+  text-align: center;
+  line-height: 35px;
+  cursor: pointer;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.bottom-button:hover {
+  background-color: #007a80;
+}
+
 .terms-text {
   color: #00adb5;
   font-size: 16px;
   line-height: 1.5;
 }
 
+.bottom-close {
+  position: absolute;
+  bottom: 15px; /* Distance from the bottom */
+  right: 15px; /* Distance from the right */
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  text-align: center;
+  line-height: 35px;
+  cursor: pointer;
+}
+
+.bottom-close:hover {
+  background-color: #007a80;
+}
 </style>
