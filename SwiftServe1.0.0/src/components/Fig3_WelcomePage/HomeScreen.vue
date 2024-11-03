@@ -108,6 +108,9 @@ button {
   text-align: center;
   z-index: 1;
   transition: background-color 0.3s ease-in-out;
+  font-family:
+    Inria Sans,
+    sans-serif;
 }
 
 button::before {

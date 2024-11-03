@@ -11,14 +11,17 @@
 </template>
 
 <script>
-//Welcome Spencer TBC not done yet
 export default {
   methods: {
     goSignUpClick() {
-      this.$router.push('/signup')
+      this.$router.push('/signup').then(() => {
+        location.reload()
+      })
     },
     goHome() {
-      this.$router.push('/')
+      this.$router.push('/').then(() => {
+        location.reload()
+      })
     }
   }
 }
