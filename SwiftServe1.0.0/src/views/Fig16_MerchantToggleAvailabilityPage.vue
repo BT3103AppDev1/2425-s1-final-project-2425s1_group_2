@@ -211,7 +211,7 @@ h1, h2, h3 {
   gap: 20px;
   border: 1px solid #00ADB5;
   border-radius: 20px;
-  padding: 10px;
+  padding: 30px;
   flex-wrap: wrap;
 }
 
