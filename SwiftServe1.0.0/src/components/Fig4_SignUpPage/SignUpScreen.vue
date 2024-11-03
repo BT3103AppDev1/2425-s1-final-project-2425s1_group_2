@@ -1,8 +1,3 @@
-<!-- to do: clean up, type check -->
-<!-- terms of service and its checkbox -->
-<!-- styling spacing and how well it deals with scaling -->
-<!-- some error with the eye coz it does not show -->
-
 <template>
   <div class="container">
     <form id="userForm">
@@ -54,7 +49,12 @@
 
     <div class="save">
       <button id="savebutton" type="button" v-on:click="savetoFirestore">Sign Up</button>
-      <br /><br />
+    </div>
+
+    <div class="google-signin">
+      <button id="googleSignUpButton" type="button" @click="signUpWithGoogle">
+        Sign Up with Google
+      </button>
     </div>
 
     <p class="merchant-info">
@@ -78,6 +78,8 @@ import { validateNewUser } from './validateNewUser'
 import { auth, db } from '@/firebase.js'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { GoogleAuthProvider } from 'firebase/auth'
+import { getRedirectResult } from 'firebase/auth'
 
 export default {
   data() {
@@ -94,6 +96,16 @@ export default {
   },
   async created() {
     await this.loadTermsContent()
+  },
+
+  async mounted() {
+    const result = await getRedirectResult(auth)
+    if (result) {
+      // User is signed in.
+      const user = result.user
+      console.log('User signed in:', user)
+      // Here you can handle user data and save to Firestore if needed
+    }
   },
 
   methods: {
@@ -114,15 +126,36 @@ export default {
           throw new Error('Network response was not ok')
         }
         this.termsContent = await response.text()
-        console.log('Terms Content:', this.termsContent)
       } catch (error) {
         console.error('Error loading terms content:', error)
       }
     },
 
+    async signUpWithGoogle() {
+      const provider = new GoogleAuthProvider()
+      try {
+        const userCredential = await auth.signInWithPopup(provider)
+        const user = userCredential.user
+
+        // Prepare user data
+        const userData = {
+          username: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          dateCreated: serverTimestamp(),
+          profileType: 'Customer'
+        }
+        console.log(userData)
+
+        // Save user data to Firestore
+        await this.savetoFirestoreGoogle(userData)
+      } catch (error) {
+        console.error('Error during Google sign-up:', error)
+      }
+    },
+
     async savetoFirestore() {
       const { email, username, password, cPassword, agreeToTerms } = this
-      //console.log(email, username, password, cPassword, agreeToTerms)
       const check = validateNewUser(email, username, password, cPassword, agreeToTerms)
       if (check['valid'] === false) {
         alert(check['message'])
@@ -130,15 +163,12 @@ export default {
       }
 
       try {
-        // Create user with Firebase Authentication
         this.loading = true
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         const user = userCredential.user
 
-        // Update user profile with username
         await updateProfile(user, { displayName: username })
 
-        // Save user information in Firestore
         const userData = {
           displayName: username,
           email: user.email,
@@ -148,10 +178,9 @@ export default {
         }
         await setDoc(doc(db, 'UserProfile', user.uid), userData)
 
-        // Reset form and show success message
         this.resetForm()
         alert('Account Created Successfully!')
-        this.$router.push('/custD') //change this to login after, this is made for fast game testing
+        this.$router.push('/custD')
         return false
       } catch (error) {
         alert('Error creating account: ' + error.message)
@@ -166,6 +195,58 @@ export default {
       this.cPassword = ''
       this.agreeToTerms = false
       this.showPassword = false
+    },
+    async savetoFirestoreGoogle(userData) {
+      // Check if userData is provided
+
+      if (!userData) {
+        const check = validateNewUser(
+          userData['email'],
+          userData['username'],
+          'r2$8U)kg9j6;5m-a(VYRFc',
+          'r2$8U)kg9j6;5m-a(VYRFc',
+          true
+        )
+        if (check['valid'] === false) {
+          alert(check['message'])
+          return
+        }
+
+        try {
+          this.loading = true
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            userData['email'],
+            'r2$8U)kg9j6;5m-a(VYRFc'
+          )
+          const user = userCredential.user
+
+          await updateProfile(user, { displayName: userData['username'] })
+
+          userData = {
+            displayName: userData['username'],
+            email: user.email,
+            uid: user.uid,
+            dateCreated: serverTimestamp(),
+            profileType: 'Customer'
+          }
+        } catch (error) {
+          alert('Error creating account: ' + error.message)
+          return
+        } finally {
+          this.loading = false
+        }
+      }
+
+      // Save user data to Firestore
+      try {
+        await setDoc(doc(db, 'UserProfile', userData.uid), userData)
+        this.resetForm()
+        alert('Account Created Successfully!')
+        this.$router.push('/custD')
+      } catch (error) {
+        console.error('Error saving user data to Firestore:', error)
+      }
     }
   }
 }
@@ -216,7 +297,7 @@ export default {
   align-items: flex-start;
   width: 40vw;
   margin-left: 30vw;
-  margin-top: 10vh;
+  margin-top: 0vh;
 }
 
 .save {
@@ -225,6 +306,11 @@ export default {
   justify-content: center;
 }
 
+.google-signin {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
 .inputBoxes {
   width: 40vw;
   border-radius: 0.25vw;
@@ -246,6 +332,7 @@ button {
   border: none;
   height: 7vh;
   width: 20vw;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 #save-button {
@@ -353,20 +440,17 @@ button:hover {
 
 .form-actions {
   display: flex;
-  justify-content: flex-end; /* Align the content to the right */
+  justify-content: flex-end;
   align-items: center;
-  width: 40vw; /* Ensure width matches the input fields */
-  margin-top: 5px; /* Provide space below the confirm password field */
-  position: relative; /* Set position to relative for precise alignment */
+  width: 40vw;
+  margin-top: 5px;
+  position: relative;
 }
 
-/* Show password wrapper to align below and adjust properly */
 .show-password-wrapper {
   position: absolute;
-  top: calc(
-    100% + 15px
-  ); /* Places the show password checkbox 10px below the confirm password input */
-  right: -25px; /* Align to the right edge of the input fields */
+  top: calc(100% + 15px);
+  right: -25px;
   display: flex;
   align-items: center;
 }
@@ -392,8 +476,8 @@ button:hover {
 .show-password label {
   color: #00adb5;
   font-size: 18px;
-  font-weight: bold; /* Ensure the label is bold */
-  white-space: nowrap; /* Prevent text wrapping */
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .show-password input:checked {

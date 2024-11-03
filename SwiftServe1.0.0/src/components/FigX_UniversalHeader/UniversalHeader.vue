@@ -46,51 +46,55 @@
 </template>
 
 <script>
-import { getAuth, signOut, onAuthStateChanged } from "firebase/auth"
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth'
 export default {
   name: 'UniversalHeader',
 
   data() {
     return {
       user: false,
-      showLogoutModal: false, // Control the modal visibility
+      showLogoutModal: false // Control the modal visibility
     }
   },
 
   mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.user = user;
+        this.user = user
       }
-    });
+    })
   },
 
   methods: {
     CDashClick() {
-      this.$router.push('/custD');
+      this.$router.push('/custD')
     },
 
     SettingsClick() {
-      this.$router.push('/profile');
+      this.$router.push('/profile')
     },
 
     openLogoutModal() {
-      this.showLogoutModal = true;
+      this.showLogoutModal = true
     },
 
     closeLogoutModal() {
-      this.showLogoutModal = false;
+      this.showLogoutModal = false
     },
 
     confirmLogout() {
-      const auth = getAuth();
-      signOut(auth).then(() => {
-        this.$router.push('/');
-        this.showLogoutModal = false; // Close the modal after logging out
-      }).catch((error) => {
-        console.error("Error signing out: ", error);
-      });
+      const auth = getAuth()
+      signOut(auth)
+        .then(() => {
+          this.$router.push('/').then(() => {
+            location.reload()
+          })
+          this.showLogoutModal = false // Close the modal after logging out
+        })
+        .catch((error) => {
+          console.error('Error signing out: ', error)
+        })
     }
   }
 }
@@ -111,7 +115,6 @@ img {
   width: 20vw;
   margin-left: 1vw;
 }
-
 
 h1 {
   color: #00adb5;

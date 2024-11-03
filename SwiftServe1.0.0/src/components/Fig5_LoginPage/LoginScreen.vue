@@ -28,20 +28,21 @@
       </div>
 
       <button type="submit" class="login-button">Login</button>
+
+      <button class="google-login-button" @click="handleGoogleSignIn">Sign in with Google</button>
     </form>
-    <!-- Add Google Sign-In Button -->
-    <button class="google-login-button" @click="handleGoogleSignIn">Sign in with Google</button>
 
     <!-- Firebase UI Auth Container -->
-    <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
-    <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button>
-    <button v-show="!showManualLogin" @click="toggleLoginMethod">Go Back to Manual Login</button>
+    <!-- <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
+    <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button> -->
+    <!-- <button v-show="!showManualLogin" @click="toggleLoginMethod">Go Back to Manual Login</button> -->
   </div>
 </template>
 
 <script>
-import * as firebaseui from 'firebaseui'
-import { auth, GoogleProvider, EmailProvider, db } from '@/firebase.js'
+//import * as firebaseui from 'firebaseui'
+// import {EmailProvider} from '@/firebase.js'
+import { auth, GoogleProvider, db } from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
 import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider } from 'firebase/auth'
 export default {
@@ -50,13 +51,13 @@ export default {
     return {
       email: '',
       password: '',
-      showPassword: false,
-      showManualLogin: true
+      showPassword: false
+      //showManualLogin: true
     }
   },
-  mounted() {
-    this.initializeFirebaseUI()
-  },
+  // mounted() {
+  //   this.initializeFirebaseUI()
+  // },
   methods: {
     async handleLogin() {
       try {
@@ -91,33 +92,33 @@ export default {
       }
     },
     handleForgotPassword() {
-      // Password reset logic
       this.$router.push('/resetPassword')
-      // if (this.email) {
-      //   auth
-      //     .sendPasswordResetEmail(this.email)
-      //     .then(() => {
-      //       alert('Password reset email sent! Check your inbox.');
-      //     })
-      //     .catch((error) => {
-      //       alert('Error sending password reset email: ' + error.message);
-      //     });
-      // } else {
-      //   alert('Please enter your email address to reset your password.');
-      // }
     },
-    toggleLoginMethod() {
-      // Toggle between showing manual login and FirebaseUI-based login
-      this.showManualLogin = !this.showManualLogin
-    },
+    // toggleLoginMethod() {
+    //   // Toggle between showing manual login and FirebaseUI-based login
+    //   this.showManualLogin = !this.showManualLogin
+    // },
     async handleGoogleSignIn() {
       const provider = new GoogleAuthProvider()
       var userCredential
       try {
         const userCredential = await auth.signInWithPopup(provider)
         const user = userCredential.user
-        console.log('Google login successful:', user)
-        this.$router.push('/custD')
+        const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get()
+
+        if (userProfileDoc.exists) {
+          const userData = userProfileDoc.data()
+          const profileType = userData.profileType
+
+          // Redirect based on profileType
+          if (profileType === 'Merchant') {
+            this.$router.push('/merchantDashboard') // Redirect to merchant dashboard
+          } else {
+            this.$router.push('/custD') // Redirect to customer dashboard
+          }
+        } else {
+          alert('We are unable to find your profile, try signing up first!')
+        }
       } catch (error) {
         if (error.code === 'auth/account-exists-with-different-credential') {
           const email = error.email
@@ -145,51 +146,51 @@ export default {
           alert('Error during Google sign-in: ' + error.message)
         }
       }
-    },
-    initializeFirebaseUI() {
-      // Import FirebaseUI instance and initialize it with the `auth` from firebase.js
-      const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
-
-      const uiConfig = {
-        signInFlow: 'popup', // Use popup for sign-in to maintain SPA flow
-        signInOptions: [
-          GoogleProvider.providerId, // Allow Google sign-in
-          EmailProvider.providerId // Allow email sign-in
-        ],
-        callbacks: {
-          signInSuccessWithAuthResult: async (authResult) => {
-            // Extract user information from the authResult
-            const user = authResult.user
-
-            // Extract user details
-            const displayName = user.displayName || 'Anonymous User'
-            const email = user.email || 'No email provided'
-            const uid = user.uid
-
-            try {
-              // Save user data to Firestore
-              const userData = {
-                displayName: displayName,
-                email: email,
-                uid: uid,
-                dateCreated: new Date().toISOString(), // Using new Date() instead of serverTimestamp() to serialize correctly for cookies
-                profileType: 'Customer'
-              }
-              console.log('User data saved to Firestore:', userData)
-
-              // Redirect to home page after successful sign-in
-              this.$router.push('/custD')
-            } catch (error) {
-              console.error('Error saving user data to Firestore:', error)
-            }
-            return false // Prevent the automatic redirect to avoid default behavior
-          }
-        }
-      }
-
-      // Start the FirebaseUI with the configuration defined above
-      ui.start('#firebaseui-auth-container', uiConfig)
     }
+    // initializeFirebaseUI() {
+    //   // Import FirebaseUI instance and initialize it with the `auth` from firebase.js
+    //   const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
+
+    //   const uiConfig = {
+    //     signInFlow: 'popup', // Use popup for sign-in to maintain SPA flow
+    //     signInOptions: [
+    //       GoogleProvider.providerId, // Allow Google sign-in
+    //       EmailProvider.providerId // Allow email sign-in
+    //     ],
+    //     callbacks: {
+    //       signInSuccessWithAuthResult: async (authResult) => {
+    //         // Extract user information from the authResult
+    //         const user = authResult.user
+
+    //         // Extract user details
+    //         const displayName = user.displayName || 'Anonymous User'
+    //         const email = user.email || 'No email provided'
+    //         const uid = user.uid
+
+    //         try {
+    //           // Save user data to Firestore
+    //           const userData = {
+    //             displayName: displayName,
+    //             email: email,
+    //             uid: uid,
+    //             dateCreated: new Date().toISOString(), // Using new Date() instead of serverTimestamp() to serialize correctly for cookies
+    //             profileType: 'Customer'
+    //           }
+    //           console.log('User data saved to Firestore:', userData)
+
+    //           // Redirect to home page after successful sign-in
+    //           this.$router.push('/custD')
+    //         } catch (error) {
+    //           console.error('Error saving user data to Firestore:', error)
+    //         }
+    //         return false // Prevent the automatic redirect to avoid default behavior
+    //       }
+    //     }
+    //   }
+
+    //   // Start the FirebaseUI with the configuration defined above
+    //   ui.start('#firebaseui-auth-container', uiConfig)
+    // }
   }
 }
 </script>
@@ -213,6 +214,7 @@ form {
   width: 100%;
   min-width: 300px;
   max-width: 500px;
+  margin-top: -50px;
 }
 
 .form-group {
@@ -294,7 +296,8 @@ input[type='text'] {
   font-size: 18px;
 }
 
-.login-button {
+.login-button,
+.google-login-button {
   width: 100%;
   background-color: #00adb5;
   color: #ffffff;
@@ -310,7 +313,12 @@ input[type='text'] {
   box-sizing: border-box;
 }
 
-.login-button:hover {
+.google-login-button {
+  margin-top: 20px;
+}
+
+.login-button:hover,
+.google-login-button:hover {
   background-color: #007a80;
 }
 
@@ -337,15 +345,5 @@ button:hover {
 
 .toggle-button:hover {
   background-color: #007a80;
-}
-
-.social-login-container {
-  width: 100%;
-  max-width: 500px;
-  margin-top: 20px;
-  background-color: #f7f7f7;
-  border: 2px solid #00adb5;
-  border-radius: 5px;
-  padding: 20px;
 }
 </style>

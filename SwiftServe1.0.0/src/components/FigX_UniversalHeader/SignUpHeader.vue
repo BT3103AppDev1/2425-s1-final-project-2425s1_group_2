@@ -14,7 +14,9 @@
 export default {
   methods: {
     goLoginClick() {
-      this.$router.push('/login')
+      this.$router.push('/login').then(() => {
+        location.reload()
+      })
     },
     goHome() {
       this.$router.push('/')
