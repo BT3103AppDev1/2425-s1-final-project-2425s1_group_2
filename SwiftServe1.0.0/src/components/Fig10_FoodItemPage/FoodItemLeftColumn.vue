@@ -49,17 +49,16 @@ export default {
   padding-right: 15px;
 }
 
-img {
-  max-width: 20vw;
+/* img {
+  max-width: 100%;
   max-height: 18vw;
   display: block;
   margin: 0 auto;
-}
+} */
 
 .food-image img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 50vh;
   border-radius: 8px;
 }
 
