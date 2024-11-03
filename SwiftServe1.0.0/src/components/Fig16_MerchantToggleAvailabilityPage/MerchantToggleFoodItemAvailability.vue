@@ -39,7 +39,11 @@
     height: 150px;
     object-fit: cover;
   }
-  
+
+  .food-item:hover img {
+    transform: scale(1.05); 
+  }
+    
   .food-item h4 {
     padding: 10px;
     margin: 0;
@@ -49,7 +53,7 @@
   }
   
   .food-item.unavailable {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 </style>
   
