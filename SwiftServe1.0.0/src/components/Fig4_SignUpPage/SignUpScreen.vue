@@ -34,7 +34,7 @@
         <div class="show-password-wrapper">
           <div class="show-password">
             <input type="checkbox" id="showPassword" v-model="showPassword" />
-            <label for="showPassword">Show Password</label>
+            <label for="showPassword" id="showPasswordLabel">Show Password</label>
           </div>
         </div>
       </div>
@@ -593,5 +593,11 @@ button:hover {
 
 .bottom-close:hover {
   background-color: #007a80;
+}
+
+#showPasswordLabel {
+  color: #00adb5;
+  font-family: 'Inria Sans', sans-serif;
+  font-weight: bold;
 }
 </style>
