@@ -180,6 +180,18 @@ export default {
             user:false,
             showMaxModal: false,
             showNoSeatModal: false,
+
+            mapDiningTime: {
+                  "12:00pm - 12:30pm":{startTime: "1200", endTime: "1230", peak: true},
+                  "12:30pm - 1:00pm":{startTime: "1230", endTime: "1300", peak: true},
+                  "1:00pm - 1:30pm":{startTime: "1300", endTime: "1330", peak: true},
+                  "1:30pm - 2:00pm":{startTime: "1330", endTime: "1400", peak: true},
+                  "2:00pm - 2:30pm":{startTime: "1400", endTime: "1430", peak: false},
+                  "2:30pm - 3:00pm":{startTime: "1430", endTime: "1500", peak: false},
+            },
+            startTime: "1430",
+            endTime: "1500",
+            peak: true,  
         };
     },
     async mounted() {
@@ -193,12 +205,13 @@ export default {
 
         const seatButtons = Array.from(document.getElementsByClassName('Seat'));
         let numSeatsLeft = await seatsLeft();
+        await this.getDiningTime();
         
         seatButtons.forEach(button => {
             // console.log(numSeatsLeft);
             // console.log(this.seatsChosen);
 
-            if (numSeatsLeft <= 5) {
+            if (numSeatsLeft <= 5 || this.peak) {
                 this.maxSeats = 2;
             }
            
@@ -223,36 +236,37 @@ export default {
 
         });
 
-        async function display() {
-            let allSeatsTaken = await getDocs(collection(db, "Seats"));
-            allSeatsTaken.forEach(async (docs) => {
-                let documentData = docs.data();
-                let EndTime = documentData.EndTime;
-                let timeDiff = 0;
+        // async function display() {
+        //     let allSeatsTaken = await getDocs(collection(db, "Seats"));
+        //     allSeatsTaken.forEach(async (docs) => {
+        //         let documentData = docs.data();
+        //         let SeatStartTime = documentData.StartTime;
+        //         let EndTime = documentData.EndTime;
+        //         let timeDiff = 0;
 
-                if (EndTime){
-                    let endTime = EndTime.toDate();
-                    // console.log(timeSelected);
-                    let currentTime = new Date();
-                    // console.log(currentTime);
-                    timeDiff = currentTime - endTime;
-                }
+        //         if (EndTime){
+        //             let endTime = EndTime.toDate();
+        //             // console.log(timeSelected);
+        //             let currentTime = (() => this.parseTime("1245"))();; //time is always set to 12:45
+        //             // console.log(currentTime);
+        //             timeDiff = currentTime - endTime;
+        //         }
 
-                // console.log(timeDiff);
+        //         // console.log(timeDiff);
                 
 
-                if (timeDiff > 0){ //the end time has passed
-                    await deleteDoc(doc(db, "Seats", docs.id));
-                    console.log(`Customer: ${docs.id} has been deleted.`);
-                } else {
-                    let arrSeats = documentData.SeatsChosen;
+        //         if (timeDiff > 0){ //the end time has passed
+        //             await deleteDoc(doc(db, "Seats", docs.id));
+        //             console.log(`Customer: ${docs.id} has been deleted.`);
+        //         } else if (SeatStartTime < this.endTime) { //if the seat start time is earlier than the end time of the current user
+        //             let arrSeats = documentData.SeatsChosen;
 
-                    arrSeats.forEach((seat)=> {
-                        document.getElementById(seat).disabled = true;
-                    });
-                }
-            });
-        }
+        //             arrSeats.forEach((seat)=> {
+        //                 document.getElementById(seat).disabled = true;
+        //             });
+        //         }
+        //     });
+        // }
 
         async function seatsLeft(){
             let SeatsLeft = 23;
@@ -268,7 +282,39 @@ export default {
             return SeatsLeft;
         }
 
-        display();
+        const display = async () => {
+          let allSeatsTaken = await getDocs(collection(db, "Seats"));
+          allSeatsTaken.forEach(async (docs) => {
+            let documentData = docs.data();
+            let EndTime = documentData.EndTime;
+            let timeDiff = 0;
+
+            if (EndTime) {
+              let endTime = EndTime.toDate();
+              let currentTime = this.parseTime("1215"); //current time is always 1215
+              timeDiff = currentTime - endTime;
+            }
+
+            // console.log("seat start is ", SeatStartTime.toDate());
+            //   console.log("my start time is ", this.parseTime(this.startTime))
+            //   console.log("time diff is ", SeatStartTime.toDate()-this.parseTime(this.startTime));
+
+            if (timeDiff > 0) {
+              await deleteDoc(doc(db, "Seats", docs.id));
+              console.log(`Customer: ${docs.id} has been deleted.`);
+            } else if (EndTime.toDate() - this.parseTime(this.startTime) > 0) {
+              // if the end time of seat is later than the start time of booking (i.e. unavailable)
+
+              let arrSeats = documentData.SeatsChosen;
+
+              arrSeats.forEach((seat) => {
+                document.getElementById(seat).disabled = true;
+              });
+            }
+          });
+        };
+
+        await display();
 
     },
     methods: {
@@ -296,13 +342,6 @@ export default {
                 let numSeats = this.numSeatsChosen;
 
                 try{
-                    await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
-                        Customer: customer,
-                        StartTime: new Date(), 
-                        EndTime: new Date(new Date().getTime() + 60000), //1 min
-                        SeatsChosen: newSeatsChosen,
-                        NumSeats: numSeats
-                    })
                     let allOrders = await getDocs(collection(db, 'Cart'))
 
                     for (const docs of allOrders.docs) {
@@ -331,6 +370,16 @@ export default {
                             await deleteDoc(doc(db, 'Cart', docs.id));
                         }
                     }
+
+                    await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
+                      Customer: customer,
+                      // StartTime: new Date(), 
+                      StartTime: this.parseTime(this.startTime),
+                      EndTime: this.parseTime(this.endTime),
+                      // EndTime: new Date(new Date().getTime() + 60000), //1 min
+                      SeatsChosen: newSeatsChosen,
+                      NumSeats: numSeats
+                    })
                     // alert("Your seat has been reserved.");
                         //location.reload();
                                             
@@ -355,9 +404,37 @@ export default {
         closeModal() {
             this.showMaxModal = false;
             this.showNoSeatModal = false;
+        },
+
+        async getDiningTime() {
+          try{         
+            let allOrders = await getDocs(collection(db, 'Cart'))
+
+            for (const docs of allOrders.docs) {
+                let docsData = docs.data();
+                let docUserID = docsData.userId;
+
+                if (docUserID === this.user.uid) {                   
+                    this.startTime = this.mapDiningTime[docsData.diningTime].startTime;
+                    this.endTime = this.mapDiningTime[docsData.diningTime].endTime;
+                    this.peak = this.mapDiningTime[docsData.diningTime].peak;
+                }
+            }
+          } 
+          catch(error) {
+              console.error("Error finding document: ", error)
+          }
+        },
+        
+        parseTime(timeString) {
+          const today = new Date();
+          const hours = parseInt(timeString.substring(0, 2), 10);
+          const minutes = parseInt(timeString.substring(2, 4), 10);
+
+          return new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes);
         }
-    }
   }
+}
 </script>
 
 <style scoped>
