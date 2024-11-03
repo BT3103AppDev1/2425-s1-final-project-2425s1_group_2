@@ -72,11 +72,16 @@
     background-color: #f0f0f0;
     margin-bottom: 8px;
   }
+
+  .stall-thumbnail-container:hover {
+    transform: scale(1.2); 
+    z-index: 1;
+  }
   
   .stall-thumbnail-container.active-thumbnail {
-    border: 2px solid #333333; /* Dark grey border for active thumbnail */
-    padding: 6px; /* Increased padding for dark grey border */
-    box-sizing: content-box; /* Ensures padding is outside the border */
+    border: 2px solid #333333;
+    padding: 6px;
+    box-sizing: content-box;
   }
   
   .stall-thumbnail {

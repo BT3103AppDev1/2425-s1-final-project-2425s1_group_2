@@ -47,6 +47,12 @@
     border-bottom: 0.125rem solid transparent; 
     font-size: 1.375rem;
   }
+
+  /* Hover effect */
+  nav li:hover {
+    color: #00adb5; /* Change text color on hover */
+    
+  }
   
   nav li.active {
     font-weight: bold;
