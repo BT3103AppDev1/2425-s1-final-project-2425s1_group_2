@@ -120,6 +120,11 @@ export default {
   min-width: 200px;
   width: 200px;
   position: relative;
+  cursor: pointer;
+}
+
+.cart-item:hover {
+  transform: scale(1.03); /* Slightly enlarge on hover */
 }
 
 .cart-item-details {
@@ -176,6 +181,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.remove-item-btn:hover {
+  background-color: white; 
+  color: red; 
 }
 
 /* Modal styling */

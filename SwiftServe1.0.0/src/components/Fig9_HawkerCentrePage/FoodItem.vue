@@ -37,6 +37,10 @@ export default {
   border-radius: 10px;
 }
 
+.food-item:hover img {
+  transform: scale(1.05); /* Optional: slightly zooms in the image on hover */
+}
+
 .food-item h3 {
   padding: 10px;
   margin: 0;

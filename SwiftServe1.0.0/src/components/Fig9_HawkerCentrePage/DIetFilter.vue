@@ -45,6 +45,11 @@ export default {
   font-family: 'Inria Sans', sans-serif;
 }
 
+.filter-buttons button:hover {
+  background-color: #00adb5; 
+  color: white;
+}
+
 .filter-buttons button.active {
   background-color: #00adb5;
   color: white;
