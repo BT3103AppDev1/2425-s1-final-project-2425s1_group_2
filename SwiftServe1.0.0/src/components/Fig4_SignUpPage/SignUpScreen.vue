@@ -577,8 +577,8 @@ button:hover {
 
 .bottom-close {
   position: absolute;
-  bottom: 15px; /* Distance from the bottom */
-  right: 15px; /* Distance from the right */
+  bottom: 15px;
+  right: 15px;
   background: #00adb5;
   color: white;
   border: none;

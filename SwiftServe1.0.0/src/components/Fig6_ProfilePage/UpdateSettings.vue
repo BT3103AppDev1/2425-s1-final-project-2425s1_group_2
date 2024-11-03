@@ -8,17 +8,34 @@
 
           <h2 class="inputTitles">Current Password:</h2>
           <div class="password-input">
-            <input :type="'text'" class="inputBoxes" id="password1" v-model="currentPassword"
-              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }" required />
+            <input
+              :type="'text'"
+              class="inputBoxes"
+              id="password1"
+              v-model="currentPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
+              required
+            />
           </div>
 
           <h2 class="inputTitles">Confirm New Password:</h2>
           <div class="password-input">
-            <input :type="'text'" class="inputBoxes" id="cPassword1" v-model="confirmPassword"
-              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }" required />
+            <input
+              :type="'text'"
+              class="inputBoxes"
+              id="cPassword1"
+              v-model="confirmPassword"
+              :style="{ '-webkit-text-security': showPasswords ? 'none' : 'disc' }"
+              required
+            />
             <div class="show-password-wrapper">
               <label for="showPasswords">Show Password</label>
-              <input type="checkbox" id="showPasswords" v-model="showPasswords" class="custom-checkbox" />
+              <input
+                type="checkbox"
+                id="showPasswords"
+                v-model="showPasswords"
+                class="custom-checkbox"
+              />
             </div>
           </div>
         </div>
@@ -109,7 +126,8 @@ export default {
         }
       } catch (error) {
         this.openModal(`Error: ${error.message}`)
-      } document.getElementById('userForm').reset()
+      }
+      document.getElementById('userForm').reset()
     },
     async validatePasswords() {
       let password = this.currentPassword
@@ -130,15 +148,14 @@ export default {
           this.openModal(`Provided password is incorrect! Please try again`)
           document.getElementById('userForm').reset()
         } finally {
-      // Clear the fields
-      this.currentPassword = '';
-      this.confirmPassword = '';
+          // Clear the fields
+          this.currentPassword = ''
+          this.confirmPassword = ''
+        }
+      }
     }
   }
 }
-  }
-}
-
 </script>
 
 <style scoped>
@@ -185,27 +202,21 @@ export default {
 
 .custom-checkbox {
   margin-left: 10px;
-  /* Space between label and checkbox */
   width: 20px;
-  /* Adjust width */
   height: 20px;
-  /* Adjust height */
   appearance: none;
   border: 2px solid #00adb5;
   border-radius: 3px;
   cursor: pointer;
   background-color: white;
-  /* Default background color */
 }
 
 .custom-checkbox:checked {
   background-color: #00adb5;
-  /* Background when checked */
 }
 
 .custom-checkbox:checked::after {
   content: '';
-  /* Remove the tick */
 }
 
 .show-password-wrapper label {
@@ -231,6 +242,7 @@ button {
   height: 7vh;
   width: 25vw;
   cursor: pointer;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 button:hover {

@@ -170,6 +170,7 @@ h1 {
   padding: 30px;
   position: relative;
   z-index: 1010;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .close-button {
@@ -191,6 +192,7 @@ h1 {
   margin-bottom: 20px;
   color: #00adb5;
   text-align: center;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions {
@@ -204,9 +206,11 @@ h1 {
   color: white;
   border: none;
   padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
   text-align: center;
   font-size: 15px;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions button:hover {
