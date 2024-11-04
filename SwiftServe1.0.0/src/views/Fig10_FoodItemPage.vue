@@ -576,7 +576,7 @@ export default {
 }
 
 .green-box {
-  background-color: #eeffff;
+  background-color: #e6f7f5;
   border-radius: 0.5rem;
   padding: 0.9375rem;
   margin-bottom: 1.25rem;
@@ -599,23 +599,20 @@ export default {
   padding: 0.625rem 1.25rem;
   border-radius: 5px;
   border: none;
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-size: 1.5rem;
+  /* font-weight: 400; */
   cursor: pointer;
-  width: 25%;
+  width: 35%;
   display: flex;
   font-family: 'Inria Sans', sans-serif;
-}
-
-.add-to-cart {
   background-color: #00adb5;
   color: white;
 }
 
-.cancel-order {
-  background-color: #00adb5;
-  color: white;
+.add-to-cart:hover, .cancel-order:hover {
+  background-color: #007a80;
 }
+
 
 .cart-icon,
 .cancel-icon,

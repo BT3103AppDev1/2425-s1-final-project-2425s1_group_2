@@ -44,7 +44,7 @@ export default {
 .food-item h3 {
   padding: 10px;
   margin: 0;
-  font-size: 16px;
+  font-size: 1.5rem;
   color: #333;
   font-family: 'Inria Sans', sans-serif;
 }

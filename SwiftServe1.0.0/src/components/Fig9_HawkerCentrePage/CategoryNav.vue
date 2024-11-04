@@ -45,7 +45,7 @@
     cursor: pointer;
     font-weight: bold;
     border-bottom: 0.125rem solid transparent; 
-    font-size: 1.375rem;
+    font-size: 1.8rem;
   }
 
   /* Hover effect */
