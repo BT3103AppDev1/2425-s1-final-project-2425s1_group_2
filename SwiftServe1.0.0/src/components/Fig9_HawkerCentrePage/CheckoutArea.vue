@@ -43,11 +43,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-top: 1.5rem;
 }
 
 .totalAmount {
-  font-size: 1.125rem;
-  margin-bottom: 0.625rem;
+  font-size: 1.5rem;
+  /* margin-bottom: 0.625rem; */
   font-weight: bold;
   text-align: right;
   width: 100%;
@@ -66,14 +67,19 @@ button {
   gap: 0.625rem;
   margin: 0.3125rem;
   padding: 0.625rem 1.25rem;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
   border: none;
   border-radius: 0.3125rem;
   background-color: #00adb5;
   color: white;
-  width: 100%;
-  max-width: 11.25rem;
+  width: 65%;
   font-family: 'Inria Sans', sans-serif;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #007b83; /* Darker shade for hover effect */
+  
 }
 </style>

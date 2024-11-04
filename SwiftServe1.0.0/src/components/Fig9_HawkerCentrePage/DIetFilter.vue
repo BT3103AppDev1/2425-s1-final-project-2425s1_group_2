@@ -40,8 +40,9 @@ export default {
   padding: 0.5rem 0.75rem;
   border-radius: 20px;
   cursor: pointer;
-  width: 9.375rem;
+  width: 7rem;
   font-weight: bold;
+  font-size: 1rem;
   font-family: 'Inria Sans', sans-serif;
 }
 

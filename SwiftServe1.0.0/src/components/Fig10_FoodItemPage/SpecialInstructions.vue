@@ -43,6 +43,12 @@ textarea {
   border: 1px solid #00adb5;
 }
 
+textarea:focus {
+  outline: none;
+  border: 2px solid #00adb5;
+  border-radius: 5px;
+}
+
 #specialinstructions {
   font-family: 'Inria Sans', sans-serif;
 }

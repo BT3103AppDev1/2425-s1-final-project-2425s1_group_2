@@ -1,6 +1,6 @@
 <template>
   <div class="left-column">
-    <h1 class="food-stall">{{ merchant.displayName }}</h1>
+    <p class="food-stall">{{ merchant.displayName }}</p>
     <div class="food-image">
       <img :src="foodItem.foodItemImage" :alt="foodItem.foodItemName" />
       <hr class="separator" />
@@ -49,34 +49,36 @@ export default {
   padding-right: 15px;
 }
 
-/* img {
-  max-width: 100%;
-  max-height: 18vw;
-  display: block;
-  margin: 0 auto;
-} */
-
 .food-image img {
   width: 100%;
   height: 50vh;
   border-radius: 8px;
 }
 
-.food-name {
-  font-size: 24px;
-  margin-top: 15px;
-  margin-bottom: 5px;
+.food-stall {
+  font-size: 50px;
+  font-weight: bold;
+  padding: 0; 
+  margin: 20px;
 }
 
-.food-info {
-  margin-top: 15px;
+.food-name {
+  font-size: 35px;
+  margin-bottom: 0;
+  /* margin-top: 15px; */
+  /* margin-bottom: 5px; */
 }
+
+/* .food-info {
+  margin-top: 15px;
+} */
 
 .price-quantity {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  margin: 0px;
+  padding: 0;
 }
 
 .price {
@@ -101,8 +103,12 @@ export default {
   margin-left: 40px;
 }
 
+.quantity-btn:hover {
+  background-color: #50d4da; /* Lighter green on hover */
+}
+
 .quantity {
-  margin: 0 10px;
+  /* margin: 0 10px; */
   font-size: 30px;
   margin-right: 100px;
 }
