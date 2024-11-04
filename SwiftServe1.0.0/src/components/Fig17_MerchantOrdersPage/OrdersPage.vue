@@ -123,7 +123,7 @@ export default {
             } else {
                 let formattedOrder = {
                 orderID: ord.OrderNum || ord.orderNum,
-                collectionState: ord.orderStatus ? "Customer Incoming" : "Order Ready Collection",
+                collectionState: ord.orderStatus ? "Order Ready Collection" : "Customer Incoming",
                 dineOption: ord.diningStatus,
                 diningTime: ord.diningTime,
                 buttonDisabled: ord.orderStatus,

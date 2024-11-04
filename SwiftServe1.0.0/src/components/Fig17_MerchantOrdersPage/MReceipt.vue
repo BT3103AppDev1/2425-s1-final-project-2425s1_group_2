@@ -80,9 +80,9 @@ export default {
         // this.$emit('update-clicked', this.orderID, newClickedState);
 
         if (newClickedState) {
-          newState = "Customer Incoming"
-        } else {
           newState = "Order Ready Collection"
+        } else {
+          newState = "Customer Incoming"
         }
 
         this.$emit('update-clicked', this.orderID, newClickedState, newState);
@@ -162,8 +162,8 @@ select {
 }
 
 .collect-button {
-  background-color: #51E51C;
-  color: black;
+  background-color: #FF2505;
+  color: white;
   border: none;
   padding: 0.5vw;
   font-size: 1.25vw;
@@ -178,8 +178,8 @@ select {
 }
 
 .collect-button.collectable-button {
-  background-color: #FF2505;
-  color: white;
+  background-color: #51E51C;
+  color: black;
 }
 
 .dine-details {
@@ -206,6 +206,8 @@ select {
   color: white;
   padding: 0.5vw;
   min-height: 1vw;
+
+  margin-right: 1vw;
 }
 
 #special-instruction {
