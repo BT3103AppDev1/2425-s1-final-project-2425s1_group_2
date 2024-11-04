@@ -2,7 +2,7 @@
   <div class="reset-password-page">
     <form @submit.prevent="handleResetPassword">
       <div class="form-group">
-        <h1>Reset Password </h1>
+        <h1>Reset Password</h1>
         <label for="email">Email:</label>
         <input type="email" id="email" v-model="email" required />
       </div>

@@ -161,6 +161,9 @@ export default {
 <style scoped>
 .container {
   font-family: 'Inria Sans', sans-serif;
+  position: absolute;
+  top: 15vh;
+  left: 20vw;
 }
 
 .formData {
@@ -176,6 +179,7 @@ export default {
   border: 2px solid #00adb5;
   font-size: 20px;
   margin-bottom: 5px;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .inputTitles {
@@ -229,7 +233,7 @@ export default {
 .save {
   display: flex;
   justify-content: center;
-  margin-top: -150px;
+  margin-top: -20vh;
 }
 
 button {

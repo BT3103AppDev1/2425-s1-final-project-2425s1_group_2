@@ -34,10 +34,13 @@
       <div class="modal-content">
         <button class="close-button" @click="closeLogoutModal">&times;</button>
         <div class="modal-text">
-          <h2>Are you sure you want to log out?</h2>
+          <h2>
+            <!-- Are you sure you want to log out? -->
+            Sign out and return later?
+          </h2>
           <div class="modal-actions">
-            <button @click="confirmLogout">Yes, log me out</button>
-            <button @click="closeLogoutModal">No, stay logged in</button>
+            <button @click="confirmLogout">Yes, sign me out</button>
+            <button @click="closeLogoutModal">No, stay signed in</button>
           </div>
         </div>
       </div>
@@ -166,8 +169,10 @@ h1 {
 .modal-content {
   background-color: #ffffff;
   border: 2px solid #00adb5;
-  width: 400px;
+  width: 25vw;
+  min-height: 15vh;
   padding: 30px;
+  border-radius: 6px;
   position: relative;
   z-index: 1010;
   font-family: 'Inria Sans', sans-serif;
@@ -189,7 +194,9 @@ h1 {
 }
 
 .modal-text h2 {
-  margin-bottom: 20px;
+  font-size: 1.5vw;
+  margin-top: 1vw;
+  margin-bottom: 1.5vw;
   color: #00adb5;
   text-align: center;
   font-family: 'Inria Sans', sans-serif;
@@ -209,7 +216,7 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
-  font-size: 15px;
+  font-size: 1.2vw;
   font-family: 'Inria Sans', sans-serif;
 }
 
