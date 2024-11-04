@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { signInAnonymously } from 'firebase/auth'
+import { signInAnonymously, updateProfile } from 'firebase/auth'
 import { auth } from '@/firebase.js'
 
 export default {
@@ -29,14 +29,24 @@ export default {
     LGSClick() {
       this.$router.push('/signup')
     },
-    signInAnonymously() {
-      signInAnonymously(auth)
-        .then(() => {
-          this.$router.push('/custD')
-        })
-        .catch((error) => {
-          console.error('Error signing in anonymously:', error)
-        })
+    // signInAnonymously() {
+    //   signInAnonymously(auth)
+    //     .then(() => {
+    //       this.$router.push('/diningOptions') //changed from CustD because it doesnt make sense to go to empty dashboard - Javier
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error signing in anonymously:', error)
+    //     })
+    // }
+    async signInAnonymously() {
+      try {
+        const userCredential = await signInAnonymously(auth)
+        const user = userCredential.user
+        await updateProfile(user, { displayName: 'Guest' })
+        this.$router.push('/diningOptions')
+      } catch (error) {
+        console.error('Error signing in anonymously:', error)
+      }
     }
   }
 }

@@ -48,12 +48,14 @@
     </div>
 
     <div class="save">
-      <button id="savebutton" type="button" v-on:click="savetoFirestore">Sign Up</button>
+      <button id="savebutton" class="flash" type="button" v-on:click="savetoFirestore">
+        <span>Sign Up</span>
+      </button>
     </div>
 
     <div class="google-signin">
-      <button id="googleSignUpButton" type="button" @click="signUpWithGoogle">
-        Sign Up with Google
+      <button id="googleSignUpButton" class="flash" type="button" @click="signUpWithGoogle">
+        <span>Sign Up with Google</span>
       </button>
     </div>
 
@@ -409,7 +411,7 @@ button:hover {
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 1.5px solid #00adb5;
+  border: 2px solid #00adb5;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -599,5 +601,66 @@ button:hover {
   color: #00adb5;
   font-family: 'Inria Sans', sans-serif;
   font-weight: bold;
+}
+
+.flash {
+  position: relative;
+  overflow: hidden;
+  background-color: #00adb5;
+  font-weight: bold;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  height: 7vh;
+  width: 20vw;
+  cursor: pointer;
+  font-size: clamp(1rem, 2.5vw, 3.5vh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.3s ease-in-out;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.flash::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1)
+  );
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.flash:hover::before {
+  opacity: 1;
+  animation: waveAnimation 1.2s forwards;
+}
+
+@keyframes waveAnimation {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+.flash span {
+  position: relative;
+  z-index: 2;
+}
+
+.flash:hover {
+  background-color: #007a80;
 }
 </style>

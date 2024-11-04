@@ -117,7 +117,7 @@ h3 {
   border: 2px solid #00adb5;
   border-radius: 5px;
   padding: 5px;
-  margin-bottom: 40px;
+  margin-bottom: 5vh;
   color: #00adb5;
 }
 
