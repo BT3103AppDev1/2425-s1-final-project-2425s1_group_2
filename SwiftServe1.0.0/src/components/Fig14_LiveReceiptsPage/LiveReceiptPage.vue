@@ -12,7 +12,7 @@
     <div class="actions">
       <router-link to="/profile" class="action-link">
         <button @click="updateSettings">
-          <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
+          <img src="/cog.svg" alt="Update Settings" class="icon" />
           <span>Update Settings</span>
         </button>
       </router-link>
@@ -325,5 +325,10 @@ button:hover {
 .info-details {
   font-size: 1.5vw;
   font-family: 'Inria Sans', sans-serif;
+}
+
+.action-link {
+  text-decoration: none; /* This removes the underline from router-links */
+  color: inherit; /* Ensures it takes the color of the button */
 }
 </style>
