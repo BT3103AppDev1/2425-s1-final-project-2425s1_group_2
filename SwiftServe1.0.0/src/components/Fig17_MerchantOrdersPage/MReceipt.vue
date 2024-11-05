@@ -162,8 +162,8 @@ select {
 }
 
 .collect-button {
-  background-color: #FF2505;
-  color: white;
+  background-color: #51E51C;
+  color: black;
   border: none;
   padding: 0.5vw;
   font-size: 1.25vw;
@@ -178,8 +178,8 @@ select {
 }
 
 .collect-button.collectable-button {
-  background-color: #51E51C;
-  color: black;
+  background-color: #FF2505;
+  color: white;
 }
 
 .dine-details {

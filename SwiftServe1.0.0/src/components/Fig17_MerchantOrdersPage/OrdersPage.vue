@@ -74,7 +74,7 @@ export default {
               } else {
                 const existingOrder = this.orderData.find(order => order.orderID === orderID);
                 if (existingOrder) {
-                  existingOrder.collectionState = orderData.orderStatus ? "Order Ready Collection" : "Customer Incoming";
+                  existingOrder.collectionState = orderData.orderStatus ?  "Waiting for Customer": "Order Ready, Collected?";
                   existingOrder.clicked = orderData.orderStatus;
                 }
               }
@@ -150,7 +150,7 @@ export default {
             } else {
                 let formattedOrder = {
                 orderID: ord.OrderNum || ord.orderNum,
-                collectionState: ord.orderStatus ? "Order Ready Collection" : "Customer Incoming",
+                collectionState: ord.orderStatus ? "Waiting for Customer" : "Order Ready, Collected?" ,
                 dineOption: ord.diningStatus,
                 diningTime: ord.diningTime,
                 buttonDisabled: ord.orderStatus,
