@@ -274,6 +274,10 @@
         this.cartItems.push(item);
       },
       checkout() {
+        if (this.cartItems.length === 0) {
+          alert('Your cart is empty. Please add items before proceeding to checkout.');
+          return;
+        }
         this.$router.push({
           path: '/checkout',
           query: {HCName: this.HCName}
