@@ -522,7 +522,7 @@
   margin-bottom: 0;
 }
 
-.modal-actions button:hover {
+.modal-actions button:hover { 
   background-color: #007a80;
 }
 </style>
