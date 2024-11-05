@@ -89,7 +89,7 @@ export default {
       const filteredOrders = this.orders.filter(order => order.dateCreated >= startDate);
 
       this.totalSalesAmount = filteredOrders.reduce((sum, order) => {
-        return sum + (order.foodItemPrice * order.quantity);
+        return sum + (order.foodItemPrice);
       }, 0);
 
       this.ordersCompleted = filteredOrders.length;

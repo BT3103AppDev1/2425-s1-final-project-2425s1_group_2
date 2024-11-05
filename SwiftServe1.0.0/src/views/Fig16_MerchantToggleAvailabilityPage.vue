@@ -7,7 +7,8 @@
 
     <div class="food-items-header">
       <h3>Food items</h3>
-      <ToggleSwitch v-model="isStallOpen" @input="toggleStallAvailability" />
+      <!-- <ToggleSwitch v-model="isStallOpen" @input="toggleStallAvailability" /> -->
+      <ToggleSwitch v-model="isStallOpen" @update:modelValue="toggleStallAvailability" />
     </div>
 
     <div class="food-items">
@@ -112,17 +113,18 @@
             console.error('Error updating food item availability:', error);
         }
       },
-      async toggleStallAvailability() {
+      async toggleStallAvailability(newValue) {
         try {
             const userProfileRef = db.collection('UserProfile').doc(this.user.uid);
 
             await userProfileRef.update({
-              open: !this.isStallOpen
+              // open: !this.isStallOpen
+              open: newValue
             });
 
             console.log('Stall availability updated:', this.isStallOpen);
 
-            this.isStallOpen = !this.isStallOpen;
+            this.isStallOpen = newValue;
         } catch (error) {
             console.error('Error updating stall availability:', error);
         }
@@ -209,7 +211,7 @@ h1, h2, h3 {
   gap: 20px;
   border: 1px solid #00ADB5;
   border-radius: 20px;
-  padding: 10px;
+  padding: 30px;
   flex-wrap: wrap;
 }
 

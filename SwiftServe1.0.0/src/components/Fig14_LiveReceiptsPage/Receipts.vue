@@ -37,7 +37,7 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
+import { getAuth } from 'firebase/auth' // Import the Firebase Auth
 //import { receipts } from './receipts.js'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 
@@ -53,11 +53,11 @@ export default {
     }
   },
   mounted() {
-      const auth = getAuth();
-      if (auth.currentUser) {
-        this.user = auth.currentUser.uid;
-      }
-      this.getAllOrders();
+    const auth = getAuth()
+    if (auth.currentUser) {
+      this.user = auth.currentUser.uid
+    }
+    this.getAllOrders()
   },
 
   methods: {
@@ -66,47 +66,50 @@ export default {
     },
 
     async getAllOrders() {
-        const ordersCollection = collection(db, "PlacedCustOrders");
-        const ordersQuery = query(ordersCollection, orderBy("orderNum"));
-        let allOrders = await getDocs(ordersQuery)
-        let manyReceipts = [];
+      const ordersCollection = collection(db, 'PlacedCustOrders')
+      const ordersQuery = query(ordersCollection, orderBy('orderNum'))
+      let allOrders = await getDocs(ordersQuery)
+      let manyReceipts = []
 
-        for (const docs of allOrders.docs) {
-          let docsData = docs.data();
-          let docUserID = docsData.userId;
+      for (const docs of allOrders.docs) {
+        let docsData = docs.data()
+        let docUserID = docsData.userId
 
+        if (docUserID === this.user) {
+          //console.log(docsData.receiptId);
+          const existingOrder = manyReceipts.find(
+            (receipt) => receipt.orderId === docsData.receiptId
+          )
 
-          if (docUserID === this.user) {
-            //console.log(docsData.receiptId);
-            const existingOrder = manyReceipts.find(receipt => receipt.orderId === docsData.receiptId);
-
-            if (existingOrder) {
-              existingOrder.orders.push({
-                restaurant: docsData.hawkerCentre,
-                item: docsData.merchantName,
-                quantity: String(docsData.quantity) + 'x',
-                type: docsData.foodItemName,
-                price: docsData.foodItemPrice
-              })
-            } else {
-              manyReceipts.push({
-                'orderId': docsData.receiptId,
-                'dineIn':  docsData.diningStatus,
-                'diningTime': docsData.diningTime,
-                'seats': docsData.seats,
-                'orders': [{
+          if (existingOrder) {
+            existingOrder.orders.push({
+              restaurant: docsData.hawkerCentre,
+              item: docsData.merchantName,
+              quantity: String(docsData.quantity) + 'x',
+              type: docsData.foodItemName,
+              price: docsData.foodItemPrice
+            })
+          } else {
+            manyReceipts.push({
+              orderId: docsData.receiptId,
+              dineIn: docsData.diningStatus,
+              diningTime: docsData.diningTime,
+              seats: docsData.seats || ' ', //special character added to make seats empty
+              orders: [
+                {
                   restaurant: docsData.hawkerCentre,
                   item: docsData.merchantName,
                   quantity: String(docsData.quantity) + 'x',
                   type: docsData.foodItemName,
                   price: docsData.foodItemPrice
-                }]
-              });
-            }
+                }
+              ]
+            })
           }
-          this.receipts = manyReceipts;
-          console.log(manyReceipts);
         }
+        this.receipts = manyReceipts.reverse() //reverse the flow so that the most recent order is on top - Javier
+        console.log(manyReceipts)
+      }
     }
   }
 }
@@ -115,10 +118,10 @@ export default {
 <style scoped>
 .receipt-container {
   position: absolute;
-  top: 10vw;
-  left: 40vw;
-  width: 40vw;
-  height: 55vw;
+  top: 15vh;
+  left: 35vw;
+  width: 45vw;
+  height: 85vh;
   background-color: #eeffff;
   overflow: auto;
   font-family: 'Inria Sans', sans-serif;
@@ -144,7 +147,7 @@ export default {
 
 .divider {
   border: none;
-  border-top: 1px solid black;
+  border-top: 1px solid #000000;
   margin: 0vw 0;
 }
 

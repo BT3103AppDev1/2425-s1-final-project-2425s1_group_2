@@ -34,10 +34,13 @@
       <div class="modal-content">
         <button class="close-button" @click="closeLogoutModal">&times;</button>
         <div class="modal-text">
-          <h2>Are you sure you want to log out?</h2>
+          <h2>
+            <!-- Are you sure you want to log out? -->
+            Sign out and return later?
+          </h2>
           <div class="modal-actions">
-            <button @click="confirmLogout">Yes, log me out</button>
-            <button @click="closeLogoutModal">No, stay logged in</button>
+            <button @click="confirmLogout">Yes, sign me out</button>
+            <button @click="closeLogoutModal">No, stay signed in</button>
           </div>
         </div>
       </div>
@@ -46,51 +49,55 @@
 </template>
 
 <script>
-import { getAuth, signOut, onAuthStateChanged } from "firebase/auth"
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth'
 export default {
   name: 'UniversalHeader',
 
   data() {
     return {
       user: false,
-      showLogoutModal: false, // Control the modal visibility
+      showLogoutModal: false // Control the modal visibility
     }
   },
 
   mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.user = user;
+        this.user = user
       }
-    });
+    })
   },
 
   methods: {
     CDashClick() {
-      this.$router.push('/custD');
+      this.$router.push('/custD')
     },
 
     SettingsClick() {
-      this.$router.push('/profile');
+      this.$router.push('/profile')
     },
 
     openLogoutModal() {
-      this.showLogoutModal = true;
+      this.showLogoutModal = true
     },
 
     closeLogoutModal() {
-      this.showLogoutModal = false;
+      this.showLogoutModal = false
     },
 
     confirmLogout() {
-      const auth = getAuth();
-      signOut(auth).then(() => {
-        this.$router.push('/');
-        this.showLogoutModal = false; // Close the modal after logging out
-      }).catch((error) => {
-        console.error("Error signing out: ", error);
-      });
+      const auth = getAuth()
+      signOut(auth)
+        .then(() => {
+          this.$router.push('/').then(() => {
+            location.reload()
+          })
+          this.showLogoutModal = false // Close the modal after logging out
+        })
+        .catch((error) => {
+          console.error('Error signing out: ', error)
+        })
     }
   }
 }
@@ -111,7 +118,6 @@ img {
   width: 20vw;
   margin-left: 1vw;
 }
-
 
 h1 {
   color: #00adb5;
@@ -163,10 +169,13 @@ h1 {
 .modal-content {
   background-color: #ffffff;
   border: 2px solid #00adb5;
-  width: 400px;
+  width: 25vw;
+  min-height: 15vh;
   padding: 30px;
+  border-radius: 6px;
   position: relative;
   z-index: 1010;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .close-button {
@@ -185,9 +194,12 @@ h1 {
 }
 
 .modal-text h2 {
-  margin-bottom: 20px;
+  font-size: 1.5vw;
+  margin-top: 1vw;
+  margin-bottom: 1.5vw;
   color: #00adb5;
   text-align: center;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions {
@@ -201,9 +213,11 @@ h1 {
   color: white;
   border: none;
   padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
   text-align: center;
-  font-size: 15px;
+  font-size: 1.2vw;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions button:hover {

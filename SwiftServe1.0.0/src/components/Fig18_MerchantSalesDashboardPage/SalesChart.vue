@@ -69,7 +69,7 @@ export default {
             this.chartData = intervals.map(interval => {
                 const totalRevenue = this.orders
                     .filter(order => order.dateCreated >= interval.start && order.dateCreated <= interval.end)
-                    .reduce((sum, order) => sum + (order.foodItemPrice * order.quantity), 0);
+                    .reduce((sum, order) => sum + (order.foodItemPrice), 0);
                 return [interval.label, totalRevenue];
             });
         }
