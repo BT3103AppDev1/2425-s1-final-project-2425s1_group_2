@@ -2,7 +2,12 @@
     <div class="stall-toggle">
       <h3 class="closeStallText">Click to open / close stall</h3>
       <label class="switch">
-        <input type="checkbox" :checked="value" @change="$emit('update:value', $event.target.checked)">
+        <!-- <input type="checkbox" :checked="value" @change="$emit('update:value', $event.target.checked)"> -->
+        <input 
+          type="checkbox" 
+          :checked="modelValue" 
+          @change="toggle"
+        >
         <span class="slider round"></span>
       </label>
     </div>
@@ -11,12 +16,17 @@
   <script>
   export default {
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         required: true
       }
+    },
+    methods: {
+      toggle(event) {
+        this.$emit('update:modelValue', event.target.checked);
+      }
     }
-  };
+  }
   </script>
   
   <style scoped>

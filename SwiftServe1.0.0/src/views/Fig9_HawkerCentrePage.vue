@@ -392,11 +392,18 @@
 }
 
 /* Order Cart Styles */
+
+.cart-and-checkout {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+  }
+
 .order-cart {
   flex: 4;
   margin-right: 20px;
-  /* padding: 0.625rem; */
-  /* margin-top: 1.25rem; */
+  justify-content: flex-start;
+  padding-top: 0;
 }
 
 .active {
@@ -404,17 +411,13 @@
   font-weight: bold; 
 }
 
-.cart-and-checkout {
-    display: flex;
-    width: 100%;
-    margin-top: 20px;
-  }
-
 .checkout-area {
   flex: 1;
   display: flex;
   flex-direction: column; 
-  align-items: flex-end; 
+  align-items: flex-start; 
+  padding-top: 0;
+  margin: 0;
 }
 
 .no-stalls-message {

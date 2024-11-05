@@ -23,7 +23,7 @@
 
 <script>
 import firebaseApp from '@/firebase.js';
-import { getFirestore, getDocs, collection, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, getDocs, collection, doc, updateDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth} from "firebase/auth";
 const db = getFirestore(firebaseApp);
 
@@ -54,9 +54,36 @@ export default {
     });
 
     this.orderData = await this.getOrderData();
+
+    this.setupOrderListener();
   },
 
   methods: {
+    async setupOrderListener() {
+      const ordersCollection = collection(db, 'PlacedCustOrders');
+
+      onSnapshot(ordersCollection, (snapshot) => {
+        snapshot.docChanges().forEach(change => {
+          const orderData = change.doc.data();
+          const orderID = orderData.OrderNum || orderData.orderNum;
+
+          if (orderData.merchantId === this.merchantId) {
+            if (change.type === 'modified') {
+              if (orderData.collected) {
+                this.orderData = this.orderData.filter(order => order.orderID !== orderID);
+              } else {
+                const existingOrder = this.orderData.find(order => order.orderID === orderID);
+                if (existingOrder) {
+                  existingOrder.collectionState = orderData.orderStatus ? "Order Ready Collection" : "Customer Incoming";
+                  existingOrder.clicked = orderData.orderStatus;
+                }
+              }
+            }
+          }
+        });
+      });
+    },
+
     async updateOrder(orderID, newState) {
       const order = this.orderData.find(o => o.orderID === orderID);
       if (order) {
@@ -123,7 +150,7 @@ export default {
             } else {
                 let formattedOrder = {
                 orderID: ord.OrderNum || ord.orderNum,
-                collectionState: ord.orderStatus ? "Customer Incoming" : "Order Ready Collection",
+                collectionState: ord.orderStatus ? "Order Ready Collection" : "Customer Incoming",
                 dineOption: ord.diningStatus,
                 diningTime: ord.diningTime,
                 buttonDisabled: ord.orderStatus,

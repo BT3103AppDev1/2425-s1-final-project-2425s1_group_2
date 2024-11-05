@@ -1,6 +1,6 @@
 <template>
   <div class="order-cart">
-    <h2>Order Cart</h2>
+    <p class="order-cart-text">Order Cart</p>
     <div class="cart-items-container">
       <div v-if="items.length === 0" class="empty-cart-message">
         Your cart is empty
@@ -82,9 +82,10 @@ export default {
   max-width: 70%;
 }
 
-.order-cart h2 {
-  font-size: 1.5rem;
+.order-cart-text {
+  font-size: 2rem;
   margin-bottom: 15px;
+  font-weight: bold;
   color: #333;
 }
 
@@ -120,12 +121,16 @@ export default {
   min-width: 200px;
   width: 200px;
   position: relative;
+  cursor: pointer;
+}
+
+.cart-item:hover {
+  background-color: #007b83;  
 }
 
 .cart-item-details {
   text-align: center;
   width: 100%;
-  margin-top: 15px;
 }
 
 .cart-item-details h3 {
@@ -176,6 +181,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.remove-item-btn:hover {
+  background-color: white; 
+  color: red; 
 }
 
 /* Modal styling */

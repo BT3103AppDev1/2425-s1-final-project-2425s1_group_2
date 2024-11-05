@@ -5,14 +5,14 @@
         <img src="/ProfilePicture.png" alt="User Avatar" />
       </div>
       <div class="info-text">
-        <h2>{{ name }}</h2>
-        <p>{{ email }}</p>
+        <h2 class="info-details">{{ name }}</h2>
+        <p class="info-details">{{ email }}</p>
       </div>
     </div>
     <div class="actions">
       <router-link to="/profile" class="action-link">
         <button @click="updateSettings">
-          <img src="/UpdateSettings.png" alt="Update Settings" class="icon" />
+          <img src="/cog.svg" alt="Update Settings" class="icon" />
           <span>Update Settings</span>
         </button>
       </router-link>
@@ -35,12 +35,25 @@
         <div class="modal-text">
           <h2>Confirm Account Deletion</h2>
           <p>
-            Are you sure you want to delete your account? Please enter your current password to confirm.
+            <!-- We're really sorry to see you go!  -->
+
+            We'll miss having you with us! For your security, kindly enter your current password
+            below.
+
+            <!-- Old Prompt: Are you sure you want to delete your account? Please enter your current
+            password to confirm. -->
           </p>
-          <input type="password" v-model="currentPassword" placeholder="Enter current password" class="centered-input"/>
+          <input
+            type="'text'"
+            v-model="currentPassword"
+            placeholder="Enter current password"
+            class="centered-input"
+            :style="{ '-webkit-text-security': showPassword ? 'none' : 'disc' }"
+          />
+          <!-- Do not show the eye -->
           <div class="modal-actions">
-            <button @click="confirmDeleteAccount">Confirm Delete</button>
-            <button @click="closeDeleteModal">Cancel</button>
+            <button @click="confirmDeleteAccount" class="modal-button">Confirm Delete</button>
+            <button @click="closeDeleteModal" class="modal-button">Cancel</button>
           </div>
         </div>
       </div>
@@ -49,10 +62,10 @@
 </template>
 
 <script>
-import firebaseApp from '@/firebase.js';
-import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
-import { getAuth, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from "firebase/auth";
-const db = getFirestore(firebaseApp);
+import firebaseApp from '@/firebase.js'
+import { getFirestore, doc, deleteDoc } from 'firebase/firestore'
+import { getAuth, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from 'firebase/auth'
+const db = getFirestore(firebaseApp)
 
 export default {
   name: 'ProfileComponent',
@@ -63,95 +76,109 @@ export default {
       email: '',
       user: false,
       showDeleteModal: false, // Controls whether the modal is shown
-      currentPassword: '', // Store the password entered for confirmation
-    };
+      currentPassword: '' // Store the password entered for confirmation
+    }
   },
 
   mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.user = user;
-        this.setProfile();
+        this.user = user
+        this.setProfile()
       }
-    });
+    })
   },
 
   methods: {
     setProfile() {
-      this.name = this.user.displayName;
-      this.email = this.user.email;
+      this.name = this.user.displayName
+      this.email = this.user.email
     },
     updateSettings() {
-      console.log('Update settings clicked');
+      console.log('Update settings clicked')
     },
     showRecentOrder() {
-      console.log('Show recent order clicked');
+      console.log('Show recent order clicked')
     },
 
     // Open and close modal methods
     openDeleteModal() {
-      this.showDeleteModal = true;
+      this.showDeleteModal = true
     },
     closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.currentPassword = ''; // Reset password input when closing
+      this.showDeleteModal = false
+      this.currentPassword = '' // Reset password input when closing
     },
 
     // Confirm deletion method (called when user clicks confirm in the modal)
     async confirmDeleteAccount() {
       if (!this.currentPassword) {
-        alert('Please enter your current password.');
-        return;
+        alert('Please enter your current password.')
+        return
       }
 
       try {
         // Reauthenticate the user with their email and current password
-        const credential = EmailAuthProvider.credential(this.email, this.currentPassword);
-        await reauthenticateWithCredential(this.user, credential);
+        const credential = EmailAuthProvider.credential(this.email, this.currentPassword)
+        await reauthenticateWithCredential(this.user, credential)
 
         // Delete the user's Firestore profile document
-        const userDocRef = doc(db, "UserProfile", this.user.uid); // Adjust Firestore path as needed
-        await deleteDoc(userDocRef);
-        console.log('User profile deleted from Firestore.');
+        const userDocRef = doc(db, 'UserProfile', this.user.uid) // Adjust Firestore path as needed
+        await deleteDoc(userDocRef)
+        console.log('User profile deleted from Firestore.')
 
         // Delete the user from Firebase Authentication
-        await deleteUser(this.user);
-        alert('Account deleted successfully. Proceeding to home page.');
-        console.log('User account deleted from Firebase Authentication.');
+        await deleteUser(this.user)
+        alert('Account deleted successfully. Proceeding to home page.')
+        console.log('User account deleted from Firebase Authentication.')
 
-        this.$router.push('/'); // Adjust the route as needed
+        this.$router.push('/') // Adjust the route as needed
       } catch (error) {
-        console.error('Error deleting account:', error);
-        alert('Error deleting account: ' + error.message);
+        console.error('Error deleting account:', error)
+        alert('Error deleting account: ' + error.message)
       } finally {
-        this.closeDeleteModal(); // Close the modal after action is done
+        this.closeDeleteModal() // Close the modal after action is done
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
 /* Profile container and actions styles remain the same */
-.profile-container {
+/* .profile-container {
   background-color: #00adb5;
   color: white;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   font-family: 'Inria Sans', sans-serif;
   align-items: flex-start;
   width: 15vw;
+  height: 100vh;
+} */
+
+/* javier edited to absolute to remove the scolling and disproportions */
+.profile-container {
+  position: absolute;
+  top: 15vh;
+  left: 0;
+  width: 20vw;
+  height: 100vh;
+  background-color: #00adb5;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inria Sans', sans-serif;
+  box-sizing: border-box;
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
   text-align: center;
-  margin-left: 20px;
-  margin-top: 80px;
+  margin-top: 10vh;
 }
 
 .avatar img {
@@ -159,7 +186,7 @@ export default {
   height: 150px;
   border-radius: 50%;
   background-color: #ffffff;
-  margin-bottom: 10px;
+  margin-bottom: 1vh;
 }
 
 .info-text {
@@ -167,13 +194,14 @@ export default {
 }
 
 .centered-input {
-  width: 70%; /* Increased width to make input box bigger */
-  padding: 12px; /* Increased padding for bigger input */
-  margin: 10px auto;
+  width: 70%;
+  padding: 1vw;
+  margin: 1vw auto;
   display: block;
   border: 2px solid #00adb5;
   border-radius: 4px;
-  font-size: 16px; /* Increased font size */
+  font-size: 1.3vw;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .actions {
@@ -181,20 +209,23 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  margin-top: 20px;
-  margin-left: 20px;
+  margin-top: 2vw;
+  margin-left: 2vw;
 }
 
 button {
+  font-family: 'Inria Sans', sans-serif;
+  font-size: 1.3vw;
   background: none;
   border: none;
-  color: white;
+  color: #ffffff;
   text-align: center;
   padding: 10px 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   width: 100%;
+  border-radius: 2px;
 }
 
 button .icon {
@@ -202,6 +233,10 @@ button .icon {
   width: 20px;
   height: 20px;
   text-align: center;
+}
+
+button:hover {
+  color: #eeffff;
 }
 
 /* Modal styling */
@@ -242,10 +277,13 @@ button .icon {
   font-size: 24px;
   cursor: pointer;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-
 .modal-text {
+  font-family: 'Inria Sans', sans-serif;
   color: #00adb5;
   font-size: 16px;
   line-height: 1.5;
@@ -253,7 +291,7 @@ button .icon {
 }
 
 .modal-actions {
-    display: flex;
+  display: flex;
   justify-content: space-between;
   margin-top: 20px;
   flex-direction: column;
@@ -266,18 +304,31 @@ button .icon {
   border: none;
   padding: 10px;
   cursor: pointer;
-  width: 50%; /* Make buttons take full width */
-  margin-bottom: 10px; /* Space between the buttons */
+  width: 50%;
+  margin-bottom: 10px;
   text-align: center;
   font-size: 15px;
 }
 
 .modal-actions button:last-child {
-  margin-bottom: 0; /* Remove bottom margin for the last button */
+  margin-bottom: 0;
 }
 
 .modal-actions button:hover {
   background-color: #007a80;
 }
 
+.modal-button {
+  font-weight: bold;
+}
+
+.info-details {
+  font-size: 1.5vw;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.action-link {
+  text-decoration: none; /* This removes the underline from router-links */
+  color: inherit; /* Ensures it takes the color of the button */
+}
 </style>
