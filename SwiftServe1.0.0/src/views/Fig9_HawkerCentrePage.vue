@@ -36,6 +36,18 @@
       <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" /> 
       <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area"/>
     </div>
+             <!-- Custom Modal for No Items in Cart-->
+             <div v-if="showCartModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-text">
+          <h2>Notification</h2>
+          <p>Cart is empty. Please add items in before proceeding.</p>
+          <div class="modal-actions">
+            <button @click="closeCartModal">Go back</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
   
@@ -76,6 +88,7 @@
         categories: ['All', 'Chinese', 'Western', 'Malay', 'Indian', 'Others', 'Beverages'],
         user: null,
         HCName: false,
+        showCartModal: false
       };
     },
     async mounted() {
@@ -173,6 +186,9 @@
       //     console.error('Error fetching items: ', error);
       //   }
       // },
+      closeCartModal() {
+        this.showCartModal = false;
+      },
       setupStallListener() {
         db.collection('UserProfile')
         .where('profileType', '==', 'Merchant')
@@ -274,6 +290,10 @@
         this.cartItems.push(item);
       },
       checkout() {
+        if (this.cartItems.length === 0) {
+          this.showCartModal = true;
+          return;
+        }
         this.$router.push({
           path: '/checkout',
           query: {HCName: this.HCName}
@@ -425,5 +445,84 @@
   font-size: 1.5625rem;
   margin-top: 0.625rem;
   font-weight: bold;
+}
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.modal-actions button:last-child {
+  margin-bottom: 0;
+}
+
+.modal-actions button:hover { 
+  background-color: #007a80;
 }
 </style>

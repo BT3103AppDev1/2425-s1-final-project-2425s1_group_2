@@ -2,7 +2,7 @@
   <div class="receipt-container">
     <div class="receipt-header">
       <h2 id="receipt">Receipt</h2>
-      <img src="/RedCross.png" alt="Go Back" class="cancel" @click="goHawkerCentre"/>
+      <img src="/RedCross.png" alt="Go Back" class="cancel" @click="goHawkerCentre" />
       <!--<router-link to="/hawkercentre">
       </router-link>-->
     </div>
@@ -11,10 +11,10 @@
         <div class="order-list">
           <div id="top">
             <h3>Order {{ index + 1 }}</h3>
-            <p>{{ order.hawker }}</p>
-            <p>{{ order.stall }}</p>
-            <p>{{ order.quantity }}x {{ order.dish }}</p>
-            <p>${{ order.price.toFixed(2) }}</p>
+            <p>{{ order.hawkerCentre }}</p>
+            <p>{{ order.merchantName }}</p>
+            <p>{{ order.quantity }}x {{ order.foodItemName }}</p>
+            <p>${{ order.foodItemPrice.toFixed(2) }}</p>
           </div>
           <button class="edit-button" @click="goOrdersPage(order)">Edit</button>
         </div>
@@ -46,14 +46,8 @@
     <div class="payment-mode">
       <h3>Payment Mode:</h3>
       <div class="payment-options">
-        <img 
-          v-for="(method, index) in paymentMethods" 
-          :key="index" 
-          :src="method.src" 
-          :alt="method.alt" 
-          :class="{ selected: selectedMethod === method.alt }" 
-          @click="selectMethod(method.alt)"
-        />
+        <img v-for="(method, index) in paymentMethods" :key="index" :src="method.src" :alt="method.alt"
+          :class="{ selected: selectedMethod === method.alt }" @click="selectMethod(method.alt)" />
         <!--<img src="/visamaster.png" alt="Visa/Mastercard" />
         <img src="/paynow.png" alt="PayNow" />
         <img src="/paylah.png" alt="PayLah!" />-->
@@ -63,8 +57,8 @@
     <button class="confirm-button" @click="goPaymentSuccess">Confirm and Pay</button>
     <!--</router-link>-->
 
-        <!-- Custom Modal for No Payment Selected -->
-        <div v-if="showDeleteModal" class="modal-overlay">
+    <!-- Custom Modal for No Payment Selected -->
+    <div v-if="showDeleteModal" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-text">
           <h2>Notification</h2>
@@ -81,8 +75,8 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth';
+import { collection, getDocs, setDoc, doc, deleteDoc,query,where,onSnapshot} from 'firebase/firestore'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const db = getFirestore(firebaseApp)
 
@@ -108,112 +102,165 @@ export default {
   },
 
   async mounted() {
-    this.HCName = this.$route.query.HCName;
-    console.log(this.HCName)
-
     const auth = getAuth();
-    this.user = auth.currentUser.uid;;
-    await this.getCartOrders(this.user)
-    console.log(this.orders);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+        this.HCName = this.$route.query.HCName;
+        console.log(this.HCName);
+        //this.getCartOrders();
+        this.setupCartListener();
+      }
+    });
   },
 
   computed: {
     total() {
-      return this.orders.reduce((sum, order) => sum + order.price, 0)
+      return this.orders.reduce((sum, order) => sum + order.foodItemPrice, 0)
     }
   },
   methods: {
-      async goPaymentSuccess() {
+    async goPaymentSuccess() {
 
-        if (this.selectedMethod == null) {
-          this.showDeleteModal = true;
-          return;
+      if (this.selectedMethod == null) {
+        this.showDeleteModal = true;
+        return;
+      }
+
+      let allOrders = await getDocs(collection(db, 'Cart'))
+
+      //allOrders.forEach((docs) => {
+      const receiptID = Date.now();
+      for (const docs of allOrders.docs) {
+        let docsData = docs.data();
+        let docUserID = docsData.userId;
+
+        if (docUserID === this.user.uid) {
+          docsData.receiptId = receiptID;
+          docsData.orderNum = String(docUserID.substring(0, 3) + Date.now());
+          docsData.collected = false;
+          docsData.diningStatus = this.dineOption;
+          docsData.diningTime = this.diningTime;
+          docsData.orderStatus = false;
+          docsData.paymendMode = this.selectedMethod;
+          docsData.seats = "";
+          await setDoc(doc(db, 'Cart', docs.id), docsData)
         }
-
-        let allOrders = await getDocs(collection(db, 'Cart'))
-
-        //allOrders.forEach((docs) => {
-        const receiptID = Date.now();
-        for (const docs of allOrders.docs) {
-          let docsData = docs.data();
-          let docUserID = docsData.userId;
-
-          if (docUserID === this.user) {
-            docsData.receiptId = receiptID;
-            docsData.orderNum = String(docUserID.substring(0, 3) + Date.now());
-            docsData.collected = false;
-            docsData.diningStatus = this.dineOption;
-            docsData.diningTime = this.diningTime;
-            docsData.orderStatus = false;
-            docsData.paymendMode = this.selectedMethod;
-            docsData.seats = "";
-            await setDoc(doc(db, 'Cart', docs.id), docsData)
-          }
-          if (this.dineOption === "Dine in") {
-            this.$router.push('/paymentSuccess');
-          } else {
-            docsData.dateCreated = new Date().toISOString();
-            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
-            await deleteDoc(doc(db, 'Cart', docs.id));
-            this.$router.push('/takeawaySuccess');
-          }
+        if (this.dineOption === "Dine in") {
+          this.$router.push('/paymentSuccess');
+        } else {
+          docsData.dateCreated = new Date().toISOString();
+          await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+          await deleteDoc(doc(db, 'Cart', docs.id));
+          this.$router.push('/takeawaySuccess');
         }
-        //add method to clear cart in hawker centre page
-      },
-      closeDeleteModal() {
+      }
+      //add method to clear cart in hawker centre page
+    },
+    closeDeleteModal() {
       this.showDeleteModal = false;
     },
 
-      goHawkerCentre() {
-        //this.$router.push('/hawkerCentre')
-        this.$router.push({
-          path: '/hawkerCentre',
-          query: {HCName: this.HCName}
-        })
-      },
+    goHawkerCentre() {
+      //this.$router.push('/hawkerCentre')
+      this.$router.push({
+        path: '/hawkerCentre',
+        query: { HCName: this.HCName }
+      })
+    },
 
-      goOrdersPage(order) {
+    goOrdersPage(order) {
 
-        this.$router.push({
-          name: 'foodItemPage',
-          params: {
-            cartItemId: order.id,  // Pass the cart item ID
-          },
-          query: {
-            HCName: this.HCName
-          }
+      this.$router.push({
+        name: 'foodItemPage',
+        params: {
+          cartItemId: order.id,  // Pass the cart item ID
+        },
+        query: {
+          HCName: this.HCName
+        }
+      });
+    },
+
+    selectMethod(method) {
+      this.selectedMethod = method;
+    },
+    setupCartListener() {
+      if (this.user) {
+        const cartQuery = query(
+          collection(db, 'Cart'),
+          where('userId', '==', this.user.uid)
+        );
+
+        onSnapshot(cartQuery, (querySnapshot) => {
+          this.orders = querySnapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          console.log('Cart items updated:', this.orders);
+
+          // Check for unavailable items or closed stalls
+          this.orders.forEach(cartItem => this.checkAndRemoveItem(cartItem));
+        }, (error) => {
+          console.error('Error listening to cart updates:', error);
         });
-      },
-
-      selectMethod(method) {
-        this.selectedMethod = method; 
-      },
-
-      async getCartOrders(userID) {
-        let allOrders = await getDocs(collection(db, 'Cart'))
-
-        allOrders.forEach((docs) => {
-          let docsData = docs.data()
-          let docUserID = docsData.userId;
-
-          if (docUserID === userID) {
-            let newOrder = {
-              id: docs.id,
-              hawker: docsData.hawkerCentre,
-              stall: docsData.merchantName,
-              quantity: docsData.quantity,
-              dish: docsData.foodItemName,
-              price: docsData.foodItemPrice
-            };
-            this.orders.push(newOrder);
-          }
-
-
-
-        })
       }
+    },
+
+    async checkAndRemoveItem(cartItem) {
+      const foodItemRef = doc(db, 'FoodItem', cartItem.foodItemId);
+      const foodItemSnapshot = await getDocs(foodItemRef);
+
+      if (foodItemSnapshot.exists()) {
+        const foodItemData = foodItemSnapshot.data();
+
+        // Check if the food item is unavailable
+        if (!foodItemData.available) {
+          await this.removeItemFromCart(cartItem.id);
+          return; 
+        }
+
+        // Check if the stall is closed
+        const stallRef = doc(db, 'UserProfile', foodItemData.merchantId);
+        const stallSnapshot = await getDocs(stallRef);
+
+        if (stallSnapshot.exists() && !stallSnapshot.data().open) {
+          await this.removeItemFromCart(cartItem.id);
+        }
+      }
+    },
+
+    async removeItemFromCart(itemId) {
+      try {
+        const itemRef = doc(db, 'Cart', itemId);
+        await deleteDoc(itemRef);
+        this.orders = this.orders.filter(item => item.foodItemId !== itemId);
+      } catch (error) {
+        console.error('Error removing item from cart:', error);
+      }
+    }
+    /*async getCartOrders(userID) {
+      let allOrders = await getDocs(collection(db, 'Cart'))
+
+      allOrders.forEach((docs) => {
+        let docsData = docs.data()
+        let docUserID = docsData.userId;
+
+        if (docUserID === userID) {
+          let newOrder = {
+            id: docs.id,
+            hawker: docsData.hawkerCentre,
+            stall: docsData.merchantName,
+            quantity: docsData.quantity,
+            dish: docsData.foodItemName,
+            price: docsData.foodItemPrice
+          };
+          this.orders.push(newOrder);
+        }
+      })*/
+    }
   }
-}
 </script>
 
 <style scoped>
@@ -248,7 +295,8 @@ export default {
 .order-items {
   max-height: 25vh;
   overflow-y: auto;
-  
+  align-items: center;
+
 }
 
 #TotalPrice {
@@ -265,8 +313,8 @@ export default {
 }
 
 .order-list {
-  display: flex; 
-  justify-content: space-between; 
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -285,7 +333,8 @@ export default {
   text-align: right;
   border-bottom: 2px solid black;
   font-weight: bold;
-  margin-bottom: 2vh; /* Add margin to create space between total and dropdowns */
+  margin-bottom: 2vh;
+  /* Add margin to create space between total and dropdowns */
 }
 
 .option {

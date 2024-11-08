@@ -143,7 +143,7 @@
   .welcomeCust {
     position: relative;
     text-align: center;
-    left: 13vw;
+    left: 8vw;
     font-size: 3vh;
     font-family: 'Inria Sans', sans-serif;
   }
