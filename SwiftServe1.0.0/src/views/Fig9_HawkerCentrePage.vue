@@ -349,13 +349,13 @@
 <style>
 .container {
   font-family: 'Inria Sans', sans-serif;  
-  max-width: 90vw;
+  max-width: 95vw;
   margin-left: auto;
   margin-right: auto;
   padding-left: 0.5vw;
   padding-right: 0.5vw;
   overflow-y: auto;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 /* 2xl */
@@ -402,7 +402,7 @@
 
 .main-content {
   display: flex; 
-  margin-top: 1.25rem;
+  margin-top: 2vh;
 }
 
 .food-area {
@@ -411,8 +411,9 @@
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 15.625rem));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(15vw, 15vh));
+  height: 38vh;
+  overflow-y: auto;
 }
 
 /* Order Cart Styles */
@@ -425,6 +426,7 @@
 
 .order-cart {
   flex: 4;
+  margin-right: 5vw;
   justify-content: flex-start;
   padding-top: 0;
 }
@@ -445,8 +447,8 @@
 
 .no-stalls-message {
   text-align: center;
-  font-size: 1.5625rem;
-  margin-top: 0.625rem;
+  font-size: 1.5vw;
+  margin-top: 5vh;
   font-weight: bold;
 }
 /* Modal styling */

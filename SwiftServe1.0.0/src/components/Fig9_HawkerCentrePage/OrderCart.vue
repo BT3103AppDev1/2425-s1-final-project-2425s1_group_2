@@ -77,37 +77,39 @@ export default {
 
 <style scoped>
 .order-cart {
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 70%;
+  border-radius: 0.5vw; 
+  padding: 1vh 1vw; 
+  max-width: 70vw; 
+  height: 30vh;
+  /* overflow-y: auto;  */
 }
 
 .order-cart-text {
-  font-size: 2rem;
-  margin-bottom: 15px;
+  font-size: 1.5vw; 
+  margin-bottom: 0.5vh; 
   font-weight: bold;
   color: #333;
+  padding: 0;
 }
 
 .cart-items-container {
   display: flex;
   flex-direction: column;
-  border: 2px solid #00ADB5;
-  border-radius: 8px;
-  padding: 10px;
+  border: 0.3vh solid #00ADB5;
+  border-radius: 0.8vw; 
+  padding: 1vh;
 }
 
 .cart-items-row {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 10px;
+  overflow-x: auto; 
 }
 
 .empty-cart-message {
   text-align: center;
   color: #666;
-  padding: 20px 0;
+  padding: 3vh 0; 
 }
 
 .cart-item {
@@ -115,17 +117,17 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   background-color: #00ADB5;
-  border-radius: 8px;
-  padding: 15px;
-  margin-right: 10px;
-  min-width: 200px;
-  width: 200px;
+  border-radius: 0.8vw;
+  padding: 0.5vh;
+  margin-right: 1vw;
+  height: 20vh;
+  width: 8vw; 
   position: relative;
   cursor: pointer;
 }
 
 .cart-item:hover {
-  background-color: #007b83;  
+  background-color: #007b83; /* Darkens on hover */
 }
 
 .cart-item-details {
@@ -134,25 +136,29 @@ export default {
 }
 
 .cart-item-details h3 {
-  font-size: 1rem;
-  margin: 0 0 10px 0;
+  font-size: 0.8vw;
+  margin: 0.5vh;
+  padding: 0;
   color: white;
-  white-space: wrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .cart-item-details img {
-  width: 100%;
-  height: 150px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  width: 5vw;
+  height: 5vw;
+  border-radius: 0.5vw;
+  margin-bottom: 1vh;
 }
 
 .cart-item-details p {
-  font-size: 0.9rem;
+  font-size: 0.7vw;
   color: white;
-  margin: 0 0 5px 0;
+  margin: 0.2vh 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .food-item-name {
@@ -168,15 +174,15 @@ export default {
 
 .remove-item-btn {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 0.5vh;
+  right: 0.5vw;
   background-color: red;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 14px;
+  width: 2vh;
+  height: 2vh;
+  font-size: 1.2vh;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -184,8 +190,8 @@ export default {
 }
 
 .remove-item-btn:hover {
-  background-color: white; 
-  color: red; 
+  background-color: white;
+  color: red;
 }
 
 /* Modal styling */

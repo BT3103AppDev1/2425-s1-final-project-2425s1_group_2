@@ -43,15 +43,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 1.5rem;
+  margin-top: 5vh;
+  width: 30vw;
 }
 
 .totalAmount {
-  font-size: 1.5rem;
-  /* margin-bottom: 0.625rem; */
+  font-size: 1.5vw; 
   font-weight: bold;
   text-align: right;
-  width: 100%;
+  width: 90%;
 }
 
 .button-container {
@@ -64,22 +64,23 @@ export default {
 button {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  margin: 0.3125rem;
-  padding: 0.625rem 1.25rem;
-  font-size: 1.5rem;
+  gap: 1vw;
+  margin: 0.5vh 0;
+  padding: 1vh 1vw; 
+  font-size: 1.25vw; 
   cursor: pointer;
   border: none;
-  border-radius: 0.3125rem;
+  border-radius: 0.5vh;
+  font-weight: bold;
   background-color: #00adb5;
   color: white;
-  width: 65%;
+  width: 80%;
   font-family: 'Inria Sans', sans-serif;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 button:hover {
   background-color: #007b83; /* Darker shade for hover effect */
-  
 }
+
 </style>

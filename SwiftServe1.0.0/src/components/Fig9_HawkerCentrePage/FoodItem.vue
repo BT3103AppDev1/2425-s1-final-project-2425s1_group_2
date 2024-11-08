@@ -21,32 +21,38 @@ export default {
 
 <style scoped>
 .food-item {
-  /* border: 1px solid #e0e0e0;
-    border-radius: 8px; */
-  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
   transition: opacity 0.3s ease;
   text-align: center;
+  height: 19vh;
+  width: 12vw;
+  margin-bottom: 5vh;
+  align-items: center;
 }
 
 .food-item img {
-  width: 100%;
-  height: 150px;
+  width: 10vw;
+  height: 10vw; 
   object-fit: cover;
-  margin-bottom: 10px;
-  border-radius: 10px;
+  margin-bottom: 0.5vh; 
+  border-radius: 1vh;
 }
 
 .food-item:hover img {
-  transform: scale(1.05); /* Optional: slightly zooms in the image on hover */
+  transform: scale(1.05);
 }
 
 .food-item h3 {
-  padding: 10px;
+  padding: 0;
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.25vw; 
   color: #333;
   font-family: 'Inria Sans', sans-serif;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .food-item.unavailable {
