@@ -34,66 +34,66 @@
     }
   };
   </script>
-  
-  <style scoped>
-  .stall-list {
-    overflow-y: auto;
-    width: 100px;
-    height: 300px;
-    background-color: #e6f7f5; /* Light green background */
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-right: 10px;
-  }
-  
-  .stall-item {
-    display: flex;
-    flex-direction: column; /* Stack image and name vertically */
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .stall-item:last-child {
-    border-bottom: none;
-  }
-  
-  .stall-item.active {
-    background-color: #e8f0fe;
-  }
-  
-  .stall-thumbnail-container {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #f0f0f0;
-    margin-bottom: 8px;
-  }
 
-  .stall-thumbnail-container:hover {
-    transform: scale(1.2); 
-    z-index: 1;
-  }
-  
-  .stall-thumbnail-container.active-thumbnail {
-    border: 2px solid #333333;
-    padding: 6px;
-    box-sizing: content-box;
-  }
-  
-  .stall-thumbnail {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .stall-name {
-    font-size: 16px;
-    color: #333333;
-    font-weight: bold;
-  }
-  </style>
-  
+   <style scoped>
+   .stall-list {
+     overflow-y: auto;
+     width: 6vw; 
+     height: 30vh;
+     background-color: #e6f7f5;
+     border-radius: 1vh;
+     box-shadow: 0 0.3vh 0.6vh rgba(0, 0, 0, 0.05);
+     margin-right: 1vw;
+   }
+   
+   .stall-item {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     padding: 1.5vh 1vw; /* Adjusted padding */
+     cursor: pointer;
+     transition: background-color 0.2s ease;
+   }
+   
+   .stall-item:last-child {
+     border-bottom: none;
+   }
+   
+   .stall-item.active {
+     background-color: #e8f0fe;
+   }
+   
+   .stall-thumbnail-container {
+     width: 4vw; /* Adjusted width for responsiveness */
+     height: 4vw; /* Adjusted height for responsiveness */
+     border-radius: 1vh;
+     overflow: hidden;
+     background-color: #f0f0f0;
+     margin-bottom: 1vh;
+     transition: transform 0.3s ease;
+   }
+   
+   .stall-thumbnail-container:hover {
+     transform: scale(1.2); 
+     z-index: 1;
+   }
+   
+   .stall-thumbnail-container.active-thumbnail {
+     border: 0.25vh solid #333333;
+     padding: 0.7vh;
+     box-sizing: content-box;
+   }
+   
+   .stall-thumbnail {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+   }
+   
+   .stall-name {
+     font-size: 0.85vw;
+     color: #333333;
+     font-weight: bold;
+     text-align: center;
+   }
+   </style>
