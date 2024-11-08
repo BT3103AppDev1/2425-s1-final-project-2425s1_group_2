@@ -5,7 +5,7 @@
       </div>
   
       <div class="welcomeCust">
-        <h2>Welcome merchant {{ this.name }}!</h2>
+        <h2>Welcome Merchant {{ this.name }}!</h2>
       </div>
       <img
         src="/dashboardButton.png"
