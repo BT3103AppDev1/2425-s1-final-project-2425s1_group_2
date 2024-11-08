@@ -38,27 +38,26 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 5px;
     font-family: 'Inria Sans', sans-serif;
 }
 
 
 .title {
-    font-size: 2rem;
+    font-size: 2vw;
     font-weight: bold;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 1vw;
     text-align: center;
 }
 
 .period-buttons {
     display: flex;
-    gap: 10px;
+    gap: 3vw;
 }
 
 .period-buttons button {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 1vw 2vw;
+    font-size: 1.5vw;
     background-color: #00adb5;
     /* Light blue color for unselected */
     color: white;
