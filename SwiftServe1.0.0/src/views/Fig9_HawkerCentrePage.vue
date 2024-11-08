@@ -1,8 +1,9 @@
 <template>
 
+  
+  <!--<AppHeader />-->
+  <HeaderScreen />
   <div class="container">
-    <!--<AppHeader />-->
-    <HeaderScreen />
     <FilterButtons 
       :filters="availableFilters" 
       :activeFilter="activeCategory" 
@@ -91,6 +92,9 @@
         showCartModal: false
       };
     },
+    /*created() {
+      window.location.reload();
+    },*/
     async mounted() {
       const auth = getAuth();
 
@@ -345,11 +349,11 @@
 <style>
 .container {
   font-family: 'Inria Sans', sans-serif;  
-  max-width: 1536px;
+  max-width: 90vw;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
   overflow-y: auto;
   height: 100vh;
 }
@@ -421,7 +425,6 @@
 
 .order-cart {
   flex: 4;
-  margin-right: 20px;
   justify-content: flex-start;
   padding-top: 0;
 }
