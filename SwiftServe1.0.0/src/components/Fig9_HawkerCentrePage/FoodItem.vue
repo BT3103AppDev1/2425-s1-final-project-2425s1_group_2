@@ -25,7 +25,7 @@ export default {
   cursor: pointer;
   transition: opacity 0.3s ease;
   text-align: center;
-  height: 19vh;
+  height: 24vh;
   width: 12vw;
   margin-bottom: 5vh;
   align-items: center;
@@ -33,9 +33,9 @@ export default {
 
 .food-item img {
   width: 10vw;
-  height: 10vw; 
+  height: 10vw;
   object-fit: cover;
-  margin-bottom: 0.5vh; 
+  margin-bottom: 0.5vh;
   border-radius: 1vh;
 }
 
@@ -46,7 +46,7 @@ export default {
 .food-item h3 {
   padding: 0;
   margin: 0;
-  font-size: 1.25vw; 
+  font-size: 1.25vw;
   color: #333;
   font-family: 'Inria Sans', sans-serif;
   text-overflow: ellipsis;

@@ -2,12 +2,14 @@
   <div class="order-cart">
     <p class="order-cart-text">Order Cart</p>
     <div class="cart-items-container">
-      <div v-if="items.length === 0" class="empty-cart-message">
-        Your cart is empty
-      </div>
+      <div v-if="items.length === 0" class="empty-cart-message">Your cart is empty</div>
       <div v-else class="cart-items-row">
         <div v-for="item in items" :key="item.id" class="cart-item" @click="editItem(item)">
-          <button @click.stop="confirmRemoveItem(item)" class="remove-item-btn" aria-label="Remove item">
+          <button
+            @click.stop="confirmRemoveItem(item)"
+            class="remove-item-btn"
+            aria-label="Remove item"
+          >
             ✕
           </button>
           <div class="cart-item-details">
@@ -49,44 +51,46 @@ export default {
   },
   data() {
     return {
-      showDeleteModal: false,  // Controls the modal visibility
-      itemToRemove: null       // Stores the item to be removed
-    };
+      showDeleteModal: false, // Controls the modal visibility
+      itemToRemove: null // Stores the item to be removed
+    }
   },
   methods: {
     editItem(item) {
-      this.$emit('edit-item', item);
+      this.$emit('edit-item', item)
     },
     confirmRemoveItem(item) {
-      this.itemToRemove = item;
-      this.showDeleteModal = true;
+      this.itemToRemove = item
+      this.showDeleteModal = true
     },
     removeItem() {
       if (this.itemToRemove) {
-        this.$emit('remove-item', this.itemToRemove.id);
-        this.closeDeleteModal();
+        this.$emit('remove-item', this.itemToRemove.id)
+        this.closeDeleteModal()
       }
     },
     closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.itemToRemove = null; // Reset itemToRemove when modal is closed
+      this.showDeleteModal = false
+      this.itemToRemove = null // Reset itemToRemove when modal is closed
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .order-cart {
-  border-radius: 0.5vw; 
-  padding: 1vh 1vw; 
-  max-width: 70vw; 
-  height: 30vh;
+  position: absolute;
+  top: 80vh;
+  left: 0.5vw;
+  width: 70vw;
+  border-radius: 0.5vw;
+  padding: 1vh 1vw;
+  height: 18vh;
   /* overflow-y: auto;  */
 }
-
 .order-cart-text {
-  font-size: 1.5vw; 
-  margin-bottom: 0.5vh; 
+  font-size: 1.5vw;
+  margin-bottom: 0.5vh;
   font-weight: bold;
   color: #333;
   padding: 0;
@@ -95,33 +99,33 @@ export default {
 .cart-items-container {
   display: flex;
   flex-direction: column;
-  border: 0.3vh solid #00ADB5;
-  border-radius: 0.8vw; 
+  border: 0.3vh solid #00adb5;
+  border-radius: 0.8vw;
   padding: 1vh;
 }
 
 .cart-items-row {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto; 
+  overflow-x: auto;
 }
 
 .empty-cart-message {
   text-align: center;
   color: #666;
-  padding: 3vh 0; 
+  padding: 3vh 0;
 }
 
 .cart-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: #00ADB5;
+  background-color: #00adb5;
   border-radius: 0.8vw;
   padding: 0.5vh;
   margin-right: 1vw;
   height: 20vh;
-  width: 8vw; 
+  width: 8vw;
   position: relative;
   cursor: pointer;
 }

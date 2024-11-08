@@ -27,27 +27,37 @@ export default {
 </script>
 
 <style scoped>
-.filter-buttons {
+/* .filter-buttons {
   display: flex;
   flex-direction: column;
   gap: 1vh; 
-  /* margin-bottom: 1vh; */
+} */
+
+.filter-buttons {
+  position: fixed;
+  top: 15vh;
+  left: 1.6vw;
+  width: 10vw;
+  height: 5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
 }
 
 .filter-buttons button {
   background-color: #ccc;
   border: none;
-  padding: 0.5vh 0.5vw; 
-  border-radius: 2vw; 
+  padding: 0.5vh 0.5vw;
+  border-radius: 2vw;
   cursor: pointer;
-  width: 6vw; 
+  width: 6vw;
   font-weight: bold;
-  font-size: 1vw; 
+  font-size: 1vw;
   font-family: 'Inria Sans', sans-serif;
 }
 
 .filter-buttons button:hover {
-  background-color: #00adb5; 
+  background-color: #00adb5;
   color: white;
 }
 

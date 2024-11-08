@@ -48,7 +48,7 @@ export default {
 }
 
 .totalAmount {
-  font-size: 1.5vw; 
+  font-size: 1.5vw;
   font-weight: bold;
   text-align: right;
   width: 90%;
@@ -66,8 +66,8 @@ button {
   align-items: center;
   gap: 1vw;
   margin: 0.5vh 0;
-  padding: 1vh 1vw; 
-  font-size: 1.25vw; 
+  padding: 1vh 1vw;
+  font-size: 1.25vw;
   cursor: pointer;
   border: none;
   border-radius: 0.5vh;
@@ -76,11 +76,12 @@ button {
   color: white;
   width: 80%;
   font-family: 'Inria Sans', sans-serif;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 button:hover {
   background-color: #007b83; /* Darker shade for hover effect */
 }
-
 </style>
