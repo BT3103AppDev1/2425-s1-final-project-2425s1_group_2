@@ -144,7 +144,7 @@
     position: relative;
     text-align: center;
     left: 8vw;
-    font-size: 3vh;
+    font-size: 1.5vw;
     font-family: 'Inria Sans', sans-serif;
   }
   
