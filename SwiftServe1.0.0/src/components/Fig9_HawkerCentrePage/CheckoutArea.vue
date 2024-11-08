@@ -45,7 +45,7 @@ export default {
   align-items: flex-end;
   margin-top: 5vh;
   position: absolute;
-  top: 65vh;
+  top: 67vh;
   left: 75vw;
   width: 23vw; /* This makes it stretch from 8vw to 100vw */
   min-height: 10vh;

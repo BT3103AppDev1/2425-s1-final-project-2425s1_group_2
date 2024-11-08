@@ -67,7 +67,7 @@ import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue'
 import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue'
 import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue'
 import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue'
-import FilterButtons from '../components/Fig9_HawkerCentrePage/DIetFilter.vue'
+import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue'
 import CheckoutArea from '../components/Fig9_HawkerCentrePage/CheckoutArea.vue'
 import { db } from '../firebase.js'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -372,7 +372,7 @@ export default {
   margin-right: auto;
   padding-left: 0.5vw;
   padding-right: 0.5vw;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   /* height: 100vh; */
 }
 

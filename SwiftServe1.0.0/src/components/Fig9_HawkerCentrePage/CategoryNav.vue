@@ -68,6 +68,7 @@ nav {
   width: 100vw;
   height: 5vh;
   border-bottom: 0.3vh solid black;
+  box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -85,7 +86,7 @@ nav li {
   padding: 0.75vh 0.75vw;
   cursor: pointer;
   font-weight: bold;
-  /* border-bottom: 0.2vh solid transparent;  */
+  border-bottom: 0.2vh solid transparent;
   font-size: 1.75vw;
   transition:
     color 0.3s ease,
