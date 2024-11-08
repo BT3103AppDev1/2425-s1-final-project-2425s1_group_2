@@ -67,7 +67,7 @@ import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue'
 import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue'
 import OrderCart from '../components/Fig9_HawkerCentrePage/OrderCart.vue'
 import StallList from '../components/Fig9_HawkerCentrePage/StallList.vue'
-import FilterButtons from '../components/Fig9_HawkerCentrePage/DietFilter.vue'
+import FilterButtons from '../components/Fig9_HawkerCentrePage/DIetFilter.vue'
 import CheckoutArea from '../components/Fig9_HawkerCentrePage/CheckoutArea.vue'
 import { db } from '../firebase.js'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -464,6 +464,10 @@ export default {
 }
 
 .no-stalls-message {
+  position: absolute;
+  top: 40vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
   text-align: center;
   font-size: 1.5vw;
   margin-top: 5vh;
@@ -547,5 +551,19 @@ export default {
 
 .modal-actions button:hover {
   background-color: #007a80;
+}
+
+.food-area {
+  position: absolute;
+  top: 25vh;
+  left: 10vw;
+  width: 89vw;
+  height: 40vh;
+  padding: 1vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 1vh; /*CHECK WITH CED IF HE WANTS THIS STYLE*/
+  box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.1);
+  z-index: 1; /*NOT NEEDED BUT IDK WHY*/
 }
 </style>
