@@ -129,7 +129,7 @@ h1 {
 .welcomeCust {
   position: relative;
   left: 13vw;
-  font-size: 3vh;
+  font-size: 1.5vw;
   font-family: 'Inria Sans', sans-serif;
 }
 
