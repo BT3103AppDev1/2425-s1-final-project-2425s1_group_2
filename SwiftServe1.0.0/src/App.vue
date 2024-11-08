@@ -1,32 +1,24 @@
-
 <template>
   <header>
-    
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <!-- <HelloWorld msg="You did it!" /> -->
 
-      <nav>
+      <!--<nav>
         <RouterLink to="/hawkerCentre">Hawker Centre Page</RouterLink>
-      </nav>
+      </nav>-->
 
     </div>
-    
   </header>
 
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
-import { RouterLink } from 'vue-router';
+//import { RouterLink } from 'vue-router';
 
 export default {
   name: 'App'
 }
 </script>
 
-
-
-<style scoped>
-
-</style>
+<style scoped></style>

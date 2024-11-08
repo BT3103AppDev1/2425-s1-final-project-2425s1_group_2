@@ -1,4 +1,3 @@
-
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Fig3_HomeView.vue'
 
@@ -35,6 +34,14 @@ const router = createRouter({
       component: () => import('../views/Fig6_ProfileView.vue')
     },
     {
+      path: '/merchantprofile',
+      name: 'merchantProfilePage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig6_MerchantProfileView.vue')
+    },
+    {
       path: '/custD',
       name: 'customerDashboard',
       // route level code-splitting
@@ -52,7 +59,7 @@ const router = createRouter({
     },
     {
       //change to Fig 9
-      path: '/food-item/:id/:foodItemName/:price/:stallId/:stallName',
+      path: '/food-item/:id?/:cartItemId?/:orderId?',
       name: 'foodItemPage',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -75,6 +82,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig11_CheckoutView.vue')
+    },
+    {
+      path: '/takeawaySuccess',
+      name: 'takeawaySuccessPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig12.1_PaymentSuccessTakeaway.vue')
     },
     {
       path: '/paymentSuccess',
@@ -100,9 +115,55 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Fig14_LiveReceiptView.vue')
     },
-
+    {
+      path: '/merchantToggleAvailability',
+      name: 'merchantToggleAvailabilityPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig16_MerchantToggleAvailabilityPage.vue')
+    },
+    {
+      path: '/merchantOrders',
+      name: 'merchantOrdersPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig17_MerchantOrdersView.vue')
+    },
+    {
+      path: '/merchantFoodItemForm',
+      name: 'merchantAddOrderPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/MerchantAddOrderPage.vue')
+    },
+    {
+      path: '/merchantDashboard',
+      name: 'merchantDashboardPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig15_MerchantDashboardView.vue')
+    },
+    {
+      path: '/merchantSales',
+      name: 'merchantSalesDashboardPage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig18_MerchantSalesDashboardView.vue')
+    },
+    {
+      path: '/resetPassword',
+      name: 'resetPassword',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Fig19_ResetPasswordView.vue')
+    }
   ]
 })
 
 export default router
-
