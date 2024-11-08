@@ -44,7 +44,11 @@ export default {
   flex-direction: column;
   align-items: flex-end;
   margin-top: 5vh;
-  width: 30vw;
+  position: absolute;
+  top: 65vh;
+  left: 75vw;
+  width: 23vw; /* This makes it stretch from 8vw to 100vw */
+  min-height: 10vh;
 }
 
 .totalAmount {

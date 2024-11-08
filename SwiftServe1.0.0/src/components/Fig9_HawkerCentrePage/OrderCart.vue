@@ -80,7 +80,7 @@ export default {
 <style scoped>
 .order-cart {
   position: absolute;
-  top: 80vh;
+  top: 65vh;
   left: 0.5vw;
   width: 70vw;
   border-radius: 0.5vw;

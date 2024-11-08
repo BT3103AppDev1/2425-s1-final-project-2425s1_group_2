@@ -38,11 +38,11 @@ export default {
 .stall-list {
   overflow-y: auto;
   position: absolute;
-  top: 40vh;
-  left: 0.5vw;
-  width: 70vw;
-  height: 38vh;
-  background-color: #e6f7f5;
+  top: 25vh;
+  left: 1.7vw;
+  width: 6vw;
+  height: 43vh;
+  background-color: #eeffff;
   border-radius: 1vh;
   box-shadow: 0 0.3vh 0.6vh rgba(0, 0, 0, 0.05);
   margin-right: 2vw;
