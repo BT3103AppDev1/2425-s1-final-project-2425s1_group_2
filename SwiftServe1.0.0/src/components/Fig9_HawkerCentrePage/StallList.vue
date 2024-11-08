@@ -39,11 +39,11 @@
    .stall-list {
      overflow-y: auto;
      width: 6vw; 
-     height: 30vh;
+     height: 38vh;
      background-color: #e6f7f5;
      border-radius: 1vh;
      box-shadow: 0 0.3vh 0.6vh rgba(0, 0, 0, 0.05);
-     margin-right: 1vw;
+     margin-right: 2vw;
    }
    
    .stall-item {
