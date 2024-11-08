@@ -38,4 +38,11 @@ export default {
 </script>
 
 <style scoped>
+
+.sales-dashboard {
+  width: 80vw;
+  margin-left: 10vw;
+  overflow: auto;
+  height: 40vw;
+}
 </style>

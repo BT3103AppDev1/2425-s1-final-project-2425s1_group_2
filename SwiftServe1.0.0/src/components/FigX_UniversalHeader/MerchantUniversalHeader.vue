@@ -5,7 +5,7 @@
       </div>
   
       <div class="welcomeCust">
-        <h2>Welcome merchant {{ this.name }}!</h2>
+        <h2>Welcome Merchant {{ this.name }}!</h2>
       </div>
       <img
         src="/dashboardButton.png"
@@ -144,7 +144,7 @@
     position: relative;
     text-align: center;
     left: 8vw;
-    font-size: 3vh;
+    font-size: 1.5vw;
     font-family: 'Inria Sans', sans-serif;
   }
   

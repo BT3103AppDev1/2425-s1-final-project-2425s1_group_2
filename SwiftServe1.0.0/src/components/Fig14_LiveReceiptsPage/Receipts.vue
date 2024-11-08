@@ -127,12 +127,13 @@ export default {
   font-family: 'Inria Sans', sans-serif;
 }
 
-.receipt-scroll {
+/*.receipt-scroll {
   padding: 0.5vw;
-}
+}*/
 
 .receipt {
-  margin-bottom: 0vw;
+  margin-bottom: 0vw ;
+  border-bottom: 5vw solid white;
   background-color: #eeffff;
   padding: 0.5vw;
   border-radius: 0.5vw;

@@ -84,5 +84,7 @@ export default {
 h2 {
     text-align: center;
     font-family: 'Inria Sans', sans-serif;
+    height: 1vw;
+    font-size: 2vw;
 }
 </style>

@@ -102,15 +102,15 @@ export default {
 <style scoped>
 .popular-items {
   background-color: #00adb5;
-  padding: 20px;
+  padding: 2vw;
   color: white;
-  margin-top: 20px;
+  margin-top: 2vw;
   font-family: 'Inria Sans', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.3vw;
 }
 
 .popular-items h2 {
-  margin-bottom: 10px;
+  margin-bottom: 2vw;
 }
 
 .popular-items ul {
@@ -119,7 +119,7 @@ export default {
 }
 
 .popular-items li {
-  font-size: 1.1rem;
-  margin-bottom: 5px;
+  font-size: 1.2vw;
+  margin-bottom: 1vw;
 }
 </style>

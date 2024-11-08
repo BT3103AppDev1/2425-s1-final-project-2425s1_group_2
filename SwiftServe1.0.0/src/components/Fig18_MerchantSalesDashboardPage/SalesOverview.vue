@@ -101,13 +101,13 @@ export default {
 <style scoped>
 .sales-overview {
   background-color: #00adb5;
-  padding: 20px;
+  padding: 2vw;
   color: white;
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  font-size: 1.5vw;
+  margin-bottom: 2vw;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1vw;
   font-family: 'Inria Sans', sans-serif;
 }
 
@@ -119,13 +119,13 @@ export default {
 
 .sales-text,
 .orders-text {
-  font-size: 1.8rem;
-  padding-left: 30px;
+  font-size: 1.8vw;
+  padding-left: 1vw;
 }
 
 .sales-amount,
 .orders-count {
-  font-size: 1.5rem;
-  padding-right: 100px;
+  font-size: 1.5vw;
+  padding-right: 1vw;
 }
 </style>

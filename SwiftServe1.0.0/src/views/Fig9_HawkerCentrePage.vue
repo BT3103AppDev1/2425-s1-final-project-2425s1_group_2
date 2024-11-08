@@ -1,8 +1,9 @@
 <template>
 
+  
+  <!--<AppHeader />-->
+  <HeaderScreen />
   <div class="container">
-    <!--<AppHeader />-->
-    <HeaderScreen />
     <FilterButtons 
       :filters="availableFilters" 
       :activeFilter="activeCategory" 
@@ -91,6 +92,9 @@
         showCartModal: false
       };
     },
+    /*created() {
+      window.location.reload();
+    },*/
     async mounted() {
       const auth = getAuth();
 
@@ -348,8 +352,8 @@
   max-width: 95vw;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
   overflow-y: auto;
   /* height: 100vh; */
 }
