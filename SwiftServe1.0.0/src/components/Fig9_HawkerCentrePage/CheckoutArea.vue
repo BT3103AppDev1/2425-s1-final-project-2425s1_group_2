@@ -47,7 +47,7 @@ export default {
   position: absolute;
   top: 67vh;
   left: 75vw;
-  width: 23vw; /* This makes it stretch from 8vw to 100vw */
+  width: 15vw; /* This makes it stretch from 8vw to 100vw */
   min-height: 10vh;
 }
 
