@@ -118,7 +118,7 @@ h3 {
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 5vh;
-  color: #00adb5;
+  /*color: #00adb5;*/
 }
 
 #hawkerCentre option {
