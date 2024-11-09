@@ -1,6 +1,6 @@
 <template>
+  <HeaderScreen />
   <div class="container">
-    <HeaderScreen />
     <div class="food-item-details" v-if="(foodItem || cartItem || quickOrderItem) && merchant">
       <LeftColumn
         :merchant="merchant"
@@ -580,6 +580,7 @@ export default {
   border-radius: 0.5rem;
   padding: 0.9375rem;
   margin-bottom: 1.25rem;
+  height: 500px;
 }
 
 .add-ons,
