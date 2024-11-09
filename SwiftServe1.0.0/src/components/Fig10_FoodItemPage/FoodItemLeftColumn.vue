@@ -51,7 +51,7 @@ export default {
 
 .food-image img {
   width: 100%;
-  height: 50vh;
+  height: 410px;
   border-radius: 8px;
 }
 
