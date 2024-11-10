@@ -1,51 +1,22 @@
 <template>
-  <!--<AppHeader />-->
   <HeaderScreen />
   <div class="container">
-    <FilterButtons
-      :filters="availableFilters"
-      :activeFilter="activeCategory"
-      @filter-selected="updateActiveCategory"
-    />
-    <CategoryNav
-      :categories="categories"
-      @category-selected="updateActiveCategory"
-      :activeCategory="activeCategory"
-    />
+    <FilterButtons :filters="availableFilters" :activeFilter="activeCategory" @filter-selected="updateActiveCategory" />
+    <CategoryNav :categories="categories" @category-selected="updateActiveCategory" :activeCategory="activeCategory" />
     <div v-if="filteredStalls.length > 0" class="main-content">
-      <StallList
-        :stalls="filteredStalls"
-        :activeStall="activeStall"
-        @stall-selected="updateActiveStall"
-      />
+      <StallList :stalls="filteredStalls" :activeStall="activeStall" @stall-selected="updateActiveStall" />
       <div class="food-area">
         <div class="food-grid">
-          <FoodItem
-            v-for="item in filteredItems"
-            :key="item.id"
-            :item="item"
-            @add-to-cart="addToCart"
-            @click="viewFoodItem(item)"
-          />
+          <FoodItem v-for="item in filteredItems" :key="item.id" :item="item" @add-to-cart="addToCart"
+            @click="viewFoodItem(item)" />
         </div>
       </div>
     </div>
     <div v-else class="no-stalls-message">No stalls found</div>
     <div class="cart-and-checkout">
-      <OrderCart
-        :items="cartItems"
-        @remove-item="removeItemFromCart"
-        @edit-item="editCartItem"
-        class="order-cart"
-      />
-      <CheckoutArea
-        :totalAmount="totalAmount"
-        @checkout="checkout"
-        @cancelOrder="cancelOrder"
-        class="checkout-area"
-      />
+      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" />
+      <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area" />
     </div>
-    <!-- Custom Modal for No Items in Cart-->
     <div v-if="showCartModal" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-text">
@@ -61,7 +32,6 @@
 </template>
 
 <script>
-//import AppHeader from '../components/AppHeader.vue';
 import HeaderScreen from '@/components/FigX_UniversalHeader/UniversalHeader.vue'
 import CategoryNav from '../components/Fig9_HawkerCentrePage/CategoryNav.vue'
 import FoodItem from '../components/Fig9_HawkerCentrePage/FoodItem.vue'
@@ -74,7 +44,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 export default {
   components: {
-    //AppHeader,
     HeaderScreen,
     CategoryNav,
     FoodItem,
@@ -100,9 +69,6 @@ export default {
       showCartModal: false
     }
   },
-  /*created() {
-      window.location.reload();
-    },*/
   async mounted() {
     const auth = getAuth()
 
@@ -110,11 +76,6 @@ export default {
       if (user) {
         this.user = user
         this.HCName = this.$route.query.HCName
-        console.log(this.HCName)
-
-        // this.fetchStalls();
-        // this.fetchFoodItems();
-        // this.fetchCartItems();
         this.setupStallListener()
         this.setupFoodItemsListener()
         this.setupCartListener()
@@ -170,37 +131,6 @@ export default {
     }
   },
   methods: {
-    // async fetchStalls() {
-    //   try {
-    //     const querySnapshot = await db.collection('UserProfile')
-    //                             .where('profileType', '==', 'Merchant')
-    //                             .where('open', '==', true) // Check if the stall is open; if not open do not render on display
-    //                             .get();
-    //     this.stalls = querySnapshot.docs.map(doc => ({
-    //       ...doc.data(),
-    //       uid: doc.id,
-    //     }));
-    //     //('Fetched stalls:', JSON.stringify(this.stalls)); // Check fetched stalls
-    //   } catch (error) {
-    //     console.error('Error fetching stalls: ', error);
-    //   }
-    // },
-    // async fetchFoodItems() {
-    //   try {
-    //     const querySnapshot = await db.collection('FoodItem').get();
-    //     this.items = querySnapshot.docs.map(doc => ({
-    //       // ...doc.data(),
-    //       id: doc.id,
-    //       foodItemName: doc.data().foodItemName,
-    //       available: doc.data().available,
-    //       merchantId: doc.data().merchantId,
-    //       foodItemImage: doc.data().foodItemImagef,
-    //     }));
-    //     //console.log('Fetched items:', JSON.stringify(this.items)); // Check fetched items
-    //   } catch (error) {
-    //     console.error('Error fetching items: ', error);
-    //   }
-    // },
     closeCartModal() {
       this.showCartModal = false
     },
@@ -215,7 +145,6 @@ export default {
                 ...doc.data(),
                 uid: doc.id
               }))
-            console.log('Stalls updated:', this.stalls)
             this.cartItems.forEach((cartItem) => this.checkAndRemoveItem(cartItem))
           },
           (error) => {
@@ -233,7 +162,6 @@ export default {
             merchantId: doc.data().merchantId,
             foodItemImage: doc.data().foodItemImage
           }))
-          console.log('Food items updated:', this.items)
           this.cartItems.forEach((cartItem) => this.checkAndRemoveItem(cartItem))
         },
         (error) => {
@@ -241,18 +169,6 @@ export default {
         }
       )
     },
-    // async fetchCartItems() {
-    //   try {
-    //     const querySnapshot = await db.collection('Cart').where('userId', '==', this.user.uid).get();
-    //     this.cartItems = querySnapshot.docs.map(doc => ({
-    //       ...doc.data(),
-    //       id: doc.id,
-    //     }));
-    //     //console.log('Fetched cart items:', JSON.stringify(this.cartItems)); // Check fetched cart items
-    //   } catch (error) {
-    //     console.error('Error fetching cart items: ', error);
-    //   }
-    // },
     setupCartListener() {
       db.collection('Cart')
         .where('userId', '==', this.user.uid)
@@ -262,7 +178,6 @@ export default {
               ...doc.data(),
               id: doc.id
             }))
-            console.log('Cart items updated:', this.cartItems)
 
             // Check for unavailable items or closed stalls
             this.cartItems.forEach((cartItem) => this.checkAndRemoveItem(cartItem))
@@ -321,21 +236,17 @@ export default {
         path: '/checkout',
         query: { HCName: this.HCName }
       })
-      //alert('Checkout functionality coming soon!');
     },
     cancelOrder() {
       for (let item of this.cartItems) {
         this.removeItemFromCart(item.id)
       }
-      //this.cartItems = [];
-      //console.log(this.cartItems)
     },
     findStall(merchantId) {
       return this.stalls.find((stall) => stall.uid === merchantId)
     },
     viewFoodItem(item) {
       if (item.available) {
-        console.log(this.HCName)
         this.$router.push({
           name: 'foodItemPage',
           params: {
@@ -348,8 +259,6 @@ export default {
       }
     },
     editCartItem(item) {
-      //console.log("hello");
-      console.log(item)
       this.$router.push({
         name: 'foodItemPage',
         params: {
@@ -473,6 +382,7 @@ export default {
   margin-top: 5vh;
   font-weight: bold;
 }
+
 /* Modal styling */
 .modal-overlay {
   position: fixed;
@@ -562,8 +472,10 @@ export default {
   padding: 1vh;
   overflow-y: auto;
   background-color: #ffffff;
-  border-radius: 1vh; /*CHECK WITH CED IF HE WANTS THIS STYLE*/
+  border-radius: 1vh;
+  /*CHECK WITH CED IF HE WANTS THIS STYLE*/
   box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.1);
-  z-index: 1; /*NOT NEEDED BUT IDK WHY*/
+  z-index: 1;
+  /*NOT NEEDED BUT IDK WHY*/
 }
 </style>

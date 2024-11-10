@@ -14,6 +14,6 @@ export default {
     DiningOptionsScreen
   },
 
-  data() {}
+  data() { }
 }
 </script>

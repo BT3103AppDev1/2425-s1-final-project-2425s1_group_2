@@ -14,6 +14,6 @@ export default {
     ResetPassword
   },
 
-  data() {}
+  data() { }
 }
 </script>

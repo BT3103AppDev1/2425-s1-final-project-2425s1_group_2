@@ -1,6 +1,6 @@
 <template>
   <HeaderScreen />
-  <div class = 'container'>
+  <div class='container'>
 
     <div class="profile">
       <ProfileComponent />
@@ -26,7 +26,7 @@ export default {
     Receipts
   },
 
-  data() {}
+  data() { }
 }
 </script>
 
@@ -38,6 +38,4 @@ export default {
 .profile {
   flex: 0 0 20vw;
 }
-
-
 </style>
