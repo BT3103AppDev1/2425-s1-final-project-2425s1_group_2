@@ -37,8 +37,10 @@
           <h2>Confirm Add to Cart</h2>
           <p>Are you sure you want to add this into your cart?</p>
           <div class="modal-actions">
-            <button @click="addToCartHandler()">Yes, proceed to add</button>
-            <button @click="closeAddToCartModal">No, return back to food item</button>
+            <button @click="addToCartHandler()" class="modal-button">Yes, proceed to add</button>
+            <button @click="closeAddToCartModal" class="modal-button">
+              No, return back to food item
+            </button>
           </div>
         </div>
       </div>
@@ -493,7 +495,6 @@ export default {
   background-color: #007a80;
 }
 
-
 .cart-icon,
 .cancel-icon,
 .cancel-order,
@@ -584,5 +585,9 @@ export default {
 
 .modal-actions button:hover {
   background-color: #007a80;
+}
+
+.modalbutton {
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

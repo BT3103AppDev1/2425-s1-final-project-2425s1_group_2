@@ -1,438 +1,415 @@
 <template>
-    <h1 style="text-align:center;font-family: 'Inria Sans';background-color: #eeffff;font-size: 2.4vw;">Yuhua Village Market and Food Centre</h1>
+  <h1
+    style="
+      text-align: center;
+      font-family: 'Inria Sans';
+      background-color: #eeffff;
+      font-size: 2.4vw;
+    "
+  >
+    Yuhua Village Market and Food Centre
+  </h1>
 
-    <div class="StallArrangement">
-        <!-- code here for stalls, should change color for the selected stall -->
-         <div class = "stall" id = "001">Chicken Rice</div>
-         <div class = "stall" id = "002">Noodle</div>
-         <div class = "stall" id = "003">Mixed Rice</div>
-    </div>
+  <div class="StallArrangement">
+    <div class="stall" id="001">Chicken Rice</div>
+    <div class="stall" id="002">Noodle</div>
+    <div class="stall" id="003">Mixed Rice</div>
+  </div>
 
-    <div id= "Seating">  
-        
-        <div class = "SeatSet">
-            <div class = "SeatArrangement">
-                <!-- able to select seats that are grey, cannot select seats that are red -->
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "A35">A</button>
-                    <button class = "Seat" id = "A36">A</button>
-                 </div>
-        
-                 <div class = "TableSection">
-                    <div class = "table">35</div>
-                    <div class = "table">36</div>
-                 </div>
-        
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "B35">B</button>
-                    <button class = "Seat" id = "B36">B</button>
-                 </div>
-        
-            </div>
-
-            <div class = "SeatArrangement">
-                <!-- able to select seats that are grey, cannot select seats that are red -->
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "A37">A</button>
-                    <button class = "Seat" id = "A38">A</button>
-                    <button class = "Seat" id = "A39">A</button>
-                 </div>
-        
-                 <div class = "TableSection">
-                    <div class = "table">37</div>
-                    <div class = "table">38</div>
-                    <div class = "table">39</div>
-                 </div>
-        
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "B37">B</button>
-                    <button class = "Seat" id = "B38">B</button>
-                    <button class = "Seat" id = "B39">B</button>
-                 </div>
-        
-            </div>
+  <div id="Seating">
+    <div class="SeatSet">
+      <div class="SeatArrangement">
+        <div class="SeatSection">
+          <button class="Seat" id="A35">A</button>
+          <button class="Seat" id="A36">A</button>
         </div>
 
-        <div class = "CircleSeatArrangement">
-            <!-- able to select seats that are grey, cannot select seats that are red -->
-             <div class = "CircleSection">
-    
-                <span class = "circletable">10</span>
-    
-                <button class = "Seat seat-left" id = "10A">A</button>
-                <button class = "Seat seat-bottom" id = "10B">B</button>
-                <button class = "Seat seat-right" id = "10C">C</button>
-    
-             </div>    
-    
+        <div class="TableSection">
+          <div class="table">35</div>
+          <div class="table">36</div>
         </div>
 
-        <div class = "SeatSet">
-            <div class = "SeatArrangement">
-                <!-- able to select seats that are grey, cannot select seats that are red -->
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "A40">A</button>
-                    <button class = "Seat" id = "A41">A</button>
-                 </div>
-        
-                 <div class = "TableSection">
-                    <div class = "table">40</div>
-                    <div class = "table">41</div>
-                 </div>
-        
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "B40">B</button>
-                    <button class = "Seat" id = "B41">B</button>
-                 </div>
-        
-            </div>
-
-
-            <div class = "SeatArrangement">
-                <!-- able to select seats that are grey, cannot select seats that are red -->
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "A42">A</button>
-                    <button class = "Seat" id = "A43">A</button>
-                    <button class = "Seat" id = "A44">A</button>
-                 </div>
-        
-                 <div class = "TableSection">
-                    <div class = "table">42</div>
-                    <div class = "table">43</div>
-                    <div class = "table">44</div>
-                 </div>
-        
-                 <div class = "SeatSection">
-                    <button class = "Seat" id = "B42">B</button>
-                    <button class = "Seat" id = "B43">B</button>
-                    <button class = "Seat" id = "B44">B</button>
-                 </div>
-        
-            </div>
+        <div class="SeatSection">
+          <button class="Seat" id="B35">B</button>
+          <button class="Seat" id="B36">B</button>
         </div>
-        
-    </div>
+      </div>
 
-
-    <div id = "Legend">
-        <!-- able to display what has been chosen -->
-         <div id = "FreeLabel">
-            <div id="FreeSeatBlank"></div>
-            <p><strong>Free</strong></p>
-        </div>
-        <div id = "SelectedLabel">
-            <div id="SelectedSeatBlank"></div>
-            <p><strong>Selected</strong></p>
-        </div>
-        <div id = "OccupiedLabel">
-            <div id="OccupiedSeatBlank"></div>
-            <p><strong>Occupied</strong></p>
+      <div class="SeatArrangement">
+        <div class="SeatSection">
+          <button class="Seat" id="A37">A</button>
+          <button class="Seat" id="A38">A</button>
+          <button class="Seat" id="A39">A</button>
         </div>
 
-        <button id="SaveButton" @click="saveToFS"><img id = "floppy" src = "/floppydisk.png" alt = "floppydisk"> Save</button>
-    </div>
+        <div class="TableSection">
+          <div class="table">37</div>
+          <div class="table">38</div>
+          <div class="table">39</div>
+        </div>
 
-    <div v-if="showMaxModal" class="modal-overlay">
-      <div class="modal-content">
-        <button class="close-button" @click="closeModal">&times;</button>
-        <div class="modal-text">
-          <h2>Maximum of {{ maxSeats }} seats reached!</h2>
-          <p>Please deselect a few seats to continue.</p>
-          <div class="modal-actions">
-            <button @click="closeModal">Go back to seat booking</button>
-          </div>
+        <div class="SeatSection">
+          <button class="Seat" id="B37">B</button>
+          <button class="Seat" id="B38">B</button>
+          <button class="Seat" id="B39">B</button>
         </div>
       </div>
     </div>
 
-    <div v-if="showNoSeatModal" class="modal-overlay">
-      <div class="modal-content">
-        <button class="close-button" @click="closeModal">&times;</button>
-        <div class="modal-text">
-          <h2>Ypu have not selected any seats</h2>
-          <p>Please select a few seats to continue.</p>
-          <div class="modal-actions">
-            <button @click="closeModal">Go back to seat booking</button>
-          </div>
-        </div>
+    <div class="CircleSeatArrangement">
+      <!-- able to select seats that are grey, cannot select seats that are red -->
+      <div class="CircleSection">
+        <span class="circletable">10</span>
+        <button class="Seat seat-left" id="10A">A</button>
+        <button class="Seat seat-bottom" id="10B">B</button>
+        <button class="Seat seat-right" id="10C">C</button>
       </div>
     </div>
 
+    <div class="SeatSet">
+      <div class="SeatArrangement">
+        <!-- able to select seats that are grey, cannot select seats that are red -->
+        <div class="SeatSection">
+          <button class="Seat" id="A40">A</button>
+          <button class="Seat" id="A41">A</button>
+        </div>
+        <div class="TableSection">
+          <div class="table">40</div>
+          <div class="table">41</div>
+        </div>
+
+        <div class="SeatSection">
+          <button class="Seat" id="B40">B</button>
+          <button class="Seat" id="B41">B</button>
+        </div>
+      </div>
+
+      <div class="SeatArrangement">
+        <!-- able to select seats that are grey, cannot select seats that are red -->
+        <div class="SeatSection">
+          <button class="Seat" id="A42">A</button>
+          <button class="Seat" id="A43">A</button>
+          <button class="Seat" id="A44">A</button>
+        </div>
+
+        <div class="TableSection">
+          <div class="table">42</div>
+          <div class="table">43</div>
+          <div class="table">44</div>
+        </div>
+
+        <div class="SeatSection">
+          <button class="Seat" id="B42">B</button>
+          <button class="Seat" id="B43">B</button>
+          <button class="Seat" id="B44">B</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="Legend">
+    <!-- able to display what has been chosen -->
+    <div id="FreeLabel">
+      <div id="FreeSeatBlank"></div>
+      <p><strong>Free</strong></p>
+    </div>
+    <div id="SelectedLabel">
+      <div id="SelectedSeatBlank"></div>
+      <p><strong>Selected</strong></p>
+    </div>
+    <div id="OccupiedLabel">
+      <div id="OccupiedSeatBlank"></div>
+      <p><strong>Occupied</strong></p>
+    </div>
+
+    <button id="SaveButton" @click="saveToFS">
+      <img id="floppy" src="/floppydisk.png" alt="floppydisk" /> Save
+    </button>
+  </div>
+
+  <div v-if="showMaxModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-button" @click="closeModal">&times;</button>
+      <div class="modal-text">
+        <h2>Maximum of {{ maxSeats }} seats reached!</h2>
+        <p>Please deselect a few seats to continue.</p>
+        <div class="modal-actions">
+          <button @click="closeModal">Go back to seat booking</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="showNoSeatModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-button" @click="closeModal">&times;</button>
+      <div class="modal-text">
+        <h2>Ypu have not selected any seats</h2>
+        <p>Please select a few seats to continue.</p>
+        <div class="modal-actions">
+          <button @click="closeModal">Go back to seat booking</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import firebaseApp from '@/firebase.js';
-import { getFirestore } from 'firebase/firestore';
-import {collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import firebaseApp from '@/firebase.js'
+import { getFirestore } from 'firebase/firestore'
+import { collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp)
 
 export default {
-    data() {
-        return {
-            seatsChosen: [],
-            numSeatsChosen: 0,
-            maxSeats: 5,
+  data() {
+    return {
+      seatsChosen: [],
+      numSeatsChosen: 0,
+      maxSeats: 5,
 
-            name: 'guest',
-            email: 'guest',
-            user:false,
-            showMaxModal: false,
-            showNoSeatModal: false,
+      name: 'guest',
+      email: 'guest',
+      user: false,
+      showMaxModal: false,
+      showNoSeatModal: false,
 
-            mapDiningTime: {
-                  "12:00pm - 12:30pm":{startTime: "1200", endTime: "1230", peak: true},
-                  "12:30pm - 1:00pm":{startTime: "1230", endTime: "1300", peak: true},
-                  "1:00pm - 1:30pm":{startTime: "1300", endTime: "1330", peak: true},
-                  "1:30pm - 2:00pm":{startTime: "1330", endTime: "1400", peak: true},
-                  "2:00pm - 2:30pm":{startTime: "1400", endTime: "1430", peak: false},
-                  "2:30pm - 3:00pm":{startTime: "1430", endTime: "1500", peak: false},
-            },
-            startTime: "1430",
-            endTime: "1500",
-            peak: true,  
-        };
-    },
-    async mounted() {
-        const auth = getAuth();
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                this.user = user;
-                this.setProfile();
-            }
-        })
+      mapDiningTime: {
+        '12:00pm - 12:30pm': { startTime: '1200', endTime: '1230', peak: true },
+        '12:30pm - 1:00pm': { startTime: '1230', endTime: '1300', peak: true },
+        '1:00pm - 1:30pm': { startTime: '1300', endTime: '1330', peak: true },
+        '1:30pm - 2:00pm': { startTime: '1330', endTime: '1400', peak: true },
+        '2:00pm - 2:30pm': { startTime: '1400', endTime: '1430', peak: false },
+        '2:30pm - 3:00pm': { startTime: '1430', endTime: '1500', peak: false }
+      },
+      startTime: '1430',
+      endTime: '1500',
+      peak: true
+    }
+  },
+  async mounted() {
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user
+        this.setProfile()
+      }
+    })
 
-        const seatButtons = Array.from(document.getElementsByClassName('Seat'));
-        let numSeatsLeft = await seatsLeft();
-        await this.getDiningTime();
-        
-        seatButtons.forEach(button => {
-            // console.log(numSeatsLeft);
-            // console.log(this.seatsChosen);
+    const seatButtons = Array.from(document.getElementsByClassName('Seat'))
+    let numSeatsLeft = await seatsLeft()
+    await this.getDiningTime()
 
-            if (numSeatsLeft <= 5 || this.peak) {
-                this.maxSeats = 2;
-            }
-           
-            button.addEventListener('click', () => {
-                if (button.getAttribute('data-selected') === 'true') {
-                    // button.style.backgroundColor = '#D9D9D9';
-                    button.setAttribute('data-selected', 'false');
-                    button.classList.remove('selected');
-                    this.removeSeat(button.id); 
-                } else {
-                    if (this.numSeatsChosen >= this.maxSeats) {
-                        this.showMaxModal = true;
-                        return;
-                    }
-                    // button.style.backgroundColor = '#51E51C'; 
-                    button.setAttribute('data-selected', 'true');
-                    button.classList.add('selected');
-                    this.addSeat(button.id); 
-                }
-                console.log(this.seatsChosen);
-            });
-
-        });
-
-        // async function display() {
-        //     let allSeatsTaken = await getDocs(collection(db, "Seats"));
-        //     allSeatsTaken.forEach(async (docs) => {
-        //         let documentData = docs.data();
-        //         let SeatStartTime = documentData.StartTime;
-        //         let EndTime = documentData.EndTime;
-        //         let timeDiff = 0;
-
-        //         if (EndTime){
-        //             let endTime = EndTime.toDate();
-        //             // console.log(timeSelected);
-        //             let currentTime = (() => this.parseTime("1245"))();; //time is always set to 12:45
-        //             // console.log(currentTime);
-        //             timeDiff = currentTime - endTime;
-        //         }
-
-        //         // console.log(timeDiff);
-                
-
-        //         if (timeDiff > 0){ //the end time has passed
-        //             await deleteDoc(doc(db, "Seats", docs.id));
-        //             console.log(`Customer: ${docs.id} has been deleted.`);
-        //         } else if (SeatStartTime < this.endTime) { //if the seat start time is earlier than the end time of the current user
-        //             let arrSeats = documentData.SeatsChosen;
-
-        //             arrSeats.forEach((seat)=> {
-        //                 document.getElementById(seat).disabled = true;
-        //             });
-        //         }
-        //     });
-        // }
-
-        async function seatsLeft(){
-            let SeatsLeft = 23;
-
-            let allSeatsTaken = await getDocs(collection(db, "Seats"));
-            allSeatsTaken.forEach(async (docs) => {
-                let documentData = docs.data();
-                let num = documentData.NumSeats;
-
-                SeatsLeft -= num;
-            });
-
-            return SeatsLeft;
-        }
-
-        const display = async () => {
-          let allSeatsTaken = await getDocs(collection(db, "Seats"));
-          allSeatsTaken.forEach(async (docs) => {
-            let documentData = docs.data();
-            let EndTime = documentData.EndTime;
-            let timeDiff = 0;
-
-            if (EndTime) {
-              let endTime = EndTime.toDate();
-              let currentTime = this.parseTime("1215"); //current time is always 1215
-              timeDiff = currentTime - endTime;
-            }
-
-            // console.log("seat start is ", SeatStartTime.toDate());
-            //   console.log("my start time is ", this.parseTime(this.startTime))
-            //   console.log("time diff is ", SeatStartTime.toDate()-this.parseTime(this.startTime));
-
-            if (timeDiff > 0) {
-              await deleteDoc(doc(db, "Seats", docs.id));
-              console.log(`Customer: ${docs.id} has been deleted.`);
-            } else if (EndTime.toDate() - this.parseTime(this.startTime) > 0) {
-              // if the end time of seat is later than the start time of booking (i.e. unavailable)
-
-              let arrSeats = documentData.SeatsChosen;
-
-              arrSeats.forEach((seat) => {
-                document.getElementById(seat).disabled = true;
-              });
-            }
-          });
-        };
-
-        await display();
-
-    },
-    methods: {
-        addSeat(seatId) {
-            if (!this.seatsChosen.includes(seatId)) {
-                this.seatsChosen.push(seatId); 
-            }
-            this.numSeatsChosen ++;
-        },
-        removeSeat(seatId) {
-            this.seatsChosen = this.seatsChosen.filter(seat => seat !== seatId);
-            this.numSeatsChosen --;
-        },
-
-        async saveToFS(){
-            if (this.numSeatsChosen <1) {
-                // i.e. user clicks save without choosing any seats
-                this.showNoSeatModal = true;
-                return
-            } else {
-                console.log("saved to fs");
-
-                let customer = this.email;
-                let newSeatsChosen = this.seatsChosen;
-                let numSeats = this.numSeatsChosen;
-
-                try{
-                    let allOrders = await getDocs(collection(db, 'Cart'))
-
-                    for (const docs of allOrders.docs) {
-                        let docsData = docs.data();
-                        let docUserID = docsData.userId;
-                        let seatList = '';
-
-                        if (docUserID === this.user.uid) {
-                            if (this.seatsChosen.length == 1) {
-                                seatList += this.seatsChosen[0];
-                                //console.log(seatList);
-                            } else {
-                                for (const key in this.seatsChosen) {
-                                    if (key == 0) {
-                                        seatList += this.seatsChosen[0];
-                                    } else {
-                                        seatList = seatList + ', ' + this.seatsChosen[key];
-                                        //console.log(seatList);
-                                    }
-                                }
-                            }
-                            
-                            docsData.seats = seatList;
-                            docsData.dateCreated = new Date().toISOString();
-                            await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
-                            await deleteDoc(doc(db, 'Cart', docs.id));
-                        }
-                    }
-
-                    await setDoc(doc(db, "Seats", customer+" "+ new Date().toISOString()),{
-                      Customer: customer,
-                      // StartTime: new Date(), 
-                      StartTime: this.parseTime(this.startTime),
-                      EndTime: this.parseTime(this.endTime),
-                      // EndTime: new Date(new Date().getTime() + 60000), //1 min
-                      SeatsChosen: newSeatsChosen,
-                      NumSeats: numSeats
-                    })
-                    // alert("Your seat has been reserved.");
-                        //location.reload();
-                                            
-                }
-                catch(error) {
-                    console.error("Error adding document: ", error)
-                }
-            }  
-            this.$router.push('/livereceipt')         
-        },
-
-        disableSeat(seatId){
-            console.log("disable seat: "+seatId);
-            document.getElementById(seatId).disabled = true;
-        },
-
-        setProfile() {
-            this.name = this.user.displayName;
-            this.email = this.user.email;
-        },
-
-        closeModal() {
-            this.showMaxModal = false;
-            this.showNoSeatModal = false;
-        },
-
-        async getDiningTime() {
-          try{         
-            let allOrders = await getDocs(collection(db, 'Cart'))
-
-            for (const docs of allOrders.docs) {
-                let docsData = docs.data();
-                let docUserID = docsData.userId;
-
-                if (docUserID === this.user.uid) {                   
-                    this.startTime = this.mapDiningTime[docsData.diningTime].startTime;
-                    this.endTime = this.mapDiningTime[docsData.diningTime].endTime;
-                    this.peak = this.mapDiningTime[docsData.diningTime].peak;
-                }
-            }
-          } 
-          catch(error) {
-              console.error("Error finding document: ", error)
+    seatButtons.forEach((button) => {
+      if (numSeatsLeft <= 5 || this.peak) {
+        this.maxSeats = 2
+      }
+      button.addEventListener('click', () => {
+        if (button.getAttribute('data-selected') === 'true') {
+          // button.style.backgroundColor = '#D9D9D9';
+          button.setAttribute('data-selected', 'false')
+          button.classList.remove('selected')
+          this.removeSeat(button.id)
+        } else {
+          if (this.numSeatsChosen >= this.maxSeats) {
+            this.showMaxModal = true
+            return
           }
-        },
-        
-        parseTime(timeString) {
-          const today = new Date();
-          const hours = parseInt(timeString.substring(0, 2), 10);
-          const minutes = parseInt(timeString.substring(2, 4), 10);
-
-          return new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes);
+          button.setAttribute('data-selected', 'true')
+          button.classList.add('selected')
+          this.addSeat(button.id)
         }
+        console.log(this.seatsChosen)
+      })
+    })
+
+    // async function display() {
+    //     let allSeatsTaken = await getDocs(collection(db, "Seats"));
+    //     allSeatsTaken.forEach(async (docs) => {
+    //         let documentData = docs.data();
+    //         let SeatStartTime = documentData.StartTime;
+    //         let EndTime = documentData.EndTime;
+    //         let timeDiff = 0;
+
+    //         if (EndTime){
+    //             let endTime = EndTime.toDate();
+    //             // console.log(timeSelected);
+    //             let currentTime = (() => this.parseTime("1245"))();; //time is always set to 12:45
+    //             // console.log(currentTime);
+    //             timeDiff = currentTime - endTime;
+    //         }
+
+    //         // console.log(timeDiff);
+
+    //         if (timeDiff > 0){ //the end time has passed
+    //             await deleteDoc(doc(db, "Seats", docs.id));
+    //             console.log(`Customer: ${docs.id} has been deleted.`);
+    //         } else if (SeatStartTime < this.endTime) { //if the seat start time is earlier than the end time of the current user
+    //             let arrSeats = documentData.SeatsChosen;
+
+    //             arrSeats.forEach((seat)=> {
+    //                 document.getElementById(seat).disabled = true;
+    //             });
+    //         }
+    //     });
+    // }
+
+    async function seatsLeft() {
+      let SeatsLeft = 23
+
+      let allSeatsTaken = await getDocs(collection(db, 'Seats'))
+      allSeatsTaken.forEach(async (docs) => {
+        let documentData = docs.data()
+        let num = documentData.NumSeats
+
+        SeatsLeft -= num
+      })
+
+      return SeatsLeft
+    }
+
+    const display = async () => {
+      let allSeatsTaken = await getDocs(collection(db, 'Seats'))
+      allSeatsTaken.forEach(async (docs) => {
+        let documentData = docs.data()
+        let EndTime = documentData.EndTime
+        let timeDiff = 0
+
+        if (EndTime) {
+          let endTime = EndTime.toDate()
+          let currentTime = this.parseTime('1215') //current time is always 1215
+          timeDiff = currentTime - endTime
+        }
+
+        if (timeDiff > 0) {
+          await deleteDoc(doc(db, 'Seats', docs.id))
+          console.log(`Customer: ${docs.id} has been deleted.`)
+        } else if (EndTime.toDate() - this.parseTime(this.startTime) > 0) {
+          // if the end time of seat is later than the start time of booking (i.e. unavailable)
+
+          let arrSeats = documentData.SeatsChosen
+
+          arrSeats.forEach((seat) => {
+            document.getElementById(seat).disabled = true
+          })
+        }
+      })
+    }
+
+    await display()
+  },
+  methods: {
+    addSeat(seatId) {
+      if (!this.seatsChosen.includes(seatId)) {
+        this.seatsChosen.push(seatId)
+      }
+      this.numSeatsChosen++
+    },
+    removeSeat(seatId) {
+      this.seatsChosen = this.seatsChosen.filter((seat) => seat !== seatId)
+      this.numSeatsChosen--
+    },
+
+    async saveToFS() {
+      if (this.numSeatsChosen < 1) {
+        // i.e. user clicks save without choosing any seats
+        this.showNoSeatModal = true
+        return
+      } else {
+        console.log('saved to fs')
+
+        let customer = this.email
+        let newSeatsChosen = this.seatsChosen
+        let numSeats = this.numSeatsChosen
+
+        try {
+          let allOrders = await getDocs(collection(db, 'Cart'))
+
+          for (const docs of allOrders.docs) {
+            let docsData = docs.data()
+            let docUserID = docsData.userId
+            let seatList = ''
+
+            if (docUserID === this.user.uid) {
+              if (this.seatsChosen.length == 1) {
+                seatList += this.seatsChosen[0]
+                //console.log(seatList);
+              } else {
+                for (const key in this.seatsChosen) {
+                  if (key == 0) {
+                    seatList += this.seatsChosen[0]
+                  } else {
+                    seatList = seatList + ', ' + this.seatsChosen[key]
+                    //console.log(seatList);
+                  }
+                }
+              }
+
+              docsData.seats = seatList
+              docsData.dateCreated = new Date().toISOString()
+              await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
+              await deleteDoc(doc(db, 'Cart', docs.id))
+            }
+          }
+
+          await setDoc(doc(db, 'Seats', customer + ' ' + new Date().toISOString()), {
+            Customer: customer,
+            // StartTime: new Date(),
+            StartTime: this.parseTime(this.startTime),
+            EndTime: this.parseTime(this.endTime),
+            // EndTime: new Date(new Date().getTime() + 60000), //1 min
+            SeatsChosen: newSeatsChosen,
+            NumSeats: numSeats
+          })
+        } catch (error) {
+          console.error('Error adding document: ', error)
+        }
+      }
+      this.$router.push('/livereceipt')
+    },
+
+    disableSeat(seatId) {
+      console.log('disable seat: ' + seatId)
+      document.getElementById(seatId).disabled = true
+    },
+
+    setProfile() {
+      this.name = this.user.displayName
+      this.email = this.user.email
+    },
+
+    closeModal() {
+      this.showMaxModal = false
+      this.showNoSeatModal = false
+    },
+
+    async getDiningTime() {
+      try {
+        let allOrders = await getDocs(collection(db, 'Cart'))
+
+        for (const docs of allOrders.docs) {
+          let docsData = docs.data()
+          let docUserID = docsData.userId
+
+          if (docUserID === this.user.uid) {
+            this.startTime = this.mapDiningTime[docsData.diningTime].startTime
+            this.endTime = this.mapDiningTime[docsData.diningTime].endTime
+            this.peak = this.mapDiningTime[docsData.diningTime].peak
+          }
+        }
+      } catch (error) {
+        console.error('Error finding document: ', error)
+      }
+    },
+
+    parseTime(timeString) {
+      const today = new Date()
+      const hours = parseInt(timeString.substring(0, 2), 10)
+      const minutes = parseInt(timeString.substring(2, 4), 10)
+
+      return new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes)
+    }
   }
 }
 </script>
@@ -463,26 +440,26 @@ button {
 }
 
 .Seat:not(.selected):not([disabled]):hover {
-    background-color: #afafaf;
+  background-color: #afafaf;
 }
 
 .Seat.selected {
-    background-color: #51E51C;
+  background-color: #51e51c;
 }
 
-    .table {
-        background-color: #C6D4D4;
-        height: 4.5vw;
-        width: 5.5vw;
-        margin: 0.75vw 0.75vw;
-        display: flex;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1vw;
+.table {
+  background-color: #c6d4d4;
+  height: 4.5vw;
+  width: 5.5vw;
+  margin: 0.75vw 0.75vw;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1vw;
 
-        font-family: 'Inria Sans';
-    }
+  font-family: 'Inria Sans';
+}
 
 .SeatSection {
   display: flex;
@@ -513,13 +490,13 @@ button {
   margin: 0vw 3vw 1.5vw 3vw;
   color: white;
 
-        display: flex;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1vw;
-        font-family: 'Inria Sans';
-    }
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1vw;
+  font-family: 'Inria Sans';
+}
 
 .circletable {
   height: 4vw;
@@ -534,13 +511,13 @@ button {
   justify-content: center;
   font-size: 1.1vw;
 
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-        font-family: 'Inria Sans';
-    }
+  font-family: 'Inria Sans';
+}
 
 .CircleSection {
   position: relative;
@@ -569,11 +546,11 @@ button {
   transform: translate(0, -50%);
 }
 
-    #Seating {
-        display: flex;
-        justify-content: center;
-        gap: 1em;
-    }
+#Seating {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
 
 #Legend {
   background-color: #eeffff;
@@ -582,13 +559,13 @@ button {
   flex-grow: 1;
   margin-top: 1vh;
 
-        display: flex;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1vw;
-        font-family: 'Inria Sans';
-    }
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1vw;
+  font-family: 'Inria Sans';
+}
 
 #FreeLabel,
 #SelectedLabel,
@@ -634,21 +611,21 @@ button {
   text-align: center;
   align-items: center;
 
-        text-indent:2vw;
-    }
+  text-indent: 2vw;
+}
 
-    button:disabled {
-        background-color: #FF2505; 
-        color: white;           
-        opacity: 1.0;              
-    }
+button:disabled {
+  background-color: #ff2505;
+  color: white;
+  opacity: 1;
+}
 
 #floppy {
-    width: 3.3vw;
+  width: 3.3vw;
 }
 
 #SaveButton:hover {
-    background-color: #058b92;
+  background-color: #058b92;
 }
 
 /* Modal styling */

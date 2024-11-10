@@ -159,7 +159,6 @@ export default {
   height: 100vh;
 } */
 
-/* javier edited to absolute to remove the scolling and disproportions */
 .profile-container {
   position: absolute;
   top: 15vh;
@@ -218,7 +217,7 @@ button {
   font-size: 1.3vw;
   background: none;
   border: none;
-  color: #ffffff;
+  color: #000000;
   text-align: center;
   padding: 10px 0;
   cursor: pointer;
@@ -236,7 +235,7 @@ button .icon {
 }
 
 button:hover {
-  color: #eeffff;
+  color: #ffffff;
 }
 
 /* Modal styling */

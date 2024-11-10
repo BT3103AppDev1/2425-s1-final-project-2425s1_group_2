@@ -23,7 +23,7 @@
           <h2>Notification</h2>
           <p>Cart is empty. Please add items in before proceeding.</p>
           <div class="modal-actions">
-            <button @click="closeCartModal">Go back</button>
+            <button @click="closeCartModal" class="modal-button">Go back</button>
           </div>
         </div>
       </div>
@@ -419,6 +419,7 @@ export default {
   font-size: 24px;
   cursor: pointer;
   text-align: center;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-text h2 {
@@ -427,6 +428,7 @@ export default {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-text p {
@@ -435,12 +437,27 @@ export default {
   text-align: center;
   margin-bottom: 20px;
   color: #00adb5;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions button {

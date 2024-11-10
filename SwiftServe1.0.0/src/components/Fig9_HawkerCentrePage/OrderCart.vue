@@ -51,8 +51,8 @@ export default {
   },
   data() {
     return {
-      showDeleteModal: false, // Controls the modal visibility
-      itemToRemove: null // Stores the item to be removed
+      showDeleteModal: false,
+      itemToRemove: null
     }
   },
   methods: {
@@ -71,7 +71,7 @@ export default {
     },
     closeDeleteModal() {
       this.showDeleteModal = false
-      this.itemToRemove = null // Reset itemToRemove when modal is closed
+      this.itemToRemove = null
     }
   }
 }
@@ -86,7 +86,6 @@ export default {
   border-radius: 0.5vw;
   padding: 1vh 1vw;
   height: 18vh;
-  /* overflow-y: auto;  */
 }
 .order-cart-text {
   font-size: 1.5vw;
@@ -131,7 +130,7 @@ export default {
 }
 
 .cart-item:hover {
-  background-color: #007b83; /* Darkens on hover */
+  background-color: #007b83;
 }
 
 .cart-item-details {
@@ -198,7 +197,6 @@ export default {
   color: red;
 }
 
-/* Modal styling */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -277,7 +275,6 @@ export default {
   background-color: #007a80;
 }
 
-/* Original responsive styles */
 @media (max-width: 600px) {
   .cart-items-row {
     flex-wrap: wrap;

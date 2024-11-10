@@ -39,8 +39,8 @@ export default {
   overflow-y: auto;
   position: absolute;
   top: 25vh;
-  left: 1.7vw;
-  width: 6vw;
+  left: 0.7vw;
+  width: 8vw;
   height: 43vh;
   background-color: #eeffff;
   border-radius: 1vh;
@@ -66,8 +66,8 @@ export default {
 }
 
 .stall-thumbnail-container {
-  width: 4vw; /* Adjusted width for responsiveness */
-  height: 4vw; /* Adjusted height for responsiveness */
+  width: 4vw;
+  height: 4vw;
   border-radius: 1vh;
   overflow: hidden;
   background-color: #f0f0f0;

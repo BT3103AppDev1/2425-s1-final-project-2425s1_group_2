@@ -21,7 +21,6 @@
       </div>
     </div>
 
-
     <div class="total">
       <h3 id="TotalPrice">Total: ${{ total.toFixed(2) }}</h3>
     </div>
@@ -46,8 +45,14 @@
     <div class="payment-mode">
       <h3>Payment Mode:</h3>
       <div class="payment-options">
-        <img v-for="(method, index) in paymentMethods" :key="index" :src="method.src" :alt="method.alt"
-          :class="{ selected: selectedMethod === method.alt }" @click="selectMethod(method.alt)" />
+        <img
+          v-for="(method, index) in paymentMethods"
+          :key="index"
+          :src="method.src"
+          :alt="method.alt"
+          :class="{ selected: selectedMethod === method.alt }"
+          @click="selectMethod(method.alt)"
+        />
         <!--<img src="/visamaster.png" alt="Visa/Mastercard" />
         <img src="/paynow.png" alt="PayNow" />
         <img src="/paylah.png" alt="PayLah!" />-->
@@ -64,7 +69,7 @@
           <h2>Notification</h2>
           <p>No Payment Method Selected. Please select one before proceeding</p>
           <div class="modal-actions">
-            <button @click="closeDeleteModal">Go back</button>
+            <button @click="closeDeleteModal" class="modal-button">Go back</button>
           </div>
         </div>
       </div>
@@ -75,13 +80,21 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs, setDoc, doc, deleteDoc,query,where,onSnapshot} from 'firebase/firestore'
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  collection,
+  getDocs,
+  setDoc,
+  doc,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot
+} from 'firebase/firestore'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const db = getFirestore(firebaseApp)
 
 export default {
-
   name: 'ReceiptComponent',
 
   data() {
@@ -102,17 +115,17 @@ export default {
   },
 
   async mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.user = user;
-        this.HCName = this.$route.query.HCName;
-        console.log(this.HCName);
+        this.user = user
+        this.HCName = this.$route.query.HCName
+        console.log(this.HCName)
         //this.getCartOrders();
-        this.setupCartListener();
+        this.setupCartListener()
       }
-    });
+    })
   },
 
   computed: {
@@ -122,44 +135,43 @@ export default {
   },
   methods: {
     async goPaymentSuccess() {
-
       if (this.selectedMethod == null) {
-        this.showDeleteModal = true;
-        return;
+        this.showDeleteModal = true
+        return
       }
 
       let allOrders = await getDocs(collection(db, 'Cart'))
 
       //allOrders.forEach((docs) => {
-      const receiptID = Date.now();
+      const receiptID = Date.now()
       for (const docs of allOrders.docs) {
-        let docsData = docs.data();
-        let docUserID = docsData.userId;
+        let docsData = docs.data()
+        let docUserID = docsData.userId
 
         if (docUserID === this.user.uid) {
-          docsData.receiptId = receiptID;
-          docsData.orderNum = String(docUserID.substring(0, 3) + Date.now());
-          docsData.collected = false;
-          docsData.diningStatus = this.dineOption;
-          docsData.diningTime = this.diningTime;
-          docsData.orderStatus = false;
-          docsData.paymendMode = this.selectedMethod;
-          docsData.seats = "";
+          docsData.receiptId = receiptID
+          docsData.orderNum = String(docUserID.substring(0, 3) + Date.now())
+          docsData.collected = false
+          docsData.diningStatus = this.dineOption
+          docsData.diningTime = this.diningTime
+          docsData.orderStatus = false
+          docsData.paymendMode = this.selectedMethod
+          docsData.seats = ''
           await setDoc(doc(db, 'Cart', docs.id), docsData)
         }
-        if (this.dineOption === "Dine in") {
-          this.$router.push('/paymentSuccess');
+        if (this.dineOption === 'Dine in') {
+          this.$router.push('/paymentSuccess')
         } else {
-          docsData.dateCreated = new Date().toISOString();
+          docsData.dateCreated = new Date().toISOString()
           await setDoc(doc(db, 'PlacedCustOrders', docs.id), docsData)
-          await deleteDoc(doc(db, 'Cart', docs.id));
-          this.$router.push('/takeawaySuccess');
+          await deleteDoc(doc(db, 'Cart', docs.id))
+          this.$router.push('/takeawaySuccess')
         }
       }
       //add method to clear cart in hawker centre page
     },
     closeDeleteModal() {
-      this.showDeleteModal = false;
+      this.showDeleteModal = false
     },
 
     goHawkerCentre() {
@@ -171,73 +183,73 @@ export default {
     },
 
     goOrdersPage(order) {
-
       this.$router.push({
         name: 'foodItemPage',
         params: {
-          cartItemId: order.id,  // Pass the cart item ID
+          cartItemId: order.id // Pass the cart item ID
         },
         query: {
           HCName: this.HCName
         }
-      });
+      })
     },
 
     selectMethod(method) {
-      this.selectedMethod = method;
+      this.selectedMethod = method
     },
     setupCartListener() {
       if (this.user) {
-        const cartQuery = query(
-          collection(db, 'Cart'),
-          where('userId', '==', this.user.uid)
-        );
+        const cartQuery = query(collection(db, 'Cart'), where('userId', '==', this.user.uid))
 
-        onSnapshot(cartQuery, (querySnapshot) => {
-          this.orders = querySnapshot.docs.map(doc => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          console.log('Cart items updated:', this.orders);
+        onSnapshot(
+          cartQuery,
+          (querySnapshot) => {
+            this.orders = querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id
+            }))
+            console.log('Cart items updated:', this.orders)
 
-          // Check for unavailable items or closed stalls
-          this.orders.forEach(cartItem => this.checkAndRemoveItem(cartItem));
-        }, (error) => {
-          console.error('Error listening to cart updates:', error);
-        });
+            // Check for unavailable items or closed stalls
+            this.orders.forEach((cartItem) => this.checkAndRemoveItem(cartItem))
+          },
+          (error) => {
+            console.error('Error listening to cart updates:', error)
+          }
+        )
       }
     },
 
     async checkAndRemoveItem(cartItem) {
-      const foodItemRef = doc(db, 'FoodItem', cartItem.foodItemId);
-      const foodItemSnapshot = await getDocs(foodItemRef);
+      const foodItemRef = doc(db, 'FoodItem', cartItem.foodItemId)
+      const foodItemSnapshot = await getDocs(foodItemRef)
 
       if (foodItemSnapshot.exists()) {
-        const foodItemData = foodItemSnapshot.data();
+        const foodItemData = foodItemSnapshot.data()
 
         // Check if the food item is unavailable
         if (!foodItemData.available) {
-          await this.removeItemFromCart(cartItem.id);
-          return; 
+          await this.removeItemFromCart(cartItem.id)
+          return
         }
 
         // Check if the stall is closed
-        const stallRef = doc(db, 'UserProfile', foodItemData.merchantId);
-        const stallSnapshot = await getDocs(stallRef);
+        const stallRef = doc(db, 'UserProfile', foodItemData.merchantId)
+        const stallSnapshot = await getDocs(stallRef)
 
         if (stallSnapshot.exists() && !stallSnapshot.data().open) {
-          await this.removeItemFromCart(cartItem.id);
+          await this.removeItemFromCart(cartItem.id)
         }
       }
     },
 
     async removeItemFromCart(itemId) {
       try {
-        const itemRef = doc(db, 'Cart', itemId);
-        await deleteDoc(itemRef);
-        this.orders = this.orders.filter(item => item.foodItemId !== itemId);
+        const itemRef = doc(db, 'Cart', itemId)
+        await deleteDoc(itemRef)
+        this.orders = this.orders.filter((item) => item.foodItemId !== itemId)
       } catch (error) {
-        console.error('Error removing item from cart:', error);
+        console.error('Error removing item from cart:', error)
       }
     }
     /*async getCartOrders(userID) {
@@ -259,8 +271,8 @@ export default {
           this.orders.push(newOrder);
         }
       })*/
-    }
   }
+}
 </script>
 
 <style scoped>
@@ -296,7 +308,6 @@ export default {
   max-height: 25vh;
   overflow-y: auto;
   align-items: center;
-
 }
 
 #TotalPrice {
@@ -327,6 +338,7 @@ export default {
   font-size: 2vw;
   margin-right: 1vw;
   margin-top: 3vw;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .total {
@@ -404,6 +416,7 @@ select {
   font-size: 3vh;
   border-radius: 5px;
   width: 100%;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 /* Modal styling */
@@ -484,5 +497,9 @@ select {
 
 .modal-actions button:hover {
   background-color: #007a80;
+}
+
+.modal-button {
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

@@ -27,7 +27,9 @@ import { auth } from '@/firebase.js'
 export default {
   methods: {
     LGSClick() {
-      this.$router.push('/signup')
+      this.$router.push('/signup').then(() => {
+        location.reload()
+      })
     },
     // signInAnonymously() {
     //   signInAnonymously(auth)
