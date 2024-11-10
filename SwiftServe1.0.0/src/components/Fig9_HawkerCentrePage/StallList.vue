@@ -39,8 +39,8 @@ export default {
   overflow-y: auto;
   position: absolute;
   top: 25vh;
-  left: 1.7vw;
-  width: 6vw;
+  left: 0.7vw;
+  width: 8vw;
   height: 43vh;
   background-color: #eeffff;
   border-radius: 1vh;
