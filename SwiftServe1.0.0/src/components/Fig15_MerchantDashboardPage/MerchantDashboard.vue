@@ -1,50 +1,38 @@
 <template>
-    <div id ="page">
-        <div id="merchantdashboard">
-            <button class= "clickable" id="merchantFoodAvail" @click="goToMerchantToggleAvailability">
-                <span class="iconspan">
-                    <img src="/toggleswitch_icon.png" alt="toggle" class= "icon">
-                </span>
-                <span class="text">
-                    Toggle Food Availability
-                </span>
-            </button>
-            <button class = "clickable" id="merchantOrders" @click="goToMerchantOrders">
-                <span class="iconspan">
-                    <img src="/document_icon.png" alt="document" class= "icon">
-                </span>
-                <span class="text">
-                    Orders
-                </span>
-            </button>
-            <button class="clickable" id="merchantSales" @click="goToMerchantSalesDashboard">
-                <span class="iconspan">
-                    <img src="/salesdashboard_icon.png" alt="sales" class= "icon">
-                </span>
-                <span class="text">
-                    Sales Dashboard
-                </span>
-            </button>
-            <button class="clickable" id="createFoodItem" @click="goToCreateFoodItem">
-                <span class="iconspan">
-                    <img src="/burger_icon.png" alt="create" class="icon">
-                </span>
-                <span class="text">Add Food Item</span>
-            </button>
-        </div>
+  <div id="page">
+    <div id="merchantdashboard">
+      <button class="clickable" id="merchantFoodAvail" @click="goToMerchantToggleAvailability">
+        <span class="iconspan">
+          <img src="/toggleswitch_icon.png" alt="toggle" class="icon" />
+        </span>
+        <span class="text"> Toggle Food Availability </span>
+      </button>
+      <button class="clickable" id="merchantOrders" @click="goToMerchantOrders">
+        <span class="iconspan">
+          <img src="/document_icon.png" alt="document" class="icon" />
+        </span>
+        <span class="text"> Orders </span>
+      </button>
+      <button class="clickable" id="merchantSales" @click="goToMerchantSalesDashboard">
+        <span class="iconspan">
+          <img src="/salesdashboard_icon.png" alt="sales" class="icon" />
+        </span>
+        <span class="text"> Sales Dashboard </span>
+      </button>
+      <button class="clickable" id="createFoodItem" @click="goToCreateFoodItem">
+        <span class="iconspan">
+          <img src="/burger_icon.png" alt="create" class="icon" />
+        </span>
+        <span class="text">Add Food Item</span>
+      </button>
     </div>
-
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script>
-// import firebaseApp from '@/firebase.js';
-// import { getFirestore, getDocs, collection, doc, updateDoc } from 'firebase/firestore';
-import { getAuth} from "firebase/auth";
-// const db = getFirestore(firebaseApp);
+import { getAuth } from 'firebase/auth'
 
 export default {
   name: 'OrdersPageComponent',
@@ -52,84 +40,86 @@ export default {
   data() {
     return {
       user: false,
-    //   merchantId: '',
+      //   merchantId: '',
       orderData: [],
       orderNumMap: {}
-    };
-    },
+    }
+  },
 
   async mounted() {
-    const auth = getAuth();
+    const auth = getAuth()
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.user = user;
-        // this.merchantId = "6CrzYngTYekKWIkSmohR"; //to replace with user id
+        this.user = user
       }
-    });
-    },
+    })
+  },
 
-    methods: {
-        goToMerchantToggleAvailability(){
-            this.$router.push('/merchantToggleAvailability');
-        },
-        goToMerchantOrders(){
-            this.$router.push('/merchantOrders');
-        },
-        goToMerchantSalesDashboard(){
-            this.$router.push('/merchantSales');
-        },
-        goToCreateFoodItem() {
-            this.$router.push('/merchantFoodItemForm');
-        }
+  methods: {
+    goToMerchantToggleAvailability() {
+      this.$router.push('/merchantToggleAvailability')
+    },
+    goToMerchantOrders() {
+      this.$router.push('/merchantOrders')
+    },
+    goToMerchantSalesDashboard() {
+      this.$router.push('/merchantSales')
+    },
+    goToCreateFoodItem() {
+      this.$router.push('/merchantFoodItemForm')
     }
+  }
 }
 </script>
 
 <style scoped>
 .title-merchant {
-    font-family: 'Inria Sans', sans-serif;
-    font-size: 2vw;
-    text-align: center;
-    margin-bottom: 1vw;
+  font-family: 'Inria Sans', sans-serif;
+  font-size: 2vw;
+  text-align: center;
+  margin-bottom: 1vw;
 }
 
-#merchantOrders, #merchantFoodAvail, #merchantSales, #createFoodItem {
-    background-color: #00adb5;
-    color: white;
-    height: 12vw;
-    width: 20vw;
-    border-radius: 2vw;
-    font-size: 1.5vw;
-    border: none;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center;
-    position: relative;
+#merchantOrders,
+#merchantFoodAvail,
+#merchantSales,
+#createFoodItem {
+  background-color: #00adb5;
+  color: white;
+  height: 12vw;
+  width: 20vw;
+  border-radius: 2vw;
+  font-size: 1.5vw;
+  border: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .iconspan {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
 }
 
 .icon {
-    width: 5vw;
-    margin-bottom: 2vw;
+  width: 5vw;
+  margin-bottom: 2vw;
 }
 
-#merchantFoodAvail .icon{
-    width: 7vw;
+#merchantFoodAvail .icon {
+  width: 7vw;
 }
 
 .text {
-    position: absolute;
-    bottom: 0.5vw;
-    text-align: center;
-    margin-bottom: 0.75vw;
+  position: absolute;
+  bottom: 0.5vw;
+  text-align: center;
+  margin-bottom: 0.75vw;
 }
 
 #page {
@@ -175,6 +165,6 @@ export default {
 #merchantFoodAvail:hover,
 #merchantSales:hover,
 #createFoodItem:hover {
-    background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
+  background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
 }
 </style>

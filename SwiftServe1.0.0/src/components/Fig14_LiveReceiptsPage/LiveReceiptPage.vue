@@ -374,6 +374,7 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1020;
 }
 
 .modal-text {
