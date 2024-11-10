@@ -2,8 +2,14 @@
   <HeaderScreen />
   <div class="container">
     <div class="food-item-details" v-if="(foodItem || cartItem || quickOrderItem) && merchant">
-      <LeftColumn :merchant="merchant" :foodItem="cartItem || foodItem || quickOrderItem" :quantity="quantity"
-        :totalPrice="totalPrice" @increaseQuantity="increaseQuantity" @decreaseQuantity="decreaseQuantity" />
+      <LeftColumn
+        :merchant="merchant"
+        :foodItem="cartItem || foodItem || quickOrderItem"
+        :quantity="quantity"
+        :totalPrice="totalPrice"
+        @increaseQuantity="increaseQuantity"
+        @decreaseQuantity="decreaseQuantity"
+      />
 
       <div class="right-column">
         <div class="green-box">
@@ -162,10 +168,10 @@ export default {
 
             originalAddOns = this.foodItem.addOn
               ? Object.keys(this.foodItem.addOn).map((key) => ({
-                name: key,
-                price: this.foodItem.addOn[key],
-                quantity: 0
-              }))
+                  name: key,
+                  price: this.foodItem.addOn[key],
+                  quantity: 0
+                }))
               : []
           } else {
             console.error('No such food item!')
@@ -225,10 +231,10 @@ export default {
           await this.fetchMerchant(this.foodItem.merchantId)
           this.addOns = this.foodItem.addOn
             ? Object.keys(this.foodItem.addOn).map((key) => ({
-              name: key,
-              price: this.foodItem.addOn[key],
-              quantity: 0
-            }))
+                name: key,
+                price: this.foodItem.addOn[key],
+                quantity: 0
+              }))
             : []
         } else {
           console.error('No such food item!')
@@ -265,10 +271,10 @@ export default {
             const foodItem = foodItemDoc.data()
             originalAddOns = foodItem.addOn
               ? Object.keys(foodItem.addOn).map((key) => ({
-                name: key,
-                price: foodItem.addOn[key],
-                quantity: 0
-              }))
+                  name: key,
+                  price: foodItem.addOn[key],
+                  quantity: 0
+                }))
               : []
           } else {
             console.error('No such food item!')
@@ -444,13 +450,22 @@ export default {
 }
 
 .food-item-details {
+  position: absolute;
+  left: 5vw;
+  top: 15vh;
+  width: 45vw;
   display: flex;
-  background-color: white;
+  background-color: #ffffff;
   padding: 0.9375rem;
   flex-wrap: wrap;
 }
 
 .right-column {
+  position: absolute;
+  left: 50vw;
+  top: 10vh;
+  width: 40vw;
+  height: 80vh;
   flex: 1;
   padding-left: 0.9375rem;
 }
@@ -483,8 +498,9 @@ export default {
   font-size: 1.5rem;
   /* font-weight: 400; */
   cursor: pointer;
-  width: 35%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Inria Sans', sans-serif;
   background-color: #00adb5;
   color: white;
