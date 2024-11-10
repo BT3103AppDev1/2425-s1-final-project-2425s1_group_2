@@ -18,7 +18,7 @@ Report: Filled in when report is finalised
 
 SCRUM Artefacts: Filled in when report is finalised
 
-Videos: https://drive.google.com/file/d/1yrSCohnwyE_xvFwrvaDGgifDXTcbyCIz/view?resourcekey (Customer Perspective)
+Videos: https://drive.google.com/file/d/1yrSCohnwyE_xvFwrvaDGgifDXTcbyCIz/view?resourcekey (Customer Perspective) <br>
 https://drive.google.com/file/d/1ohaHYvC7wGCyzjYHHkW93iE5mh0LhK0i/view?resourcekey (Merchant Perspective)
 
 ## Tech Stack
