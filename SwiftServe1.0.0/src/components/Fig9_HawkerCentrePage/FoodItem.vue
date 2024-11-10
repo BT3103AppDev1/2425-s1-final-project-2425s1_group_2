@@ -12,22 +12,18 @@
 
 <script>
 export default {
-  mounted() {
-    // Log items to check details
-    console.log(this.item)
-  },
+  mounted() {},
   props: {
     item: {
-      type: Object, //it is a dictionary
+      type: Object,
       required: true
     }
   },
   methods: {
     handleClick(item) {
-      // Only emit click event if the item is available
       if (item.available) {
-        console.log(item) // Log item to check details
-        this.$emit('click', item) // Emit the selected item to parent
+        this.$emit('click', item)
+        this.$forceUpdate()
       }
     }
   }
@@ -43,7 +39,7 @@ export default {
   text-align: center;
   height: 12.5vw;
   width: 12vw;
-  margin-bottom: 20px; /*CHECK WITH EVERYONE*/
+  margin-bottom: 20px;
   align-items: center;
   z-index: 10;
 }

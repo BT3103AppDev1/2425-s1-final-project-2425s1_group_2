@@ -19,18 +19,18 @@
     <button @click="goHawkerCentrePage" id="HCButton">Let's go</button>
   </div>
 
-         <!-- Custom Modal for No Hawker Centre Selected -->
-         <div v-if="showHawkerModal" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-text">
-          <h2>Notification</h2>
-          <p>No Hawker Centre Selected. Please choose one before proceeding.</p>
-          <div class="modal-actions">
-            <button @click="closeHawkerModal">Go back</button>
-          </div>
+  <!-- Custom Modal for No Hawker Centre Selected -->
+  <div v-if="showHawkerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-text">
+        <h2>Notification</h2>
+        <p>No Hawker Centre Selected. Please choose one before proceeding.</p>
+        <div class="modal-actions">
+          <button @click="closeHawkerModal" class="modal-button">Go back</button>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -68,11 +68,11 @@ export default {
           query: { HCName: this.selectedHawkerCentre.Name }
         })
       } else {
-        this.showHawkerModal = true;
+        this.showHawkerModal = true
       }
     },
     closeHawkerModal() {
-      this.showHawkerModal = false;
+      this.showHawkerModal = false
     },
 
     async fetchHawkerCentres() {
@@ -199,6 +199,7 @@ button {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-text p {
@@ -207,6 +208,18 @@ button {
   text-align: center;
   margin-bottom: 20px;
   color: #00adb5;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-button {
+  background-color: #00adb5;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-family: 'Inria Sans', sans-serif;
 }
 
 .modal-actions {

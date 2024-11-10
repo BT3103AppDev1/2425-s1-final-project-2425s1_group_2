@@ -20,17 +20,8 @@ export default {
   methods: {
     checkout() {
       this.$emit('checkout')
-      // Implement checkout logic here
-      /*this.$router.push('/checkout')
-        //console.log('Checkout clicked');
-        this.$router.push({
-          path: '/checkout',
-          query: {HCName: this.hawkerCentre}
-        })*/
     },
     cancelOrder() {
-      // Implement cancel order logic here
-      //console.log('Cancel Order clicked');
       this.$emit('cancelOrder')
       this.$router.push('/CustD')
     }
@@ -47,7 +38,7 @@ export default {
   position: absolute;
   top: 67vh;
   left: 75vw;
-  width: 15vw; /* This makes it stretch from 8vw to 100vw */
+  width: 15vw;
   min-height: 10vh;
 }
 
@@ -86,6 +77,6 @@ button {
 }
 
 button:hover {
-  background-color: #007b83; /* Darker shade for hover effect */
+  background-color: #007b83;
 }
 </style>

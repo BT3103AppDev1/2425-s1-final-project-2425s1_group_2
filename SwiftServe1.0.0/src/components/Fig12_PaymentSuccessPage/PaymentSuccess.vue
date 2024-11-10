@@ -37,6 +37,7 @@
   border-color: transparent;
   border-radius: 0.5em;
   font-size: 1.5em;
+  font-family: 'Inria Sans';
 }
 </style>
 

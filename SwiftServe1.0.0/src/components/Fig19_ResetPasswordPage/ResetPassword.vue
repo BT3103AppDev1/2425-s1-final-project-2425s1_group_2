@@ -9,7 +9,6 @@
       <button type="submit" class="reset-password-button">Send Email Link</button>
     </form>
 
-    <!-- Success Modal -->
     <div v-if="showSuccessModal" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" @click="closeSuccessModal">&times;</button>
@@ -23,7 +22,6 @@
       </div>
     </div>
 
-    <!-- Error Modal -->
     <div v-if="showErrorModal" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" @click="closeErrorModal">&times;</button>

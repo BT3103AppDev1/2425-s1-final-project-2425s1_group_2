@@ -66,8 +66,8 @@ export default {
 }
 
 .stall-thumbnail-container {
-  width: 4vw; /* Adjusted width for responsiveness */
-  height: 4vw; /* Adjusted height for responsiveness */
+  width: 4vw;
+  height: 4vw;
   border-radius: 1vh;
   overflow: hidden;
   background-color: #f0f0f0;
