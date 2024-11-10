@@ -220,7 +220,6 @@ export default {
           button.classList.add('selected')
           this.addSeat(button.id)
         }
-        console.log(this.seatsChosen)
       })
     })
 
@@ -284,7 +283,6 @@ export default {
 
         if (timeDiff > 0) {
           await deleteDoc(doc(db, 'Seats', docs.id))
-          console.log(`Customer: ${docs.id} has been deleted.`)
         } else if (EndTime.toDate() - this.parseTime(this.startTime) > 0) {
           // if the end time of seat is later than the start time of booking (i.e. unavailable)
 
@@ -317,8 +315,6 @@ export default {
         this.showNoSeatModal = true
         return
       } else {
-        console.log('saved to fs')
-
         let customer = this.email
         let newSeatsChosen = this.seatsChosen
         let numSeats = this.numSeatsChosen
@@ -362,15 +358,12 @@ export default {
             SeatsChosen: newSeatsChosen,
             NumSeats: numSeats
           })
-        } catch (error) {
-          console.error('Error adding document: ', error)
-        }
+        } catch (error) {}
       }
       this.$router.push('/livereceipt')
     },
 
     disableSeat(seatId) {
-      console.log('disable seat: ' + seatId)
       document.getElementById(seatId).disabled = true
     },
 
@@ -398,9 +391,7 @@ export default {
             this.peak = this.mapDiningTime[docsData.diningTime].peak
           }
         }
-      } catch (error) {
-        console.error('Error finding document: ', error)
-      }
+      } catch (error) {}
     },
 
     parseTime(timeString) {

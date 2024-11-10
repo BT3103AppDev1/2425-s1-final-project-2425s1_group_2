@@ -99,7 +99,7 @@ export default {
 
   data() {
     return {
-      selectedMethod: null, // Track the selected method
+      selectedMethod: null,
       paymentMethods: [
         { src: '/visamaster.png', alt: 'Visa/Mastercard' },
         { src: '/paynow.png', alt: 'PayNow' },
@@ -121,7 +121,6 @@ export default {
       if (user) {
         this.user = user
         this.HCName = this.$route.query.HCName
-        console.log(this.HCName)
         //this.getCartOrders();
         this.setupCartListener()
       }
@@ -141,8 +140,6 @@ export default {
       }
 
       let allOrders = await getDocs(collection(db, 'Cart'))
-
-      //allOrders.forEach((docs) => {
       const receiptID = Date.now()
       for (const docs of allOrders.docs) {
         let docsData = docs.data()
@@ -168,14 +165,12 @@ export default {
           this.$router.push('/takeawaySuccess')
         }
       }
-      //add method to clear cart in hawker centre page
     },
     closeDeleteModal() {
       this.showDeleteModal = false
     },
 
     goHawkerCentre() {
-      //this.$router.push('/hawkerCentre')
       this.$router.push({
         path: '/hawkerCentre',
         query: { HCName: this.HCName }
@@ -186,7 +181,7 @@ export default {
       this.$router.push({
         name: 'foodItemPage',
         params: {
-          cartItemId: order.id // Pass the cart item ID
+          cartItemId: order.id
         },
         query: {
           HCName: this.HCName
@@ -200,7 +195,6 @@ export default {
     setupCartListener() {
       if (this.user) {
         const cartQuery = query(collection(db, 'Cart'), where('userId', '==', this.user.uid))
-
         onSnapshot(
           cartQuery,
           (querySnapshot) => {
@@ -208,14 +202,10 @@ export default {
               ...doc.data(),
               id: doc.id
             }))
-            console.log('Cart items updated:', this.orders)
 
-            // Check for unavailable items or closed stalls
             this.orders.forEach((cartItem) => this.checkAndRemoveItem(cartItem))
           },
-          (error) => {
-            console.error('Error listening to cart updates:', error)
-          }
+          (error) => {}
         )
       }
     },
@@ -226,13 +216,10 @@ export default {
 
       if (foodItemSnapshot.exists()) {
         const foodItemData = foodItemSnapshot.data()
-
-        // Check if the food item is unavailable
         if (!foodItemData.available) {
           await this.removeItemFromCart(cartItem.id)
           return
         }
-
         // Check if the stall is closed
         const stallRef = doc(db, 'UserProfile', foodItemData.merchantId)
         const stallSnapshot = await getDocs(stallRef)
@@ -346,7 +333,6 @@ export default {
   border-bottom: 2px solid black;
   font-weight: bold;
   margin-bottom: 2vh;
-  /* Add margin to create space between total and dropdowns */
 }
 
 .option {

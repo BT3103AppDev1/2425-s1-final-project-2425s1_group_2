@@ -41,9 +41,7 @@ export default {
         }
       }*/
   },
-  mounted() {
-    console.log(this.addOns)
-  }
+  mounted() {}
 }
 </script>
 

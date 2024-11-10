@@ -35,13 +35,25 @@
     <!-- Firebase UI Auth Container -->
     <!-- <div id="firebaseui-auth-container" v-show="!showManualLogin"></div>
     <button v-show="showManualLogin" @click="toggleLoginMethod">Sign in using other methods</button> -->
-    <!-- <button v-show="!showManualLogin" @click="toggleLoginMethod">Go Back to Manual Login</button> -->
+    <!-- <button v-show="!showManualLogin" @click="toggleLoginMethod">Go Back to Manual
+    Login</button> -->
+
+    <div v-if="showCustomModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal">&times;</button>
+        <div class="modal-text">
+          <h2>Notification</h2>
+          <p>{{ modalMessage }}</p>
+          <div class="modal-actions">
+            <button @click="closeModal" class="button-text">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-//import * as firebaseui from 'firebaseui'
-// import {EmailProvider} from '@/firebase.js'
 import { auth, GoogleProvider, db } from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
 import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider } from 'firebase/auth'
@@ -51,44 +63,41 @@ export default {
     return {
       email: '',
       password: '',
-      showPassword: false
+      showPassword: false,
+      showCustomModal: false,
+      modalMessage: ''
       //showManualLogin: true
     }
   },
-  // mounted() {
-  //   this.initializeFirebaseUI()
-  // },
+
   methods: {
+    openModal(message) {
+      this.modalMessage = message
+      this.showCustomModal = true
+    },
+
+    closeModal() {
+      this.showCustomModal = false
+    },
+
     async handleLogin() {
       try {
-        // Attempt to sign in the user with Firebase Authentication
         const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password)
         const user = userCredential.user
-
-        // Log user data for verification purposes
-        console.log('Login successful:', user)
-
         const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get()
-
         if (userProfileDoc.exists) {
           const userData = userProfileDoc.data()
           const profileType = userData.profileType
-
-          // Redirect based on profileType
           if (profileType === 'Merchant') {
-            this.$router.push('/merchantDashboard') // Replace with the actual route for merchant home page
+            this.$router.push('/merchantDashboard')
           } else {
-            this.$router.push('/custD') // Customer dashboard route
+            this.$router.push('/custD')
           }
         } else {
-          alert('User profile data not found.')
+          this.openModal('User profile data not found.')
         }
-
-        // Redirect to the customer dashboard after successful login
-        // this.$router.push('/custD')
       } catch (error) {
-        // Handle authentication errors
-        alert('Error during login: ' + error.message)
+        this.openModal('Error during login: ' + error.message)
       }
     },
     handleForgotPassword() {
@@ -105,45 +114,37 @@ export default {
         const userCredential = await auth.signInWithPopup(provider)
         const user = userCredential.user
         const userProfileDoc = await db.collection('UserProfile').doc(user.uid).get()
-
         if (userProfileDoc.exists) {
           const userData = userProfileDoc.data()
           const profileType = userData.profileType
-
-          // Redirect based on profileType
           if (profileType === 'Merchant') {
-            this.$router.push('/merchantDashboard') // Redirect to merchant dashboard
+            this.$router.push('/merchantDashboard')
           } else {
-            this.$router.push('/custD') // Redirect to customer dashboard
+            this.$router.push('/custD')
           }
         } else {
-          alert('We are unable to find your profile, try signing up first!')
+          this.openModal('We are unable to find your profile, try signing up first!')
         }
       } catch (error) {
         if (error.code === 'auth/account-exists-with-different-credential') {
           const email = error.email
           const methods = await auth.fetchSignInMethodsForEmail(email)
-
-          // Handle existing email/password account
           if (methods.includes('password')) {
-            alert(
+            this.openModal(
               'An account already exists with this email. Would you like to link your Google account to it?'
             )
-            // Prompt to link accounts
             const credential = GoogleProvider.credential(userCredential.credential.idToken)
             try {
               const usercred = await linkWithCredential(auth.currentUser, credential)
-              console.log('Account linking success', usercred.user)
               this.$router.push('/custD')
             } catch (linkError) {
-              console.log('Account linking error', linkError)
-              alert('Error linking account: ' + linkError.message)
+              this.openModal('Error linking account: ' + linkError.message)
             }
           } else {
-            alert('Please sign in using the existing method.')
+            this.openModal('Please sign in using the existing method.')
           }
         } else {
-          alert('Error during Google sign-in: ' + error.message)
+          this.openModal('Error during Google sign-in: ' + error.message)
         }
       }
     }
@@ -345,5 +346,91 @@ button:hover {
 
 .toggle-button:hover {
   background-color: #007a80;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 60%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #00adb5;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  text-align: center;
+  line-height: 35px;
+  cursor: pointer;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.close-button:hover {
+  background-color: #007a80;
+}
+
+.button-text {
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

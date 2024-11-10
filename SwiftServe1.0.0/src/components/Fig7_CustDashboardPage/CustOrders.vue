@@ -7,206 +7,206 @@
 <script>
 import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'; // Import the Firebase Auth
-import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth' // Import the Firebase Auth
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  where,
+  limit,
+  doc,
+  updateDoc,
+  getDoc
+} from 'firebase/firestore'
 
-  const db = getFirestore(firebaseApp)
-  
-  export default {
-    name: 'CustOrders',
-  
-    data() {
-      return {
-        user: false,
-        currentOrders: [],  // Reference to currentOrders data imported
-        past5Orders: [],    // Reference to past5Orders data imported
-        showQuickOrderPopup: false,
-        selectedOrder: null,
-        showCustomModal: false
-      };
+const db = getFirestore(firebaseApp)
+
+export default {
+  name: 'CustOrders',
+
+  data() {
+    return {
+      user: false,
+      currentOrders: [], // Reference to currentOrders data imported
+      past5Orders: [], // Reference to past5Orders data imported
+      showQuickOrderPopup: false,
+      selectedOrder: null,
+      showCustomModal: false
+    }
+  },
+
+  mounted() {
+    const auth = getAuth()
+    if (auth.currentUser) {
+      this.user = auth.currentUser.uid
+    }
+    this.getCurrentOrders(this.user)
+    this.getPastOrders(this.user)
+  },
+
+  methods: {
+    openModal(message) {
+      this.modalMessage = message
+      this.showCustomModal = true
     },
-  
-    mounted() {
-      const auth = getAuth();
-      if (auth.currentUser) {
-        this.user = auth.currentUser.uid;
+    closeModal() {
+      this.showCustomModal = false
+      this.modalMessage = ''
+    },
+
+    goToDiningOptions() {
+      this.$router.push('/diningOptions')
+    },
+
+    async updateORC(order) {
+      const orderRef = doc(db, 'PlacedCustOrders', order.id)
+      await updateDoc(orderRef, {
+        collected: true
+      })
+      this.currentOrders = []
+      this.past5Orders = []
+      this.getCurrentOrders(this.user)
+      this.getPastOrders(this.user)
+    },
+
+    async updateVON(order) {
+      const orderRef = doc(db, 'PlacedCustOrders', order.id)
+      const orderInfo = await getDoc(orderRef)
+      const orderData = orderInfo.data()
+      this.openModal('This Order Number is: ' + String(orderData.orderNum))
+    },
+
+    async getCurrentOrders(userId) {
+      let allOrders = await getDocs(collection(db, 'PlacedCustOrders'))
+
+      for (const docs of allOrders.docs) {
+        let docsData = docs.data()
+        let docUserID = docsData.userId
+
+        if (docUserID === this.user && !docsData.collected) {
+          let temp = {}
+          temp['id'] = docs.id
+          temp['image'] = docsData.foodItemImage
+          temp['restaurant'] = docsData.hawkerCentre
+          temp['dish'] = docsData.merchantName
+          temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName)
+          temp['readyForCollection'] = docsData.orderStatus ? 1 : 0
+          temp['preparingOrder'] = !docsData.orderStatus
+          this.currentOrders.push(temp)
+        }
       }
-      this.getCurrentOrders(this.user);
-      this.getPastOrders(this.user);
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     },
-  
-    methods: {
-      openModal(message) {
-        this.modalMessage = message;
-        this.showCustomModal = true;
-      },
-      closeModal() {
-        this.showCustomModal = false;
-        this.modalMessage = '';
-      },
+    async getPastOrders(userId) {
+      let ordersQuery = query(
+        collection(db, 'PlacedCustOrders'),
+        where('userId', '==', userId),
+        where('collected', '==', true),
+        orderBy('dateCreated', 'desc'),
+        limit(5)
+      )
 
-      goToDiningOptions() {
-        this.$router.push('/diningOptions');
-      },
+      let allOrders = await getDocs(ordersQuery)
 
-      async updateORC(order) {
-        const orderRef = doc(db, "PlacedCustOrders", order.id);
-        await updateDoc(orderRef, {
-          collected: true
-        });
-        this.currentOrders = [];
-        this.past5Orders = [];
-        this.getCurrentOrders(this.user);
-        this.getPastOrders(this.user);
-      },
+      for (const docs of allOrders.docs) {
+        let docsData = docs.data()
+        let temp = {}
+        //push what is needed to create new order in order cart!!!!!!!!!!!!!!
+        //temp['quantityFoodItem'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
+        temp['id'] = docs.id
+        temp['orderNum'] = docsData.orderNum //change to better OrderNum
+        temp['addOns'] = docsData.addOns
+        temp['foodItemId'] = docsData.foodItemId
+        temp['image'] = docsData.foodItemImage
+        temp['foodItemName'] = docsData.foodItemName
+        temp['foodItemPrice'] = docsData.foodItemPrice //change to current food item price
+        temp['hawkerCentre'] = docsData.hawkerCentre
+        temp['merchantId'] = docsData.merchantId
+        temp['merchantName'] = docsData.merchantName
+        temp['quantity'] = docsData.quantity
+        temp['specialInstructions'] = docsData.specialInstructions
+        temp['userId'] = docsData.userId
+        this.past5Orders.push(temp)
+      }
 
-      async updateVON(order) {
-        const orderRef = doc(db, "PlacedCustOrders", order.id);
-        const orderInfo = await getDoc(orderRef);
-        const orderData = orderInfo.data()
-        this.openModal('This Order Number is: ' + String(orderData.orderNum));
-      },
-  
-      async getCurrentOrders(userId) {
-        let allOrders = await getDocs(collection(db, 'PlacedCustOrders'))
+      // //javier: for testing purposes and overriding blanks
+      // for (let i = 0; i <10; i++) {
+      //   this.past5Orders.push({'OrderNum': 0,
+      //     'addOns': 0,
+      //     'foodItemId': 0,
+      //     'foodItemName': 0,
+      //     'foodItemPrice': 1,
+      //     'hawkerCentre': 2,
+      //     'merchantId': 1,
+      //     'merchantName': 1,
+      //     'quantity': 1,
+      //     'specialInstructions': 1,
+      //     'userId': 1});
+      //   }
+    },
 
-        for (const docs of allOrders.docs) {
-          let docsData = docs.data();
-          let docUserID = docsData.userId;
+    quickOrder(order) {
+      this.selectedOrder = order
+      this.showQuickOrderPopup = true
+    },
 
-          if (docUserID === this.user && !docsData.collected) {
-            let temp = {};
-            temp['id'] = docs.id;
-            temp['image'] = docsData.foodItemImage;
-            temp['restaurant'] = docsData.hawkerCentre;
-            temp['dish'] = docsData.merchantName;
-            temp['quantity'] = String(docsData.quantity + 'x ' + docsData.foodItemName)
-            temp['readyForCollection'] = docsData.orderStatus ? 1 : 0;
-            temp['preparingOrder'] = !docsData.orderStatus;
-            this.currentOrders.push(temp);
-          }
-        }
+    closePopup() {
+      this.showQuickOrderPopup = false
+      this.selectedOrder = null
+    },
 
-        // Implement your logic here to get current orders for the user
-        console.log(`Fetching current orders for user: ${userId}`);
-        // Simulate fetching data (replace with actual API request logic)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      },
-      async getPastOrders(userId) {
-        let ordersQuery = query(
-          collection(db, 'PlacedCustOrders'),
-          where('userId', '==', userId),
-          where('collected', '==', true),
-          orderBy('dateCreated', 'desc'), 
-          limit(5)
-        )
-
-        let allOrders = await getDocs(ordersQuery)
-
-        for (const docs of allOrders.docs) {
-          let docsData = docs.data();
-          let temp = {};
-          //push what is needed to create new order in order cart!!!!!!!!!!!!!!
-          //temp['quantityFoodItem'] = String(docsData.quantity + 'x ' + docsData.foodItemName);
-          temp['id'] = docs.id;
-          temp['orderNum'] = docsData.orderNum; //change to better OrderNum
-          temp['addOns'] = docsData.addOns;
-          temp['foodItemId'] = docsData.foodItemId;
-          temp['image'] = docsData.foodItemImage;
-          temp['foodItemName'] = docsData.foodItemName;
-          temp['foodItemPrice'] = docsData.foodItemPrice; //change to current food item price
-          temp['hawkerCentre'] = docsData.hawkerCentre;
-          temp['merchantId'] = docsData.merchantId;
-          temp['merchantName'] = docsData.merchantName;
-          temp['quantity'] = docsData.quantity;
-          temp['specialInstructions'] = docsData.specialInstructions;
-          temp['userId'] = docsData.userId;
-          console.log(this.past5Orders)
-
-
-          this.past5Orders.push(temp);
-        }
-
-        // //javier: for testing purposes and overriding blanks
-        // for (let i = 0; i <10; i++) {
-        //   this.past5Orders.push({'OrderNum': 0, 
-        //     'addOns': 0,
-        //     'foodItemId': 0,
-        //     'foodItemName': 0,
-        //     'foodItemPrice': 1,
-        //     'hawkerCentre': 2,
-        //     'merchantId': 1,
-        //     'merchantName': 1,
-        //     'quantity': 1,
-        //     'specialInstructions': 1,
-        //     'userId': 1});
+    continueOrder() {
+      if (this.selectedOrder) {
+        const orderId = this.selectedOrder.id
+        // const foodItemId = this.selectedOrder.foodItemId;
+        // const userId = this.selectedOrder.userId;
+        // this.$router.push({
+        //   path: `/food-item/${foodItemId}?/${userId}`,
+        //   query: {
+        //     HCName: this.selectedOrder.hawkerCentre,
+        //     quickOrder: true,
+        //     quantity: this.selectedOrder.quantity,
+        //     addOns: JSON.stringify(this.selectedOrder.addOns)
         //   }
-      },
-
-      quickOrder(order) {
-        this.selectedOrder = order;
-        this.showQuickOrderPopup = true;
-        console.log(this.selectedOrder);
-      },
-
-      closePopup() {
-        this.showQuickOrderPopup = false;
-        this.selectedOrder = null;
-      },
-
-      continueOrder() {
-        if (this.selectedOrder) {
-          const orderId = this.selectedOrder.id;
-          // const foodItemId = this.selectedOrder.foodItemId;
-          // const userId = this.selectedOrder.userId;
-          console.log(this.selectedOrder.addOns);
-          console.log(orderId);
-          // this.$router.push({
-          //   path: `/food-item/${foodItemId}?/${userId}`,
-          //   query: {
-          //     HCName: this.selectedOrder.hawkerCentre,
-          //     quickOrder: true,
-          //     quantity: this.selectedOrder.quantity,
-          //     addOns: JSON.stringify(this.selectedOrder.addOns)
-          //   }
-          // });
-          this.$router.push({
+        // });
+        this.$router.push({
           name: 'foodItemPage',
           params: {
-            orderId: orderId,  // Pass the cart item ID
+            orderId: orderId // Pass the cart item ID
           },
           query: {
             HCName: this.selectedOrder.hawkerCentre
           }
-          });
+        })
         //   this.$router.push({
         //     path: `/food-item/${orderId}`,
         //     query: {
         //       HCName: this.selectedOrder.hawkerCentre
         //     }
         // });
-   }},
-
-  
-      scrollLeft() {
-        if (this.$refs.ordersScroll) {
-          this.$refs.ordersScroll.scrollBy({
-            left: -this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
-            behavior: 'smooth',
-          });
-        }
-      },
-  
-      scrollRight() {
-        if (this.$refs.ordersScroll) {
-          this.$refs.ordersScroll.scrollBy({
-            left: this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
-            behavior: 'smooth',
-          });
-        }
-      },
+      }
     },
-  };
+
+    scrollLeft() {
+      if (this.$refs.ordersScroll) {
+        this.$refs.ordersScroll.scrollBy({
+          left: -this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
+          behavior: 'smooth'
+        })
+      }
+    },
+
+    scrollRight() {
+      if (this.$refs.ordersScroll) {
+        this.$refs.ordersScroll.scrollBy({
+          left: this.$refs.ordersScroll.querySelector('.order-box').offsetWidth * 1.5,
+          behavior: 'smooth'
+        })
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -222,20 +222,21 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
               <p>{{ order.restaurant }}</p>
               <p>{{ order.dish }}</p>
               <p>{{ order.quantity }}</p>
-              <button 
-                v-if="order.readyForCollection === 1" 
+              <button
+                v-if="order.readyForCollection === 1"
                 class="order-ready-btn"
                 @click="updateORC(order)"
               >
                 Order Ready. Collected?
               </button>
-              <button 
-                v-else-if="order.preparingOrder" 
-                class="preparing-order-btn"
-              >
+              <button v-else-if="order.preparingOrder" class="preparing-order-btn">
                 Preparing Order
               </button>
-              <button v-if="order.readyForCollection === 1" class="view-order-btn" @click="updateVON(order)">
+              <button
+                v-if="order.readyForCollection === 1"
+                class="view-order-btn"
+                @click="updateVON(order)"
+              >
                 View Order Number
               </button>
             </div>
@@ -253,12 +254,17 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
       <p>New Order</p>
     </div>-->
     <div>
-      <img src="/NewOrderButton.png" alt="NewOrderButton" class="new-order" @click="goToDiningOptions" />
+      <img
+        src="/NewOrderButton.png"
+        alt="NewOrderButton"
+        class="new-order"
+        @click="goToDiningOptions"
+      />
     </div>
 
     <!-- pull from backend past order [there are 2 that are collected already.]-->
     <div class="past-orders">
-      <h2 id="past5OrdersTitle">Past 5 Orders</h2> 
+      <h2 id="past5OrdersTitle">Past 5 Orders</h2>
       <div class="past-orders-container">
         <div v-for="(order, index) in past5Orders" :key="index" class="past-order-box">
           <img :src="order.image" :alt="order.hawkerCentre" class="past-order-image" />
@@ -296,7 +302,6 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
     </div>
   </div>
 
-
   <div v-if="showCustomModal" class="modal-overlay">
     <div class="modal-content">
       <button class="close-button" @click="closeModal">&times;</button>
@@ -309,7 +314,6 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -390,7 +394,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
   position: relative;
   width: 100vw;
   height: 56.25vw; /* Aspect ratio 16:9 for the container */
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   font-family: 'Inria Sans', sans-serif;
 }
 
@@ -399,7 +403,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
   top: 1vw; /* Adjusted top spacing for alignment */
   left: 3vw;
   width: 70vw;
-  height: 20vw; 
+  height: 20vw;
   border: 0.15vw;
   border-radius: 0.8vw;
   overflow: hidden; /* Hides the vertical scrollbar */
@@ -413,7 +417,7 @@ import { collection, getDocs, query, orderBy, where, limit, doc, updateDoc, getD
 h2 {
   margin: 1vw 0; /* Adjusted to add more spacing */
   padding-left: 1.5vw; /* More padding to make the title visually aligned */
-  color: #00ADB5;
+  color: #00adb5;
   font-size: 2vw; /* Increased size for more emphasis */
   font-weight: bold;
   font-family: 'Inria Sans', sans-serif;
@@ -429,7 +433,7 @@ h2 {
   overflow-x: hidden; /* Hide horizontal scroll by default */
   scroll-behavior: smooth;
   height: 100%;
-  padding: 0 1vw; 
+  padding: 0 1vw;
   margin-left: 5vw;
   width: 59vw;
 }
@@ -439,14 +443,14 @@ h2 {
   width: 10vw;
   height: 22.5vh;
   margin-right: 0.42vw;
-  background-color: #393E46;
+  background-color: #393e46;
   border-radius: 0.42vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   padding: 0.42vw;
-  color: #FFFFFF;
+  color: #ffffff;
   box-shadow: 0 0.42vw 0.84vw rgba(0, 0, 0, 0.15);
   font-family: 'Inria Sans', sans-serif;
   border-radius: 20px;
@@ -476,13 +480,12 @@ button {
   margin-top: 0.21vw;
   cursor: pointer;
   font-size: 0.5vw;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /*button:hover {
   background-color: #007A80;
 }*/
-
 
 .order-ready-btn {
   background-color: #51e51c;
@@ -500,7 +503,7 @@ button {
 }
 
 .preparing-order-btn {
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   color: #000000;
   height: 4vh;
   width: 8vw;
@@ -514,8 +517,8 @@ button {
 }
 
 .view-order-btn {
-  background-color: #00ADB5;
-  color: #FFFFFF;
+  background-color: #00adb5;
+  color: #ffffff;
   height: 1.7vh;
   width: 8vw;
   font-size: 0.9vh;
@@ -525,7 +528,7 @@ button {
 }
 
 .view-order-btn:hover {
-  background-color: #007A80;
+  background-color: #007a80;
 }
 
 .scroll-button {
@@ -554,17 +557,17 @@ button {
 
 .new-order {
   position: absolute;
-  top: 2.5vw; 
+  top: 2.5vw;
   right: 8vw;
   width: 14vw;
   height: 17vw;
-  background-color: #00ADB5;
+  background-color: #00adb5;
   border-radius: 1vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.1);
 }
@@ -576,31 +579,31 @@ button {
 }
 
 .new-order-circle {
-  width: 8vw; 
-  height: 8vw; 
-  background-color: #FFFFFF;
+  width: 8vw;
+  height: 8vw;
+  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1.5vw; 
+  margin-bottom: 1.5vw;
 }
 
 .plus-sign {
-  color: #00ADB5;
+  color: #00adb5;
   font-size: 8vw;
   font-weight: 600;
 }
 
 .new-order:hover {
-  background-color: #007A80;
+  background-color: #007a80;
 }
 
 .past-orders {
   position: absolute;
   top: 22vw;
   left: 3vw;
-  width: 94vw; 
+  width: 94vw;
   height: 16vw;
 }
 
@@ -617,7 +620,7 @@ button {
 .past-order-box {
   width: 14.4vw;
   height: 12.8vw;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 0.64vw;
   display: flex;
   flex-direction: column;
@@ -649,8 +652,8 @@ button {
 }
 
 .quick-order-btn {
-  background-color: #00ADB5;
-  color: #FFFFFF;
+  background-color: #00adb5;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   padding: 0.4vw 0.8vw;
@@ -661,7 +664,7 @@ button {
 }
 
 .quick-order-btn:hover {
-  background-color: #007A80;
+  background-color: #007a80;
 }
 
 /* for quick order pop up */

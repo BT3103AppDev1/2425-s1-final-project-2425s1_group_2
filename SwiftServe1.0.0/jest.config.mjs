@@ -4,6 +4,6 @@ export default {
     '^.+\\.js$': 'babel-jest',
     '.*\\.(vue)$': 'vue-jest'
   },
-  testEnvironment: 'jsdom',
+  testEnvironment: 'jest-environment-jsdom',
   transformIgnorePatterns: ['/node_modules/']
 }
