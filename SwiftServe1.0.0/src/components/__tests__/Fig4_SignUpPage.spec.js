@@ -1,6 +1,6 @@
-const { mount } = require('@vue/test-utils')
-const Signup = require('@/components/Signup.vue')
-const { describe, it, expect, jest } = require('@jest/globals')
+import { mount } from '@vue/test-utils'
+import Signup from '@/components/Signup.vue'
+import { describe, it, expect, jest } from '@jest/globals'
 
 describe('Signup.vue', () => {
   it('submits the form when all fields are valid', async () => {
@@ -39,8 +39,8 @@ describe('Signup.vue', () => {
     // Trigger button click
     await wrapper.find('#savebutton').trigger('click')
 
-    // Check if alert was called
-    expect(window.alert).toHaveBeenCalled()
+    // Check if alert was called with a specific message
+    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Please fill in all fields'))
   })
 
   it('opens the terms and conditions modal when the link is clicked', async () => {
