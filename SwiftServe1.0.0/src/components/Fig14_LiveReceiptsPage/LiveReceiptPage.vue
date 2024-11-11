@@ -10,19 +10,19 @@
       </div>
     </div>
     <div class="actions">
-      <router-link to="/profile" class="action-link">
+      <router-link to="/profile" class="action-link" id="profileLink">
         <button @click="updateSettings">
           <img src="/cog.svg" alt="Update Settings" class="icon" />
           <span>Update Settings</span>
         </button>
       </router-link>
-      <router-link to="/livereceipt" class="action-link">
+      <router-link to="/livereceipt" class="action-link" id="liveReceiptLink">
         <button @click="showRecentOrder">
           <img src="/RecentOrder.png" alt="Recent Order" class="icon" />
           <span>Most Recent Order Receipt</span>
         </button>
       </router-link>
-      <button @click="openDeleteModal">
+      <button @click="openDeleteModal" id="deleteButton">
         <img src="/DeleteAccount.png" alt="Delete Account" class="icon" />
         <span>Delete Account</span>
       </button>
@@ -72,7 +72,10 @@
 import firebaseApp from '@/firebase.js'
 import { getFirestore, doc, deleteDoc } from 'firebase/firestore'
 import { getAuth, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from 'firebase/auth'
-const db = getFirestore(firebaseApp)
+
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export default {
   name: 'ProfileComponent',
@@ -90,13 +93,15 @@ export default {
   },
 
   mounted() {
-    const auth = getAuth()
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.user = user
-        this.setProfile()
-      }
-    })
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          this.user = user
+          this.setProfile()
+        }
+      })
+    }
   },
 
   methods: {
