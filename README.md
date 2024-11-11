@@ -7,11 +7,9 @@ Welcome to **SwiftServe**
 1. [Project Overview](#project-overview)
 2. [Features](#features)
 3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Folder Structure](#folder-structure)
-6. [Component Documentation](#component-documentation)
-7. [Contributing](#contributing)
-8. [License](#license)
+4. [Links](#links)
+5. [Component Documentation](#component-documentation)
+6. [Tech Stack](#tech-stack)
 
 ## Project Overview
 
@@ -37,7 +35,7 @@ The successful development and deployment of Swiftserve reinforces our belief th
 - [Node.js](https://nodejs.org/) (v12 or higher)
 - [npm](https://www.npmjs.com/)
 
-### Steps
+### Installation
 
 1. **Clone the repository**:
    ```bash
