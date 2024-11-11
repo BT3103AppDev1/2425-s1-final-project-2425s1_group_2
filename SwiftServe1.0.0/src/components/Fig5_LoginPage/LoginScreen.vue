@@ -54,9 +54,11 @@
 </template>
 
 <script>
-import { auth, GoogleProvider, db } from '@/firebase.js'
+//import { auth, GoogleProvider, db } from '@/firebase.js'
+import { auth, db } from '@/firebase.js'
 import 'firebaseui/dist/firebaseui.css'
-import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider } from 'firebase/auth'
+//import { signInWithEmailAndPassword, linkWithCredential, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithEmailAndPassword, GoogleAuthProvider } from 'firebase/auth'
 export default {
   name: 'LoginPage',
   data() {
@@ -109,7 +111,7 @@ export default {
     // },
     async handleGoogleSignIn() {
       const provider = new GoogleAuthProvider()
-      var userCredential
+      //var userCredential
       try {
         const userCredential = await auth.signInWithPopup(provider)
         const user = userCredential.user
@@ -133,9 +135,9 @@ export default {
             this.openModal(
               'An account already exists with this email. Would you like to link your Google account to it?'
             )
-            const credential = GoogleProvider.credential(userCredential.credential.idToken)
+            //const credential = GoogleProvider.credential(userCredential.credential.idToken)
             try {
-              const usercred = await linkWithCredential(auth.currentUser, credential)
+              //const usercred = await linkWithCredential(auth.currentUser, credential)
               this.$router.push('/custD')
             } catch (linkError) {
               this.openModal('Error linking account: ' + linkError.message)

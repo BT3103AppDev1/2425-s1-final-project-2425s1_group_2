@@ -94,7 +94,7 @@ import { auth, db } from '@/firebase.js'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { GoogleAuthProvider } from 'firebase/auth'
-import { getRedirectResult } from 'firebase/auth'
+//import { getRedirectResult } from 'firebase/auth'
 
 export default {
   data() {
@@ -115,9 +115,9 @@ export default {
     await this.loadTermsContent()
   },
 
-  async mounted() {
+  /*async mounted() {
     const result = await getRedirectResult(auth)
-  },
+  },*/
 
   methods: {
     togglePassword() {
@@ -148,7 +148,9 @@ export default {
           throw new Error('Network response was not ok')
         }
         this.termsContent = await response.text()
-      } catch (error) {}
+      } catch (error) {
+        console.log('error')
+      }
     },
 
     async signUpWithGoogle() {
@@ -164,7 +166,9 @@ export default {
           profileType: 'Customer'
         }
         await this.savetoFirestoreGoogle(userData)
-      } catch (error) {}
+      } catch (error) {
+        console.log('error')
+      }
     },
     async savetoFirestore() {
       const { email, username, password, cPassword, agreeToTerms } = this

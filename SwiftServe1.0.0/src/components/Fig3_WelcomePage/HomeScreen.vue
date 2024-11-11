@@ -46,7 +46,9 @@ export default {
         const user = userCredential.user
         await updateProfile(user, { displayName: 'Guest' })
         this.$router.push('/custD')
-      } catch (error) {}
+      } catch (error) {
+        console.log("error")
+      }
     }
   }
 }

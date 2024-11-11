@@ -1,7 +1,9 @@
 import firebaseApp from '../../firebase.js'
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
 
-const db = getFirestore(firebaseApp)
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export async function readUser(email) {
   try {

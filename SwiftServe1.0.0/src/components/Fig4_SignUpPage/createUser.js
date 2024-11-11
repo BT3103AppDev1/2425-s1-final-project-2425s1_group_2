@@ -3,7 +3,9 @@ import firebaseApp from '../../firebase.js'
 import { getFirestore } from 'firebase/firestore'
 import { doc, setDoc, addDoc, serverTimestamp, collection } from 'firebase/firestore'
 
-const db = getFirestore(firebaseApp)
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export async function createUser(email, username, password, cPassword) {
   // have to rewrite this with authentification in mind
