@@ -5,7 +5,7 @@
     </div>
 
     <div id="signUpButton">
-      <button @click="goLoginClick">Login</button>
+      <button class="LoginButt" @click="goLoginClick">Login</button>
     </div>
   </div>
 </template>
