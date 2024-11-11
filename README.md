@@ -57,7 +57,18 @@ Detailed component documentation can be found in the `docs` folder within the `c
 - [Login Page Component (Figure 5)](./SwiftServe1.0.0/src/components/docs/LoginPage.md)
 - [Profile Page Component (Figure 6)](./SwiftServe1.0.0/src/components/docs/ProfilePage.md)
 - [Customer Dashboard Page Component (Figure 7)](./SwiftServe1.0.0/src/components/docs/CustDashboardPage.md)
-
+- [Dining Options Page Component (Figure 8)](./SwiftServe1.0.0/src/components/docs/DiningOptionsPage.md)
+- [Hawker Centre Page Component (Figure 9)](./SwiftServe1.0.0/src/components/docs/HawkerCentrePage.md)
+- [Food Item Page Component (Figure 10)](./SwiftServe1.0.0/src/components/docs/FoodItemPage.md)
+- [Checkout Page Component (Figure 11)](./SwiftServe1.0.0/src/components/docs/CheckoutPage.md)
+- [Payment Success Page Component (Figure 12)](./SwiftServe1.0.0/src/components/docs/PaymentSuccessPage.md)
+- [Seat Booking Page Component (Figure 13)](./SwiftServe1.0.0/src/components/docs/SeatBookingPage.md)
+- [Live Receipts Page Component (Figure 14)](./SwiftServe1.0.0/src/components/docs/LiveReceiptsPage.md)
+- [Merchant Dashboard Page Component (Figure 15)](./SwiftServe1.0.0/src/components/docs/MerchantDashboardPage.md)
+- [Merchant Toggle Availability Page Component (Figure 16)](./SwiftServe1.0.0/src/components/docs/MerchantToggleAvailabilityPage.md)
+- [Merchant Orders Page Component (Figure 17)](./SwiftServe1.0.0/src/components/docs/MerchantOrdersPage.md)
+- [Merchant Sales Dashboard Page Component (Figure 18)](./SwiftServe1.0.0/src/components/docs/MerchantSalesDashboardPage.md)
+- [Reset Password Page Component (Figure 19)](./SwiftServe1.0.0/src/components/docs/ResetPasswordPage.md)
 
 ## Tech Stack
 - **Frontend**: JavaScript, HTML, CSS, Vue
