@@ -51,7 +51,7 @@ export default {
 
 .food-image img {
   width: 100%;
-  height: 410px;
+  height: 380px;
   border-radius: 8px;
 }
 
@@ -59,7 +59,7 @@ export default {
   font-size: 50px;
   font-weight: bold;
   padding: 0; 
-  margin: 20px;
+  margin: 10px;
 }
 
 .food-name {
