@@ -144,7 +144,7 @@
     <div class="modal-content">
       <button class="close-button" @click="closeModal">&times;</button>
       <div class="modal-text">
-        <h2>Ypu have not selected any seats</h2>
+        <h2>You have not selected any seats</h2>
         <p>Please select a few seats to continue.</p>
         <div class="modal-actions">
           <button @click="closeModal">Go back to seat booking</button>

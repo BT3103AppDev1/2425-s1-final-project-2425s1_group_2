@@ -52,6 +52,8 @@ The successful development and deployment of Swiftserve reinforces our belief th
 
 ## Component Documentation
 Detailed component documentation can be found in the `docs` folder within the `components` directory:
+
+### Customer Components
 - [Welcome Page Component (Figure 3)](./SwiftServe1.0.0/src/components/docs/WelcomePage.md)
 - [Sign Up Page Component (Figure 4)](./SwiftServe1.0.0/src/components/docs/SignUpPage.md)
 - [Login Page Component (Figure 5)](./SwiftServe1.0.0/src/components/docs/LoginPage.md)
@@ -64,10 +66,14 @@ Detailed component documentation can be found in the `docs` folder within the `c
 - [Payment Success Page Component (Figure 12)](./SwiftServe1.0.0/src/components/docs/PaymentSuccessPage.md)
 - [Seat Booking Page Component (Figure 13)](./SwiftServe1.0.0/src/components/docs/SeatBookingPage.md)
 - [Live Receipts Page Component (Figure 14)](./SwiftServe1.0.0/src/components/docs/LiveReceiptsPage.md)
+
+### Merchant Components
 - [Merchant Dashboard Page Component (Figure 15)](./SwiftServe1.0.0/src/components/docs/MerchantDashboardPage.md)
 - [Merchant Toggle Availability Page Component (Figure 16)](./SwiftServe1.0.0/src/components/docs/MerchantToggleAvailabilityPage.md)
 - [Merchant Orders Page Component (Figure 17)](./SwiftServe1.0.0/src/components/docs/MerchantOrdersPage.md)
 - [Merchant Sales Dashboard Page Component (Figure 18)](./SwiftServe1.0.0/src/components/docs/MerchantSalesDashboardPage.md)
+
+### Utility Components
 - [Reset Password Page Component (Figure 19)](./SwiftServe1.0.0/src/components/docs/ResetPasswordPage.md)
 
 ## Tech Stack
