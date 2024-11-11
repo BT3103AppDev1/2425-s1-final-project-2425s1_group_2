@@ -452,7 +452,7 @@ export default {
 .food-item-details {
   position: absolute;
   left: 5vw;
-  top: 15vh;
+  top: 12vh;
   width: 45vw;
   display: flex;
   background-color: #ffffff;
@@ -463,7 +463,7 @@ export default {
 .right-column {
   position: absolute;
   left: 50vw;
-  top: 10vh;
+  top: 3vh;
   width: 40vw;
   height: 80vh;
   flex: 1;
@@ -474,7 +474,7 @@ export default {
   background-color: #e6f7f5;
   border-radius: 0.5rem;
   padding: 0.9375rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   height: 500px;
 }
 

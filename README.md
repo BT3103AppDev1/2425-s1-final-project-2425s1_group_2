@@ -14,9 +14,9 @@ The successful development and deployment of _Swiftserve_ reinforces our belief 
 ## Links
 Website: temp
 
-Report: Filled in when report is finalised
+Report: https://docs.google.com/document/d/1xUwb5i4W0DyZl7FTQsk9MlslCP3sH6febfz2I6mYMko
 
-SCRUM Artefacts: Filled in when report is finalised
+SCRUM Artefacts: https://docs.google.com/spreadsheets/d/1ueJn2JwjhaqiG9cdCe3_ObOGjGLzcYZ6yf6P95tBwYU
 
 Videos: <br>
 https://drive.google.com/file/d/1yrSCohnwyE_xvFwrvaDGgifDXTcbyCIz/view?resourcekey (Customer Perspective) <br>
