@@ -1,3 +1,9 @@
+<!-- 
+SwiftServe Home Screen Component 
+- This component serves as the main welcome screen.
+- It includes background styling, the app logo, sign-up and log-in links, and a guest login option.
+-->
+
 <template>
   <div class="WelcomeBGImg" :style="{ 'background-image': 'url(/WelcomeBackgroundPic.png)' }">
     <div class="WelcomeContainer">
@@ -21,12 +27,14 @@
 </template>
 
 <script>
+// Firebase and router logic for navigation and authentication
 import { signInAnonymously, updateProfile } from 'firebase/auth'
 import { auth } from '@/firebase.js'
 
 export default {
   methods: {
     LGSClick() {
+      // Directs the user to signup page and reloads page
       this.$router.push('/signup').then(() => {
         location.reload()
       })
@@ -47,7 +55,7 @@ export default {
         await updateProfile(user, { displayName: 'Guest' })
         this.$router.push('/custD')
       } catch (error) {
-        console.log("error")
+        console.log('error')
       }
     }
   }

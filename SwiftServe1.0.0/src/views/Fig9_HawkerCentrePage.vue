@@ -1,21 +1,48 @@
 <template>
   <HeaderScreen />
   <div class="container">
-    <FilterButtons :filters="availableFilters" :activeFilter="activeCategory" @filter-selected="updateActiveCategory" />
-    <CategoryNav :categories="categories" @category-selected="updateActiveCategory" :activeCategory="activeCategory" />
+    <FilterButtons
+      :filters="availableFilters"
+      :activeFilter="activeCategory"
+      @filter-selected="updateActiveCategory"
+    />
+    <CategoryNav
+      :categories="categories"
+      @category-selected="updateActiveCategory"
+      :activeCategory="activeCategory"
+    />
     <div v-if="filteredStalls.length > 0" class="main-content">
-      <StallList :stalls="filteredStalls" :activeStall="activeStall" @stall-selected="updateActiveStall" />
+      <StallList
+        :stalls="filteredStalls"
+        :activeStall="activeStall"
+        @stall-selected="updateActiveStall"
+      />
       <div class="food-area">
         <div class="food-grid">
-          <FoodItem v-for="item in filteredItems" :key="item.id" :item="item" @add-to-cart="addToCart"
-            @click="viewFoodItem(item)" />
+          <FoodItem
+            v-for="item in filteredItems"
+            :key="item.id"
+            :item="item"
+            @add-to-cart="addToCart"
+            @click="viewFoodItem(item)"
+          />
         </div>
       </div>
     </div>
     <div v-else class="no-stalls-message">No stalls found</div>
     <div class="cart-and-checkout">
-      <OrderCart :items="cartItems" @remove-item="removeItemFromCart" @edit-item="editCartItem" class="order-cart" />
-      <CheckoutArea :totalAmount="totalAmount" @checkout="checkout" @cancelOrder="cancelOrder" class="checkout-area" />
+      <OrderCart
+        :items="cartItems"
+        @remove-item="removeItemFromCart"
+        @edit-item="editCartItem"
+        class="order-cart"
+      />
+      <CheckoutArea
+        :totalAmount="totalAmount"
+        @checkout="checkout"
+        @cancelOrder="cancelOrder"
+        class="checkout-area"
+      />
     </div>
     <div v-if="showCartModal" class="modal-overlay">
       <div class="modal-content">
@@ -492,9 +519,7 @@ export default {
   overflow-y: auto;
   background-color: #ffffff;
   border-radius: 1vh;
-  /*CHECK WITH CED IF HE WANTS THIS STYLE*/
   box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.1);
   z-index: 1;
-  /*NOT NEEDED BUT IDK WHY*/
 }
 </style>
