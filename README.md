@@ -52,10 +52,9 @@ The successful development and deployment of Swiftserve reinforces our belief th
 
 ## Component Documentation
 Detailed component documentation can be found in the `docs` folder within the `components` directory:
-- [HomeScreen Component](./src/components/docs/HomeScreen.md)
-- [LoginScreen Component](./src/components/docs/LoginScreen.md)
-- [SignUp Component](./src/components/docs/SignUp.md)
-- [GuestAccess Component](./src/components/docs/GuestAccess.md)
+- [HomeScreen Component](./SwiftServe1.0.0/src/components/docs/HomeScreen.md)
+- [LoginScreen Component](./SwiftServe1.0.0/src/components/docs/LoginScreen.md)
+
 
 ## Tech Stack
 - **Frontend**: JavaScript, HTML, CSS, Vue
