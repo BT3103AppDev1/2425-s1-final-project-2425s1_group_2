@@ -13,3 +13,6 @@ app.use(router)
 app.use(VueChartkick)
 
 app.mount('#app')
+
+
+/*"test": "jest --config jest.config.mjs",*/

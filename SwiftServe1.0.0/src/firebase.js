@@ -11,17 +11,28 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-
 }
 
-const firebaseApp = firebase.initializeApp(firebaseConfig)
-const auth = firebase.auth()
-const onAuthStateChanged = auth.onAuthStateChanged.bind(auth)
+let firebaseApp, auth, db, storage, GoogleProvider, EmailProvider, onAuthStateChanged;
 
-const db = firebase.firestore()
-const storage = firebase.storage()
-const GoogleProvider = new firebase.auth.GoogleAuthProvider()
-const EmailProvider = new firebase.auth.EmailAuthProvider()
+if (import.meta.env.MODE !== 'test') {
+  firebaseApp = firebase.initializeApp(firebaseConfig)
+  auth = firebase.auth()
+  onAuthStateChanged = auth.onAuthStateChanged.bind(auth)
+
+  db = firebase.firestore()
+  storage = firebase.storage()
+  GoogleProvider = new firebase.auth.GoogleAuthProvider()
+  EmailProvider = new firebase.auth.EmailAuthProvider()
+} else {
+  firebaseApp = {}
+  auth = {}
+  db = {}
+  storage = {}
+  GoogleProvider = {}
+  EmailProvider = {}
+  onAuthStateChanged = () => {}
+}
 
 export { firebaseApp, firebase, auth, db, storage, GoogleProvider, EmailProvider, onAuthStateChanged }
 export default firebaseApp
