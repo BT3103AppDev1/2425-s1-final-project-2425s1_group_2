@@ -97,17 +97,19 @@ export default {
     }
   },
   async mounted() {
-    const auth = getAuth()
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user
-        this.HCName = this.$route.query.HCName
-        this.setupStallListener()
-        this.setupFoodItemsListener()
-        this.setupCartListener()
-      }
-    })
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user
+          this.HCName = this.$route.query.HCName
+          this.setupStallListener()
+          this.setupFoodItemsListener()
+          this.setupCartListener()
+        }
+      })
+    }
   },
   computed: {
     filteredItems() {

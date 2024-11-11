@@ -160,7 +160,9 @@ import { getFirestore } from 'firebase/firestore'
 import { collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
-const db = getFirestore(firebaseApp)
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export default {
   data() {
@@ -189,13 +191,15 @@ export default {
     }
   },
   async mounted() {
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user
-        this.setProfile()
-      }
-    })
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user
+          this.setProfile()
+        }
+      })
+    }
 
     const seatButtons = Array.from(document.getElementsByClassName('Seat'))
     let numSeatsLeft = await seatsLeft()
@@ -358,7 +362,9 @@ export default {
             SeatsChosen: newSeatsChosen,
             NumSeats: numSeats
           })
-        } catch (error) {}
+        } catch (error) {
+          console.log('error')
+        }
       }
       this.$router.push('/livereceipt')
     },
@@ -391,7 +397,9 @@ export default {
             this.peak = this.mapDiningTime[docsData.diningTime].peak
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     parseTime(timeString) {

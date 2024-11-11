@@ -72,7 +72,9 @@ import {
   updateProfile
 } from 'firebase/auth'
 
-const db = getFirestore(firebaseApp)
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export default {
   name: 'UpdateSettings',
@@ -89,12 +91,14 @@ export default {
   },
   emits: ['updateProfile'],
   mounted() {
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user
-      }
-    })
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user
+        }
+      })
+    }
   },
   methods: {
     openModal(message, nextStep = null) {

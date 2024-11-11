@@ -61,12 +61,14 @@ export default {
   },
 
   mounted() {
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user
-      }
-    })
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user = user
+        }
+      })
+    }
   },
 
   methods: {
