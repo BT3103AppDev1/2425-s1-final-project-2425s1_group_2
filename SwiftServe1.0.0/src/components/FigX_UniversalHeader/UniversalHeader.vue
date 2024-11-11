@@ -112,6 +112,7 @@ export default {
 #logo {
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 
 img {
