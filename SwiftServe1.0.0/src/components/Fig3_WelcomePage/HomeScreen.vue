@@ -27,7 +27,9 @@ import { auth } from '@/firebase.js'
 export default {
   methods: {
     LGSClick() {
-      this.$router.push('/signup')
+      this.$router.push('/signup').then(() => {
+        location.reload()
+      })
     },
     // signInAnonymously() {
     //   signInAnonymously(auth)
@@ -43,10 +45,8 @@ export default {
         const userCredential = await signInAnonymously(auth)
         const user = userCredential.user
         await updateProfile(user, { displayName: 'Guest' })
-        this.$router.push('/diningOptions')
-      } catch (error) {
-        console.error('Error signing in anonymously:', error)
-      }
+        this.$router.push('/custD')
+      } catch (error) {}
     }
   }
 }
@@ -87,7 +87,7 @@ export default {
   left: 50%;
   top: 20%;
   height: 20vh;
-  max-width: 30vw; /* Ensure it doesn't exceed 30% of the width */
+  max-width: 30vw;
   object-fit: contain;
   transform: translateX(-50%);
 }
@@ -96,7 +96,7 @@ export default {
 #SignUpButton {
   margin-top: 3vh;
   position: absolute;
-  top: 55%; /* Positioning at 60% of the screen height */
+  top: 55%;
 }
 
 button {
@@ -107,7 +107,7 @@ button {
   color: white;
   border-radius: 10px;
   border: none;
-  height: 8vh; /* Make the button occupy 60-68% of the page's height */
+  height: 8vh;
   width: 20vw;
   cursor: pointer;
   font-size: clamp(1rem, 2.5vw, 3.5vh);

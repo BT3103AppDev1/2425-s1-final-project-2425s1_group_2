@@ -1,6 +1,6 @@
 <template>
-    <HeaderScreen/>
-    <MerchantDashboard/>
+  <HeaderScreen />
+  <MerchantDashboard />
 </template>
 
 <script>

@@ -29,37 +29,6 @@ export default {
 }
 </script>
 
-<!-- <style scoped>
-  nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 0.9375rem;
-    border-bottom: 0.1875rem solid black; 
-    flex-wrap: wrap;
-  }
-  
-  nav li {
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-    font-weight: bold;
-    border-bottom: 0.125rem solid transparent; 
-    font-size: 1.8rem;
-  }
-
-  /* Hover effect */
-  nav li:hover {
-    color: #00adb5; /* Change text color on hover */
-    
-  }
-  
-  nav li.active {
-    font-weight: bold;
-    color: #00ADB5;
-  }
-  </style> -->
-
 <style scoped>
 nav {
   position: absolute;
@@ -68,7 +37,6 @@ nav {
   width: 100vw;
   height: 5vh;
   border-bottom: 0.3vh solid black;
-  box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -93,7 +61,6 @@ nav li {
     border-bottom 0.3s ease;
 }
 
-/* Hover effect */
 nav li:hover {
   color: #00adb5;
 }

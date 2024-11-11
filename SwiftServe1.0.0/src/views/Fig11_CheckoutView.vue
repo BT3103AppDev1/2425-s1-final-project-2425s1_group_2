@@ -14,6 +14,6 @@ export default {
     ReceiptComponent
   },
 
-  data() {}
+  data() { }
 }
 </script>

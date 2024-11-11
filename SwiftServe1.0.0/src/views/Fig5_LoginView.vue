@@ -14,6 +14,6 @@ export default {
     LoginScreen
   },
 
-  data() {}
+  data() { }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <HeaderScreen/>
+  <HeaderScreen />
   <div class="container">
 
 
@@ -7,18 +7,13 @@
 
     <div class="food-items-header">
       <h3>Food items</h3>
-      <!-- <ToggleSwitch v-model="isStallOpen" @input="toggleStallAvailability" /> -->
       <ToggleSwitch v-model="isStallOpen" @update:modelValue="toggleStallAvailability" />
     </div>
 
     <div class="food-items">
       <div class="food-item-grid">
-        <FoodItem 
-          v-for="item in foodItems" 
-          :key="item.id"  
-          :item="item" 
-          @toggle-availability="toggleFoodItemAvailability" 
-        />
+        <FoodItem v-for="item in foodItems" :key="item.id" :item="item"
+          @toggle-availability="toggleFoodItemAvailability" />
       </div>
     </div>
 
@@ -26,118 +21,111 @@
   </div>
 </template>
 
-  
-  <script>
-  import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue';
-  import FoodItem from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleFoodItemAvailability.vue';
-  import ToggleSwitch from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleSwitch.vue';
-  import { db } from '../firebase.js';
-  import { getAuth, onAuthStateChanged } from "firebase/auth"
-  
-  export default {
-    components: {
-      HeaderScreen,
-      FoodItem,
-      ToggleSwitch
-    },
-    data() {
-      return {
-        // merchantId: 'VScvqRThQSKVCihILf9v', 
-        // merchantName: '',
-        isStallOpen: false,
-        foodItems: null,
-        merchant: null,
-        user: null,
-      };
-    },
-    async mounted() {
-      const auth = getAuth();
 
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          this.user = user;
+<script>
+import HeaderScreen from '@/components/FigX_UniversalHeader/MerchantUniversalHeader.vue';
+import FoodItem from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleFoodItemAvailability.vue';
+import ToggleSwitch from '../components/Fig16_MerchantToggleAvailabilityPage/MerchantToggleSwitch.vue';
+import { db } from '../firebase.js';
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 
-          // Fetch merchant details and food items
-          this.fetchMerchant(this.user.uid);
-          this.fetchFoodItems(this.user.uid);
-        } 
-      });
-      // await this.fetchMerchant(this.merchantId);
-      // await this.fetchFoodItems(this.merchantId);
-    },
-    methods: {
-      async fetchMerchant(merchantId) {
-        try {
-            const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
-            if (merchantDoc.exists) {
-            this.merchant = merchantDoc.data();
-            this.isStallOpen = this.merchant.open;
-            console.log('current state of open:', this.isStallOpen);
-            } else {
-            console.error('No such merchant!');
-            }
-        } catch (error) {
-            console.error('Error fetching merchant:', error);
+export default {
+  components: {
+    HeaderScreen,
+    FoodItem,
+    ToggleSwitch
+  },
+  data() {
+    return {
+      isStallOpen: false,
+      foodItems: null,
+      merchant: null,
+      user: null,
+    };
+  },
+  async mounted() {
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+
+        // Fetch merchant details and food items
+        this.fetchMerchant(this.user.uid);
+        this.fetchFoodItems(this.user.uid);
+      }
+    });
+  },
+  methods: {
+    async fetchMerchant(merchantId) {
+      try {
+        const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
+        if (merchantDoc.exists) {
+          this.merchant = merchantDoc.data();
+          this.isStallOpen = this.merchant.open;
+        } else {
+          console.error('No such merchant!');
         }
-      },
-      async fetchFoodItems(merchantId) {
-        try {
+      } catch (error) {
+        console.error('Error fetching merchant:', error);
+      }
+    },
+    async fetchFoodItems(merchantId) {
+      try {
         const foodItemsSnapshot = await db.collection('FoodItem').where('merchantId', '==', merchantId).get();
 
         if (!foodItemsSnapshot.empty) {
-            this.foodItems = foodItemsSnapshot.docs.map(doc => ({
-              id: doc.id,
-              foodItemName: doc.data().foodItemName,
-              available: doc.data().available,
-              foodItemImage: doc.data().foodItemImage,
-            }));
-            console.log(JSON.stringify(this.foodItems));
+          this.foodItems = foodItemsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            foodItemName: doc.data().foodItemName,
+            available: doc.data().available,
+            foodItemImage: doc.data().foodItemImage,
+          }));
         } else {
-            console.error('No food items found for this merchant!');
+          console.error('No food items found for this merchant!');
         }
-        } catch (error) {
+      } catch (error) {
         console.error('Error fetching food items:', error);
-        }
-      },
-      async toggleFoodItemAvailability(item) {
-        try {
-            const foodItemRef = db.collection('FoodItem').doc(item.id);
-
-            await foodItemRef.update({
-            available: !item.available
-            });
-
-            // Update the local item availability status 
-            item.available = !item.available;
-        } catch (error) {
-            console.error('Error updating food item availability:', error);
-        }
-      },
-      async toggleStallAvailability(newValue) {
-        try {
-            const userProfileRef = db.collection('UserProfile').doc(this.user.uid);
-
-            await userProfileRef.update({
-              // open: !this.isStallOpen
-              open: newValue
-            });
-
-            console.log('Stall availability updated:', this.isStallOpen);
-
-            this.isStallOpen = newValue;
-        } catch (error) {
-            console.error('Error updating stall availability:', error);
-        }
-      },
-      closeStall() {
-        this.isStallOpen = false; // Immediately update the UI
-        this.toggleStallAvailability(); // Update Firestore
-      },
+      }
     },
-  };
-  </script>
-  
- 
+    async toggleFoodItemAvailability(item) {
+      try {
+        const foodItemRef = db.collection('FoodItem').doc(item.id);
+
+        await foodItemRef.update({
+          available: !item.available
+        });
+
+        // Update the local item availability status 
+        item.available = !item.available;
+      } catch (error) {
+        console.error('Error updating food item availability:', error);
+      }
+    },
+    async toggleStallAvailability(newValue) {
+      try {
+        const userProfileRef = db.collection('UserProfile').doc(this.user.uid);
+
+        await userProfileRef.update({
+          // open: !this.isStallOpen
+          open: newValue
+        });
+
+
+        this.isStallOpen = newValue;
+      } catch (error) {
+        console.error('Error updating stall availability:', error);
+      }
+    },
+    closeStall() {
+      this.isStallOpen = false; // Immediately update the UI
+      this.toggleStallAvailability(); // Update Firestore
+    },
+  },
+};
+</script>
+
+
 <style scoped>
 .container {
   font-family: Inria Sans, sans-serif;
@@ -194,7 +182,9 @@
   text-align: center;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: #333;
 }
 

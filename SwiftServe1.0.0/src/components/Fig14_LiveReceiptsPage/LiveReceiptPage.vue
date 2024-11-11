@@ -35,13 +35,8 @@
         <div class="modal-text">
           <h2>Confirm Account Deletion</h2>
           <p>
-            <!-- We're really sorry to see you go!  -->
-
             We'll miss having you with us! For your security, kindly enter your current password
             below.
-
-            <!-- Old Prompt: Are you sure you want to delete your account? Please enter your current
-            password to confirm. -->
           </p>
           <input
             type="'text'"
@@ -50,10 +45,22 @@
             class="centered-input"
             :style="{ '-webkit-text-security': showPassword ? 'none' : 'disc' }"
           />
-          <!-- Do not show the eye -->
           <div class="modal-actions">
             <button @click="confirmDeleteAccount" class="modal-button">Confirm Delete</button>
             <button @click="closeDeleteModal" class="modal-button">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showCustomModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal">&times;</button>
+        <div class="modal-text">
+          <h2>Notification</h2>
+          <p>{{ modalMessage }}</p>
+          <div class="modal-actions">
+            <button @click="closeModal" class="modal-button">OK</button>
           </div>
         </div>
       </div>
@@ -75,8 +82,10 @@ export default {
       name: '',
       email: '',
       user: false,
-      showDeleteModal: false, // Controls whether the modal is shown
-      currentPassword: '' // Store the password entered for confirmation
+      showDeleteModal: false,
+      currentPassword: '',
+      showCustomModal: false,
+      modalMessage: ''
     }
   },
 
@@ -95,26 +104,25 @@ export default {
       this.name = this.user.displayName
       this.email = this.user.email
     },
-    updateSettings() {
-      console.log('Update settings clicked')
-    },
-    showRecentOrder() {
-      console.log('Show recent order clicked')
-    },
-
-    // Open and close modal methods
+    updateSettings() {},
+    showRecentOrder() {},
     openDeleteModal() {
       this.showDeleteModal = true
     },
     closeDeleteModal() {
       this.showDeleteModal = false
-      this.currentPassword = '' // Reset password input when closing
+      this.currentPassword = ''
     },
-
-    // Confirm deletion method (called when user clicks confirm in the modal)
+    openModal(message) {
+      this.modalMessage = message
+      this.showCustomModal = true
+    },
+    closeModal() {
+      this.showCustomModal = false
+    },
     async confirmDeleteAccount() {
       if (!this.currentPassword) {
-        alert('Please enter your current password.')
+        this.openModal('Please enter your current password.')
         return
       }
 
@@ -122,23 +130,17 @@ export default {
         // Reauthenticate the user with their email and current password
         const credential = EmailAuthProvider.credential(this.email, this.currentPassword)
         await reauthenticateWithCredential(this.user, credential)
-
-        // Delete the user's Firestore profile document
-        const userDocRef = doc(db, 'UserProfile', this.user.uid) // Adjust Firestore path as needed
+        const userDocRef = doc(db, 'UserProfile', this.user.uid)
         await deleteDoc(userDocRef)
-        console.log('User profile deleted from Firestore.')
-
-        // Delete the user from Firebase Authentication
         await deleteUser(this.user)
-        alert('Account deleted successfully. Proceeding to home page.')
-        console.log('User account deleted from Firebase Authentication.')
-
-        this.$router.push('/') // Adjust the route as needed
+        this.openModal('Account deleted successfully. Proceeding to home page.')
+        this.$router.push('/').then(() => {
+          location.reload()
+        })
       } catch (error) {
-        console.error('Error deleting account:', error)
-        alert('Error deleting account: ' + error.message)
+        this.openModal('Error deleting account: ' + error.message)
       } finally {
-        this.closeDeleteModal() // Close the modal after action is done
+        this.closeDeleteModal()
       }
     }
   }
@@ -159,7 +161,6 @@ export default {
   height: 100vh;
 } */
 
-/* javier edited to absolute to remove the scolling and disproportions */
 .profile-container {
   position: absolute;
   top: 15vh;
@@ -218,7 +219,7 @@ button {
   font-size: 1.3vw;
   background: none;
   border: none;
-  color: #ffffff;
+  color: #000000;
   text-align: center;
   padding: 10px 0;
   cursor: pointer;
@@ -236,7 +237,7 @@ button .icon {
 }
 
 button:hover {
-  color: #eeffff;
+  color: #ffffff;
 }
 
 /* Modal styling */
@@ -330,5 +331,91 @@ button:hover {
 .action-link {
   text-decoration: none; /* This removes the underline from router-links */
   color: inherit; /* Ensures it takes the color of the button */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+  text-align: center;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1020;
+}
+
+.modal-text {
+  font-family: 'Inria Sans', sans-serif;
+  color: #00adb5;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 50%;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-actions button:last-child {
+  margin-bottom: 0;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
+}
+
+.modal-button {
+  font-weight: bold;
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

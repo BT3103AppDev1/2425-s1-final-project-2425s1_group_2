@@ -11,6 +11,6 @@ export default {
     HomeScreen
   },
 
-  data() {}
+  data() { }
 }
 </script>

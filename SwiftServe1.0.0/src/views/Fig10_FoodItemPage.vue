@@ -43,8 +43,10 @@
           <h2>Confirm Add to Cart</h2>
           <p>Are you sure you want to add this into your cart?</p>
           <div class="modal-actions">
-            <button @click="addToCartHandler()">Yes, proceed to add</button>
-            <button @click="closeAddToCartModal">No, return back to food item</button>
+            <button @click="addToCartHandler()" class="modal-button">Yes, proceed to add</button>
+            <button @click="closeAddToCartModal" class="modal-button">
+              No, return back to food item
+            </button>
           </div>
         </div>
       </div>
@@ -81,20 +83,15 @@ export default {
       hawkerCentre: null,
       showAddToCartModal: false,
       quickOrderItem: null
-      // quickOrder: false,
-      // quickOrderQuantity: 0,
-      // quickOrderAddOns: []
     }
   },
   async mounted() {
     this.hawkerCentre = this.$route.query.HCName || null
-    console.log(this.hawkerCentre)
 
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user
-        console.log('User is authenticated:', user)
       }
     })
   },
@@ -102,45 +99,18 @@ export default {
     const foodItemId = this.$route.params.id || null
     this.cartItemId = this.$route.params.cartItemId || null
     this.quickOrderId = this.$route.params.orderId || null
-    // this.quickOrder = this.$route.query.quickOrder || false;
-    // this.quickOrderQuantity = this.$route.query.quantity || 0;
-    //this.addOns = JSON.parse(this.$route.query.addOns) || [];
-    //this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
-
-    // if (this.quickOrder) {
-    //   this.quickOrderAddOns = JSON.parse(this.$route.query.addOns) || [];
-    //   //console.log(this.addOns);
-
-    //   console.log("quickOrder");
-    //   //console.log(this.addOns);
-    //   await this.fetchQuickOrderItem(foodItemId, this.quickOrderQuantity);//, this.quickOrderAddOns);
     if (this.cartItemId) {
-      console.log('cartOrder')
       await this.fetchCartItem(this.cartItemId)
     } else if (foodItemId) {
-      console.log('foodItem')
       await this.fetchFoodItem(foodItemId)
     } else if (this.quickOrderId) {
-      console.log('quickOrder')
       await this.fetchQuickOrderItem(this.quickOrderId)
     }
   },
   watch: {
-    // addOns: {
-    //   handler() {
-    //     this.updateTotalPrice();
-    //   },
-    //   deep: true
-    // },
-    // quantity() {
-    //   this.updateTotalPrice();
-    // },
     foodItem() {
       this.updateTotalPrice()
     }
-    // cartItem() {
-    //   this.updateTotalPrice();
-    // }
   },
   methods: {
     // Modal control methods
@@ -183,11 +153,9 @@ export default {
     },
     async fetchQuickOrderItem(quickOrderId) {
       try {
-        console.log(quickOrderId)
         const quickOrderItemDoc = await db.collection('PlacedCustOrders').doc(quickOrderId).get()
         if (quickOrderItemDoc.exists) {
           const quickOrderItem = quickOrderItemDoc.data()
-          console.log('Fetched quick order item:', quickOrderItem) // Log the fetched cart item
 
           // Extract the foodItemId from the cart item
           const foodItemId = quickOrderItem.foodItemId
@@ -245,11 +213,6 @@ export default {
           await this.fetchMerchant(quickOrderItem.merchantId)
 
           this.totalPrice = this.quickOrderItem.foodItemPrice // Set total price
-          console.log(this.totalPrice)
-
-          //console.log(this.quickOrderItem);
-          //const docRef = await db.collection('Cart').add(this.quickOrderItem);
-          //this.cartItemId = docRef.id;
         } else {
           console.error('No such quick order item!')
         }
@@ -257,62 +220,6 @@ export default {
         console.error('Error fetching quick order item:', error)
       }
     },
-
-    /*async fetchQuickOrderItem(quickOrderId) {
-      try {
-        console.log(quickOrderId);
-        const quickOrderItemDoc = await db.collection('PlacedCustOrders').doc(quickOrderId).get();
-        if (quickOrderItemDoc.exists) {
-          const quickOrderItem = quickOrderItemDoc.data();
-          console.log('Fetched quick order item:', quickOrderItem); // Log the fetched cart item
-
-          // Extract the foodItemId from the cart item
-          const foodItemId = quickOrderItem.foodItemId;
-          this.fetchFoodItem(foodItemId);
-          //this.calculateTotalPrice;
-        } 
-      } catch (error) {
-        console.error('Error fetching quick order item:', error);
-      }
-    },*/
-
-    // async fetchQuickOrderItem(foodItemId, quickOrderQuantity) {//, quickOrderAddOns) {
-    //   //console.log(quickOrderAddOns);
-    //   try {
-    //     const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get();
-    //     if (foodItemDoc.exists) {
-    //       this.foodItem = {
-    //         id: foodItemDoc.id,
-    //         ...foodItemDoc.data()
-    //       };
-    //       //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
-    //       await this.fetchMerchant(this.foodItem.merchantId);
-    //       /*console.log(this.quickOrderAddOns);
-    //       console.log(this.foodItem);
-    //       for (const item in this.foodItem) {
-    //         console.log(this.quickOrderAddOns[item]);
-    //       }*/
-
-    //       this.addOns = this.foodItem.addOn ? Object.keys(this.foodItem.addOn).map(key => ({
-    //         name: key,
-    //         price: this.foodItem.addOn[key],
-    //         quantity: 0
-    //       })) : [];
-    //       //console.log(this.addOns);
-
-    //       for (let i = 0; i < quickOrderQuantity - 1; i++) {
-    //         this.increaseQuantity();
-    //       }
-    //       //this.updateAddOn(quickOrderAddOns);
-
-    //     } else {
-    //       console.error('No such food item!');
-    //     }
-    //   } catch (error) {
-    //     console.error('Error fetching food item:', error);
-    //   }
-    // },
-
     async fetchFoodItem(foodItemId) {
       try {
         const foodItemDoc = await db.collection('FoodItem').doc(foodItemId).get()
@@ -321,7 +228,6 @@ export default {
             id: foodItemDoc.id,
             ...foodItemDoc.data()
           }
-          //console.log('Fetched food item:', this.foodItem); // Log the fetched food item
           await this.fetchMerchant(this.foodItem.merchantId)
           this.addOns = this.foodItem.addOn
             ? Object.keys(this.foodItem.addOn).map((key) => ({
@@ -342,7 +248,6 @@ export default {
         const merchantDoc = await db.collection('UserProfile').doc(merchantId).get()
         if (merchantDoc.exists) {
           this.merchant = merchantDoc.data()
-          //console.log('Fetched merchant:', this.merchant); // Log the fetched merchant
         } else {
           console.error('No such merchant!')
         }
@@ -355,7 +260,6 @@ export default {
         const cartItemDoc = await db.collection('Cart').doc(cartItemId).get()
         if (cartItemDoc.exists) {
           const cartItem = cartItemDoc.data()
-          console.log('Fetched cart item:', cartItem) // Log the fetched cart item
 
           // Extract the foodItemId from the cart item
           const foodItemId = cartItem.foodItemId
@@ -384,7 +288,6 @@ export default {
               quantity: cartAddOn ? cartAddOn.quantity : 0 // Use cart quantity if available
             }
           })
-          console.log(cartItem)
 
           // Update cartItem object
 
@@ -410,7 +313,6 @@ export default {
           await this.fetchMerchant(cartItem.merchantId)
 
           this.totalPrice = this.cartItem.foodItemPrice // Set total price
-          console.log(this.totalPrice)
         } else {
           console.error('No such cart item!')
         }
@@ -429,22 +331,14 @@ export default {
       }
     },
     updateAddOn(updatedAddOn) {
-      console.log(updatedAddOn)
       const addOnIndex = this.addOns.findIndex((a) => a.name === updatedAddOn.name)
-      //console.log(updatedAddOn)
       if (addOnIndex !== -1) {
-        //this.$set(this.addOns, addOnIndex, updatedAddOn)
         this.addOns[addOnIndex] = updatedAddOn
         this.updateTotalPrice()
       }
     },
     async addToCartHandler() {
-      console.log()
       let cartItem = {}
-
-      //console.log('Food Item ID:', this.foodItem ? this.foodItem.id : this.cartItem.foodItemId);
-      //console.log(this.hawkerCentre);
-      console.log(this.cartItem)
       if (this.quickOrderItem) {
         cartItem = this.quickOrderItem
       } else {
@@ -475,14 +369,6 @@ export default {
         }
       }
       this.quickOrderItem = null
-      /*console.log(cartItem);
-      for (const key in cartItem) {
-            if (cartItem[key] === undefined) {
-                throw new Error(`Field ${key} is undefined. Please provide a valid value.`);
-            }
-        }*/
-      /*cartItem['OrderNum'] = cartItem.userId.substring(0, 3) + cartItem.merchantId.substring(0, 3) + cartItem.foodItemId.substring(0, 2) + String(cartItem.quantity).substring(0, 2);*/
-      console.log(cartItem)
       try {
         if (this.cartItemId) {
           await db.collection('Cart').doc(this.cartItemId).update(cartItem)
@@ -564,13 +450,22 @@ export default {
 }
 
 .food-item-details {
+  position: absolute;
+  left: 5vw;
+  top: 15vh;
+  width: 45vw;
   display: flex;
-  background-color: white;
+  background-color: #ffffff;
   padding: 0.9375rem;
   flex-wrap: wrap;
 }
 
 .right-column {
+  position: absolute;
+  left: 50vw;
+  top: 10vh;
+  width: 40vw;
+  height: 80vh;
   flex: 1;
   padding-left: 0.9375rem;
 }
@@ -603,17 +498,18 @@ export default {
   font-size: 1.5rem;
   /* font-weight: 400; */
   cursor: pointer;
-  width: 35%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Inria Sans', sans-serif;
   background-color: #00adb5;
   color: white;
 }
 
-.add-to-cart:hover, .cancel-order:hover {
+.add-to-cart:hover,
+.cancel-order:hover {
   background-color: #007a80;
 }
-
 
 .cart-icon,
 .cancel-icon,
@@ -705,5 +601,9 @@ export default {
 
 .modal-actions button:hover {
   background-color: #007a80;
+}
+
+.modalbutton {
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

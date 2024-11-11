@@ -27,12 +27,6 @@ export default {
 </script>
 
 <style scoped>
-/* .filter-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1vh; 
-} */
-
 .filter-buttons {
   position: fixed;
   top: 15vh;

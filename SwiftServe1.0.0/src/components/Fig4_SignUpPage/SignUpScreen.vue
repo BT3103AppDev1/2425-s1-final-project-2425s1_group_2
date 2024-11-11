@@ -72,6 +72,19 @@
       </div>
     </div>
   </div>
+
+  <div v-if="showCustomModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-button" @click="closeModal">&times;</button>
+      <div class="modal-text">
+        <h2>Notification</h2>
+        <p>{{ modalMessage }}</p>
+        <div class="modal-actions">
+          <button @click="closeModal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -93,7 +106,9 @@ export default {
       showPassword: false,
       agreeToTerms: false,
       showTermsModal: false,
-      termsContent: ''
+      termsContent: '',
+      showCustomModal: false, // For showing the modal dialog
+      modalMessage: '' // For storing the modal message
     }
   },
   async created() {
@@ -102,23 +117,28 @@ export default {
 
   async mounted() {
     const result = await getRedirectResult(auth)
-    if (result) {
-      // User is signed in.
-      const user = result.user
-      console.log('User signed in:', user)
-      // Here you can handle user data and save to Firestore if needed
-    }
   },
 
   methods: {
     togglePassword() {
       this.showPassword = !this.showPassword
     },
+
     openTermsModal() {
       this.showTermsModal = true
     },
+
     closeTermsModal() {
       this.showTermsModal = false
+    },
+
+    openModal(message) {
+      this.modalMessage = message
+      this.showCustomModal = true
+    },
+
+    closeModal() {
+      this.showCustomModal = false
     },
 
     async loadTermsContent() {
@@ -128,9 +148,7 @@ export default {
           throw new Error('Network response was not ok')
         }
         this.termsContent = await response.text()
-      } catch (error) {
-        console.error('Error loading terms content:', error)
-      }
+      } catch (error) {}
     },
 
     async signUpWithGoogle() {
@@ -138,8 +156,6 @@ export default {
       try {
         const userCredential = await auth.signInWithPopup(provider)
         const user = userCredential.user
-
-        // Prepare user data
         const userData = {
           username: user.displayName,
           email: user.email,
@@ -147,30 +163,21 @@ export default {
           dateCreated: serverTimestamp(),
           profileType: 'Customer'
         }
-        console.log(userData)
-
-        // Save user data to Firestore
         await this.savetoFirestoreGoogle(userData)
-      } catch (error) {
-        console.error('Error during Google sign-up:', error)
-      }
+      } catch (error) {}
     },
-
     async savetoFirestore() {
       const { email, username, password, cPassword, agreeToTerms } = this
       const check = validateNewUser(email, username, password, cPassword, agreeToTerms)
       if (check['valid'] === false) {
-        alert(check['message'])
+        this.openModal(check['message'])
         return
       }
-
       try {
         this.loading = true
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         const user = userCredential.user
-
         await updateProfile(user, { displayName: username })
-
         const userData = {
           displayName: username,
           email: user.email,
@@ -181,11 +188,11 @@ export default {
         await setDoc(doc(db, 'UserProfile', user.uid), userData)
 
         this.resetForm()
-        alert('Account Created Successfully!')
+        this.openModal('Account Created Successfully!')
         this.$router.push('/custD')
         return false
       } catch (error) {
-        alert('Error creating account: ' + error.message)
+        this.openModal('Error creating account: ' + error.message)
       } finally {
         this.loading = false
       }
@@ -199,8 +206,6 @@ export default {
       this.showPassword = false
     },
     async savetoFirestoreGoogle(userData) {
-      // Check if userData is provided
-
       if (!userData) {
         const check = validateNewUser(
           userData['email'],
@@ -210,7 +215,7 @@ export default {
           true
         )
         if (check['valid'] === false) {
-          alert(check['message'])
+          this.openModal(check['message'])
           return
         }
 
@@ -233,21 +238,19 @@ export default {
             profileType: 'Customer'
           }
         } catch (error) {
-          alert('Error creating account: ' + error.message)
+          this.openModal('Error creating account: ' + error.message)
           return
         } finally {
           this.loading = false
         }
       }
-
-      // Save user data to Firestore
       try {
         await setDoc(doc(db, 'UserProfile', userData.uid), userData)
         this.resetForm()
-        alert('Account Created Successfully!')
+        this.openModal('Account Created Successfully!')
         this.$router.push('/custD')
       } catch (error) {
-        console.error('Error saving user data to Firestore:', error)
+        this.openModal('Error saving user data to Firestore:' + error.message)
       }
     }
   }
@@ -662,5 +665,67 @@ button:hover {
 
 .flash:hover {
   background-color: #007a80;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+  font-family: Inria Sans;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 35px;
+  font-family: Inria Sans;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+  font-family: Inria Sans;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 60%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
+  font-family: Inria Sans;
 }
 </style>
