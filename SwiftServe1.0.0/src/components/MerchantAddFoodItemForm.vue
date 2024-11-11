@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <form @submit.prevent="submitForm" class="food-item-form">
+    <form @submit.prevent="openConfirmationModal" class="food-item-form">
       
       <div class="form-section">
         <div class="form-group">
@@ -135,6 +135,23 @@
         {{ errorMessage }}
       </p>
     </form>
+
+    <!-- Custom Modal for Confirming Addition of Food Item -->
+    <div v-if="showConfirmationModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="closeConfirmationModal">&times;</button>
+        <div class="modal-text">
+          <h2>Confirm Add Food Item</h2>
+          <p>Are you sure you want to add this food item?</p>
+          <div class="modal-actions">
+            <button @click="submitForm()" class="modal-button">Yes, proceed to add</button>
+            <button @click="closeConfirmationModal" class="modal-button">
+              No, return to food item form
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -156,6 +173,7 @@ export default {
       hawkerCentre: '',
       merchant: null,
       merchantName: '',
+      showConfirmationModal: false,
     };
   },
   async mounted() {
@@ -169,6 +187,14 @@ export default {
     });
   },
   methods: {
+    openConfirmationModal() {
+      if (this.validateForm()) {
+        this.showConfirmationModal = true;
+      }
+    },
+    closeConfirmationModal() {
+      this.showConfirmationModal = false;
+    },
     async fetchMerchant(merchantId) {
       try {
           const merchantDoc = await db.collection('UserProfile').doc(merchantId).get();
@@ -264,6 +290,7 @@ export default {
       this.foodItemImageUrl = '';
       this.foodItemPrice = 0;
       this.addOns = [];
+      this.showConfirmationModal = false;
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -504,5 +531,88 @@ input[type="number"]:focus {
   .food-item-form {
     padding: 1.5rem;
   }
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #00adb5;
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  z-index: 1010;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-text h2 {
+  margin-bottom: 10px;
+  color: #00adb5;
+  text-align: center;
+  font-size: 24px;
+}
+
+.modal-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00adb5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-actions button {
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.modal-actions button:last-child {
+  margin-bottom: 0;
+}
+
+.modal-actions button:hover {
+  background-color: #007a80;
+}
+
+.modalbutton {
+  font-family: 'Inria Sans', sans-serif;
 }
 </style>

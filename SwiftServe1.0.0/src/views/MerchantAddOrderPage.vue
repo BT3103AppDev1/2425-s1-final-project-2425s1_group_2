@@ -17,7 +17,6 @@ export default {
     async handleSubmit(foodItemData) {
       const foodItemsRef = db.collection('FoodItem');
       await foodItemsRef.add(foodItemData);
-      alert("Food item added successfully!");
     }
   }
 };
