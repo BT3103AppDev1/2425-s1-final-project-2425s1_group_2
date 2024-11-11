@@ -20,7 +20,9 @@ import {
   getDoc
 } from 'firebase/firestore'
 
-const db = getFirestore(firebaseApp)
+if (import.meta.env.MODE !== 'test') {
+  var db = getFirestore(firebaseApp)
+}
 
 export default {
   name: 'CustOrders',
@@ -37,12 +39,14 @@ export default {
   },
 
   mounted() {
-    const auth = getAuth()
-    if (auth.currentUser) {
-      this.user = auth.currentUser.uid
+    if (import.meta.env.MODE !== 'test') {
+      const auth = getAuth()
+      if (auth.currentUser) {
+        this.user = auth.currentUser.uid
+      }
+      this.getCurrentOrders(this.user)
+      this.getPastOrders(this.user)
     }
-    this.getCurrentOrders(this.user)
-    this.getPastOrders(this.user)
   },
 
   methods: {
@@ -78,6 +82,7 @@ export default {
     },
 
     async getCurrentOrders(userId) {
+      console.log(userId)
       let allOrders = await getDocs(collection(db, 'PlacedCustOrders'))
 
       for (const docs of allOrders.docs) {
