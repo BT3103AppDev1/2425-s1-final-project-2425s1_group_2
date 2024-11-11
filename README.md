@@ -42,18 +42,21 @@ The successful development and deployment of Swiftserve reinforces our belief th
    git clone https://github.com/__yourusername__/swiftserve.git
    ```
    
-### Links
-Website: temp
+## Links
+- **Website**: temp
+- **Report**: [Google Docs Report](https://docs.google.com/document/d/1xUwb5i4W0DyZl7FTQsk9MlslCP3sH6febfz2I6mYMko)
+- **SCRUM Artefacts**: [Google Sheets](https://docs.google.com/spreadsheets/d/1ueJn2JwjhaqiG9cdCe3_ObOGjGLzcYZ6yf6P95tBwYU)
+- **Videos**:
+  - [Customer Perspective](https://drive.google.com/file/d/1yrSCohnwyE_xvFwrvaDGgifDXTcbyCIz/view?resourcekey)
+  - [Merchant Perspective](https://drive.google.com/file/d/1ohaHYvC7wGCyzjYHHkW93iE5mh0LhK0i/view?resourcekey)
 
-Report: https://docs.google.com/document/d/1xUwb5i4W0DyZl7FTQsk9MlslCP3sH6febfz2I6mYMko
-
-SCRUM Artefacts: https://docs.google.com/spreadsheets/d/1ueJn2JwjhaqiG9cdCe3_ObOGjGLzcYZ6yf6P95tBwYU
-
-Videos: <br>
-https://drive.google.com/file/d/1yrSCohnwyE_xvFwrvaDGgifDXTcbyCIz/view?resourcekey (Customer Perspective) <br>
-https://drive.google.com/file/d/1ohaHYvC7wGCyzjYHHkW93iE5mh0LhK0i/view?resourcekey (Merchant Perspective)
+## Component Documentation
+Detailed component documentation can be found in the `docs` folder within the `components` directory:
+- [HomeScreen Component](./src/components/docs/HomeScreen.md)
+- [LoginScreen Component](./src/components/docs/LoginScreen.md)
+- [SignUp Component](./src/components/docs/SignUp.md)
+- [GuestAccess Component](./src/components/docs/GuestAccess.md)
 
 ## Tech Stack
-- Frontend: JavaScript, HTML, CSS, Vue
-- Backend: Firebase
-
+- **Frontend**: JavaScript, HTML, CSS, Vue
+- **Backend**: Firebase
